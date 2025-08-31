@@ -45,9 +45,9 @@ export const Header = () => {
               Pricing
             </button>
             <div className="flex items-center space-x-4">
-              <a href="tel:+1234567890" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200">
+              <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200">
                 <Phone className="h-4 w-4 mr-1" />
-                <span className="text-sm font-medium">(123) 456-7890</span>
+                <span className="text-sm font-medium">(850) 330-9933</span>
               </a>
               <Button 
                 onClick={() => scrollToSection('contact')}
