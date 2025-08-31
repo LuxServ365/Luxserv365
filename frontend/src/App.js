@@ -18,6 +18,7 @@ const Home = () => {
       <Header />
       <main>
         <Hero />
+        <RemoteHostSupport />
         <Services />
         <WhyChooseUs />
         <Pricing />
