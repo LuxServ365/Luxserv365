@@ -281,7 +281,7 @@ export const Contact = () => {
                 <div>
                   <h4 className="font-bold text-red-800">Emergency Line</h4>
                   <p className="text-red-700">Available 24/7 for urgent property issues</p>
-                  <p className="text-red-600 font-semibold text-lg">(123) 456-7890</p>
+                  <p className="text-red-600 font-semibold text-lg">(504) 939-1371</p>
                 </div>
               </div>
             </div>
