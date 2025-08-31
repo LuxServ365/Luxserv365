@@ -14,7 +14,7 @@ export const Pricing = () => {
       features: [
         "1 monthly maintenance inspection",
         "Turnover coordination (at cost per clean)",
-        "24/7 emergency response",
+        "Discounted guest services",
         "Vendor recommendations",
         "Owner and guest support"
       ],
@@ -27,23 +27,26 @@ export const Pricing = () => {
     },
     {
       name: "Premium Care",
-      subtitle: "Most Popular",
+      subtitle: "Most Popular for 2–4BR Homes",
       price: "$499",
       period: "/month",
       icon: Star,
       features: [
         "Everything in Essential, plus:",
-        "Bi-weekly inspections",
+        "24/7 emergency response",
+        "Bi-weekly maintenance inspections",
         "Priority scheduling for turnovers & maintenance",
         "Inventory restock coordination",
         "Storm prep readiness checks",
-        "Guest check-in welcome call"
+        "Guest check-in/out assistance",
+        "On-site security options"
       ],
       bgColor: "bg-blue-600",
       textColor: "text-white",
       buttonColor: "bg-white text-blue-600 hover:bg-slate-100",
       iconColor: "text-yellow-400",
-      popular: true
+      popular: true,
+      description: "Balanced for quality & peace of mind"
     },
     {
       name: "Elite Care",
