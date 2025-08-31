@@ -81,8 +81,8 @@ export const Services = () => {
     },
     {
       icon: ChefHat,
-      title: "Private Chef & Catering Coordination",
-      description: "Professional culinary services for special occasions and convenience."
+      title: "Private Event & Catering Coordination",
+      description: "Professional event planning and catering services for special occasions and convenience."
     },
     {
       icon: Gift,
