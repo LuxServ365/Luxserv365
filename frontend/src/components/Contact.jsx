@@ -65,13 +65,13 @@ export const Contact = () => {
     {
       icon: Phone,
       title: "Call Us",
-      details: "(123) 456-7890",
+      details: "(850) 330-9933",
       subtitle: "24/7 Emergency Line Available"
     },
     {
       icon: Mail,
       title: "Email Us",
-      details: "hello@luxserv365.com",
+      details: "850realty@gmail.com",
       subtitle: "We respond within 2 hours"
     },
     {
