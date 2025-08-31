@@ -81,4 +81,39 @@ export const contactApi = {
   }
 };
 
+export const messageApi = {
+  // Submit owner message
+  submitMessage: async (messageData) => {
+    try {
+      const response = await apiClient.post('/messages', messageData);
+      return response.data;
+    } catch (error) {
+      console.error('Message submission error:', error);
+      throw error;
+    }
+  },
+
+  // Get messages for specific owner
+  getOwnerMessages: async (ownerEmail) => {
+    try {
+      const response = await apiClient.get(`/messages/owner/${encodeURIComponent(ownerEmail)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get owner messages error:', error);
+      throw error;
+    }
+  },
+
+  // Get all messages (admin endpoint)
+  getAllMessages: async () => {
+    try {
+      const response = await apiClient.get('/messages');
+      return response.data;
+    } catch (error) {
+      console.error('Get all messages error:', error);
+      throw error;
+    }
+  }
+};
+
 export default apiClient;
