@@ -48,7 +48,7 @@ export const WhyChooseUs = () => {
             Why Choose LuxServ 365?
           </h2>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            We're not just another property management company. We're your trusted partners in vacation rental success.
+            We're the trusted local team that remote and busy self-managing hosts rely on to maximize their vacation rental success.
           </p>
         </div>
 
