@@ -54,9 +54,18 @@ export const OwnerLogin = ({ onLogin }) => {
     <section className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4">
       <Card className="w-full max-w-md p-8 shadow-2xl border-0 bg-white">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-2">
-            LuxServ 365
-          </h1>
+          <div className="relative mb-4">
+            <h1 className="text-4xl font-black tracking-tight">
+              <span className="bg-gradient-to-r from-blue-600 via-teal-500 to-blue-700 bg-clip-text text-transparent drop-shadow-sm">
+                LuxServ
+              </span>
+              <span className="text-slate-800 ml-2 relative">
+                365
+                <div className="absolute -top-2 -right-2 w-3 h-3 bg-gradient-to-r from-orange-400 to-red-500 rounded-full animate-pulse shadow-lg"></div>
+              </span>
+            </h1>
+            <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 w-24 h-1 bg-gradient-to-r from-blue-600 via-teal-500 to-blue-700 rounded-full shadow-md"></div>
+          </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
             {isLogin ? 'Owner Login' : 'Create Account'}
           </h2>
