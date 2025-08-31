@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
-import { Menu, X, Phone, Mail } from 'lucide-react';
+import { Menu, X, Phone, UserCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
