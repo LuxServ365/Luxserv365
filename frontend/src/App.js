@@ -3,6 +3,7 @@ import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
+import { RemoteHostSupport } from "./components/RemoteHostSupport";
 import { Services } from "./components/Services";
 import { WhyChooseUs } from "./components/WhyChooseUs";
 import { Pricing } from "./components/Pricing";
