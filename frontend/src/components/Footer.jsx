@@ -110,7 +110,7 @@ export const Footer = () => {
                 Emergency Support Available 24/7
               </p>
               <p className="text-blue-400 font-semibold">
-                (123) 456-7890
+                (504) 939-1371
               </p>
             </div>
           </div>
