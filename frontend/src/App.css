@@ -1,3 +1,8 @@
+/* Remove the center alignment that disrupts natural reading flow */
+.App {
+  /* text-align: center; - REMOVED */
+}
+
 .App-logo {
     height: 40vmin;
     pointer-events: none;
@@ -31,4 +36,47 @@
     to {
         transform: rotate(360deg);
     }
+}
+
+/* Custom animations for better UX */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fade-in 0.6s ease-out;
+}
+
+/* Smooth scrolling for better navigation */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom focus styles for better accessibility */
+button:focus,
+input:focus,
+textarea:focus,
+select:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+}
+
+/* Hover transitions for interactive elements */
+button,
+a {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Ensure proper contrast for readability */
+body {
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
