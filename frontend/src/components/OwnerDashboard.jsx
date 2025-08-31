@@ -11,9 +11,13 @@ import {
   CheckCircle,
   AlertCircle,
   Phone,
-  Mail
+  Mail,
+  FileText,
+  Camera
 } from 'lucide-react';
 import { messageApi } from '../services/api';
+import { InspectionReports } from './InspectionReports';
+import { PhotoAlbum } from './PhotoAlbum';
 
 export const OwnerDashboard = ({ userData, onLogout }) => {
   const [messages, setMessages] = useState([]);
