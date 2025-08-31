@@ -410,6 +410,10 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
             {activeTab === 'photos' && (
               <PhotoAlbum userData={userData} />
             )}
+
+            {activeTab === 'reviews' && (
+              <ReviewsTestimonials userData={userData} />
+            )}
           </div>
         </div>
       </div>
