@@ -9,6 +9,7 @@ import { WhyChooseUs } from "./components/WhyChooseUs";
 import { Pricing } from "./components/Pricing";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
+import { Mission } from "./components/Mission";
 import { OwnerLogin } from "./components/OwnerLogin";
 import { OwnerDashboard } from "./components/OwnerDashboard";
 
