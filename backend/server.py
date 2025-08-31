@@ -253,6 +253,164 @@ async def get_all_messages():
             "message": str(e)
         }
 
+@api_router.post("/inspections", response_model=dict)
+async def create_inspection_report(
+    title: str = Form(...),
+    notes: str = Form(...),
+    ownerEmail: str = Form(...),
+    propertyAddress: str = Form(...),
+    inspectionDate: str = Form(...),
+    reportFile: Optional[UploadFile] = File(None)
+):
+    try:
+        # Create inspection report object
+        inspection_data = {
+            "title": title,
+            "notes": notes,
+            "ownerEmail": ownerEmail,
+            "propertyAddress": propertyAddress,
+            "inspectionDate": datetime.fromisoformat(inspectionDate.replace('Z', '+00:00'))
+        }
+        
+        inspection_obj = InspectionReport(**inspection_data)
+        
+        # Handle file upload if provided
+        if reportFile and reportFile.filename:
+            file_extension = reportFile.filename.split('.')[-1]
+            unique_filename = f"{inspection_obj.id}_{reportFile.filename}"
+            file_path = REPORTS_DIR / unique_filename
+            
+            with open(file_path, "wb") as buffer:
+                shutil.copyfileobj(reportFile.file, buffer)
+            
+            inspection_obj.reportFile = unique_filename
+        
+        # Insert into database
+        result = await db.inspection_reports.insert_one(inspection_obj.dict())
+        
+        if result.inserted_id:
+            logger.info(f"Inspection report created: {inspection_obj.id}")
+            return {
+                "success": True,
+                "data": inspection_obj.dict(),
+                "message": "Inspection report created successfully"
+            }
+        else:
+            raise Exception("Failed to create inspection report")
+            
+    except Exception as e:
+        logger.error(f"Error creating inspection report: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to create inspection report",
+            "message": str(e)
+        }
+
+@api_router.get("/inspections/owner/{owner_email}")
+async def get_owner_inspections(owner_email: str):
+    try:
+        inspections = await db.inspection_reports.find({"ownerEmail": owner_email}).sort("inspectionDate", -1).to_list(100)
+        return {
+            "success": True,
+            "data": [InspectionReport(**inspection).dict() for inspection in inspections]
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving owner inspections: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve inspections",
+            "message": str(e)
+        }
+
+@api_router.get("/inspections/file/{filename}")
+async def download_inspection_file(filename: str):
+    try:
+        file_path = REPORTS_DIR / filename
+        if file_path.exists():
+            return FileResponse(path=file_path, filename=filename)
+        else:
+            return {"error": "File not found"}
+    except Exception as e:
+        logger.error(f"Error downloading file: {str(e)}")
+        return {"error": "Unable to download file"}
+
+@api_router.post("/photos/upload", response_model=dict)
+async def upload_photos(
+    ownerEmail: str = Form(...),
+    propertyAddress: str = Form(...),
+    caption: Optional[str] = Form(None),
+    photos: List[UploadFile] = File(...)
+):
+    try:
+        uploaded_photos = []
+        
+        for photo in photos:
+            if photo.filename:
+                # Generate unique filename
+                file_extension = photo.filename.split('.')[-1]
+                unique_filename = f"{str(uuid.uuid4())}_{photo.filename}"
+                file_path = PHOTOS_DIR / unique_filename
+                
+                # Save file
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(photo.file, buffer)
+                
+                # Create photo record
+                photo_obj = PhotoUpload(
+                    filename=unique_filename,
+                    originalName=photo.filename,
+                    ownerEmail=ownerEmail,
+                    propertyAddress=propertyAddress,
+                    caption=caption
+                )
+                
+                # Insert into database
+                await db.property_photos.insert_one(photo_obj.dict())
+                uploaded_photos.append(photo_obj.dict())
+        
+        logger.info(f"Uploaded {len(uploaded_photos)} photos for {ownerEmail}")
+        return {
+            "success": True,
+            "data": uploaded_photos,
+            "message": f"Successfully uploaded {len(uploaded_photos)} photos"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error uploading photos: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to upload photos",
+            "message": str(e)
+        }
+
+@api_router.get("/photos/owner/{owner_email}")
+async def get_owner_photos(owner_email: str):
+    try:
+        photos = await db.property_photos.find({"ownerEmail": owner_email}).sort("uploadedAt", -1).to_list(200)
+        return {
+            "success": True,
+            "data": [PhotoUpload(**photo).dict() for photo in photos]
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving owner photos: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve photos",
+            "message": str(e)
+        }
+
+@api_router.get("/photos/file/{filename}")
+async def get_photo_file(filename: str):
+    try:
+        file_path = PHOTOS_DIR / filename
+        if file_path.exists():
+            return FileResponse(path=file_path)
+        else:
+            return {"error": "Photo not found"}
+    except Exception as e:
+        logger.error(f"Error retrieving photo: {str(e)}")
+        return {"error": "Unable to retrieve photo"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
