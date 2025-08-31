@@ -114,18 +114,18 @@ export const Pricing = () => {
                     <div className="mb-4">
                       <IconComponent className={`h-12 w-12 mx-auto ${plan.iconColor}`} />
                     </div>
-                    <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                    <p className={`text-sm font-medium mb-2 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
+                    <h3 className="text-2xl font-bold mb-2 drop-shadow-sm">{plan.name}</h3>
+                    <p className={`text-sm font-bold mb-2 drop-shadow-sm ${plan.popular ? 'text-blue-100' : 'text-slate-700'} ${plan.name === 'Elite Care' ? 'text-white drop-shadow-md' : ''}`}>
                       {plan.subtitle}
                     </p>
                     {plan.description && (
-                      <p className={`text-xs mb-4 ${plan.popular ? 'text-blue-200' : 'text-slate-400'}`}>
+                      <p className={`text-xs mb-4 font-medium drop-shadow-sm ${plan.popular ? 'text-blue-200' : 'text-slate-600'} ${plan.name === 'Elite Care' ? 'text-amber-100 drop-shadow-md' : ''}`}>
                         {plan.description}
                       </p>
                     )}
                     <div className="flex items-baseline justify-center">
-                      <span className="text-5xl font-bold">{plan.price}</span>
-                      <span className={`text-lg ml-1 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
+                      <span className="text-5xl font-bold drop-shadow-sm">{plan.price}</span>
+                      <span className={`text-lg ml-1 drop-shadow-sm ${plan.popular ? 'text-blue-200' : 'text-slate-500'} ${plan.name === 'Elite Care' ? 'text-amber-200' : ''}`}>
                         {plan.period}
                       </span>
                     </div>
@@ -135,8 +135,8 @@ export const Pricing = () => {
                   <ul className="space-y-4 mb-8">
                     {plan.features.map((feature, featureIndex) => (
                       <li key={featureIndex} className="flex items-start">
-                        <Check className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 ${plan.popular ? 'text-blue-200' : 'text-green-500'}`} />
-                        <span className="text-sm leading-relaxed">{feature}</span>
+                        <Check className={`h-5 w-5 mr-3 mt-0.5 flex-shrink-0 drop-shadow-sm ${plan.popular ? 'text-blue-200' : 'text-green-500'} ${plan.name === 'Elite Care' ? 'text-amber-200' : ''}`} />
+                        <span className={`text-sm leading-relaxed font-medium drop-shadow-sm ${plan.name === 'Elite Care' ? 'text-white' : ''}`}>{feature}</span>
                       </li>
                     ))}
                   </ul>
