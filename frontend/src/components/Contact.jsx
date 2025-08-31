@@ -239,6 +239,16 @@ export const Contact = () => {
                   </div>
                 )}
               </Button>
+
+              {/* Error Message */}
+              {error && (
+                <div className="mt-4 p-4 bg-red-50 border-l-4 border-red-400 roundedl-lg">
+                  <div className="flex items-center">
+                    <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+                    <p className="text-red-700">{error}</p>
+                  </div>
+                </div>
+              )}
             </form>
           </Card>
 
