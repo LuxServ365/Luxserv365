@@ -83,7 +83,7 @@ export const Contact = () => {
     {
       icon: Clock,
       title: "Business Hours",
-      details: "Mon-Fri: 8AM-6PM",
+      details: "365 Days: 8AM-6PM",
       subtitle: "Emergency support 24/7"
     }
   ];
