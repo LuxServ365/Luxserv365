@@ -28,25 +28,37 @@ export const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
     
-    // Simulate API call with mock function
-    await mockSubmitContact(formData);
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        propertyAddress: '',
-        currentlyManaging: '',
-        message: ''
-      });
-    }, 3000);
+    try {
+      // Submit form data to backend API
+      const response = await contactApi.submit(formData);
+      
+      if (response.success) {
+        setIsSubmitted(true);
+        console.log('Contact form submitted successfully:', response.data);
+        
+        // Reset form after 3 seconds
+        setTimeout(() => {
+          setIsSubmitted(false);
+          setFormData({
+            name: '',
+            email: '',
+            phone: '',
+            propertyAddress: '',
+            currentlyManaging: '',
+            message: ''
+          });
+        }, 3000);
+      } else {
+        throw new Error(response.error || 'Failed to submit form');
+      }
+    } catch (err) {
+      console.error('Form submission error:', err);
+      setError(err.message || 'Failed to submit form. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
