@@ -9,6 +9,7 @@ export const Pricing = () => {
       name: "Essential Care",
       subtitle: "Budget-Friendly, Core Coverage",
       price: "$299",
+      dailyValue: "$9.97",
       period: "/month",
       icon: Shield,
       features: [
@@ -29,6 +30,7 @@ export const Pricing = () => {
       name: "Premium Care",
       subtitle: "Most Popular for 2–4BR Homes",
       price: "$449",
+      dailyValue: "$14.97",
       period: "/month",
       icon: Star,
       features: [
@@ -52,6 +54,7 @@ export const Pricing = () => {
       name: "Elite Care",
       subtitle: "Luxury Partner (High-End Homes, 30A, 4BR+)",
       price: "$599",
+      dailyValue: "$19.97",
       period: "/month",
       icon: Crown,
       features: [
