@@ -108,6 +108,22 @@ export const Pricing = () => {
                   </div>
                 )}
 
+                {/* Daily Value Sticker */}
+                <div className="absolute top-4 right-4 transform rotate-12">
+                  <div className={`px-3 py-2 rounded-full text-xs font-bold shadow-lg border-2 ${
+                    plan.name === 'Essential Care' 
+                      ? 'bg-green-100 text-green-800 border-green-300' 
+                      : plan.name === 'Premium Care'
+                      ? 'bg-blue-100 text-blue-800 border-blue-300'
+                      : 'bg-amber-100 text-amber-800 border-amber-300'
+                  }`}>
+                    <div className="text-center">
+                      <div className="text-xs opacity-75">Only</div>
+                      <div className="font-black text-sm">{plan.dailyValue}/day</div>
+                    </div>
+                  </div>
+                </div>
+
                 {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full transform translate-x-6 -translate-y-6"></div>
 
@@ -131,6 +147,10 @@ export const Pricing = () => {
                       <span className={`text-lg ml-1 drop-shadow-sm ${plan.popular ? 'text-blue-200' : 'text-slate-500'} ${plan.name === 'Elite Care' ? 'text-amber-200' : ''}`}>
                         {plan.period}
                       </span>
+                    </div>
+                    {/* Daily value text under price */}
+                    <div className={`text-sm mt-2 font-medium opacity-75 ${plan.name === 'Elite Care' ? 'text-amber-200' : plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
+                      That's just {plan.dailyValue} per day
                     </div>
                   </div>
 
