@@ -203,9 +203,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Contact Form Frontend"
-    - "API Service Layer"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
