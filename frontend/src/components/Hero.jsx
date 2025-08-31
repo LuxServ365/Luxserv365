@@ -27,6 +27,14 @@ export const Hero = () => {
             Panama City Beach & 30A Vacation Rental Experts
           </div>
 
+          {/* Main heading */}
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-6 leading-tight">
+            <span className="block">Empowering vacation rental</span>
+            <span className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+              owners to succeed
+            </span>
+          </h1>
+
           {/* Subheading */}
           <p className="text-xl md:text-2xl text-slate-600 mb-8 max-w-4xl mx-auto leading-relaxed">
             With over a decade of hands-on experience in the short-term rental industry, we understand the needs of both owners and guests. Our team is your boots on the ground — reliable, responsive, and committed to excellence.
