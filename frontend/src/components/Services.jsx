@@ -24,42 +24,42 @@ export const Services = () => {
     {
       icon: AlertTriangle,
       title: "24/7 Emergency Response",
-      description: "Round-the-clock emergency support for urgent property issues and guest situations."
+      description: "Your local emergency team responds instantly when you can't be there—handling urgent property issues and guest situations around the clock."
     },
     {
       icon: Sparkles,
       title: "Professional Turnovers & Deep Cleans",
-      description: "Thorough cleaning and property preparation between guest stays to maintain high standards."
+      description: "White-glove cleaning and property preparation between guests, ensuring 5-star experiences that drive positive reviews."
     },
     {
       icon: Wrench,
       title: "Preventative Maintenance & Repairs",
-      description: "Proactive maintenance schedules and quick repairs to protect your investment."
+      description: "Proactive on-site maintenance and immediate repairs protect your investment and prevent costly emergencies."
     },
     {
       icon: Package,
       title: "Inventory Restock & Supply Management",
-      description: "Keep your property fully stocked with essentials and amenities for guests."
+      description: "We keep your property fully stocked with premium amenities, linens, and essentials—your guests never notice what's missing."
     },
     {
       icon: Smartphone,
       title: "Smart Lock & Tech Monitoring",
-      description: "Monitor and maintain all smart home technology for seamless guest experiences."
+      description: "Local tech support monitoring all smart home systems, ensuring seamless guest access and property security."
     },
     {
       icon: Cloud,
       title: "Hurricane & Storm Prep + Post-Storm Checks",
-      description: "Comprehensive storm preparation and post-storm property assessments."
+      description: "Complete storm preparation and immediate post-storm property assessments with photo/video documentation."
     },
     {
       icon: Users,
       title: "Local Vendor Coordination",
-      description: "Manage relationships with pool, landscaping, HVAC, and other service providers."
+      description: "We manage your trusted network of pool, landscaping, HVAC, and repair professionals—no more coordinating from afar."
     },
     {
       icon: Monitor,
       title: "Owner Dashboard with Real-Time Updates",
-      description: "Stay informed with live updates on your property status and guest activities."
+      description: "Live property status, guest activities, and maintenance updates accessible from anywhere in the world."
     }
   ];
 
