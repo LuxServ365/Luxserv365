@@ -151,7 +151,7 @@ export const Services = () => {
               Elevating the Guest Experience.
             </p>
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-teal-100 text-teal-700 font-medium">
-              📌 Your vacation, upgraded.
+              📌 Your vacation, upgraded
             </div>
           </div>
 
