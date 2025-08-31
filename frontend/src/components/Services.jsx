@@ -116,10 +116,10 @@ export const Services = () => {
               Owner Services
             </h2>
             <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-4">
-              Empowering Owners. Protecting Investments.
+              Your Hands-On Local Team. Protecting Remote Investments.
             </p>
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium">
-              📌 Peace of mind, every day of the year
+              📌 Complete peace of mind for self-managing hosts, wherever you are
             </div>
           </div>
 
