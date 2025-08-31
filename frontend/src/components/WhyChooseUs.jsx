@@ -6,28 +6,28 @@ export const WhyChooseUs = () => {
   const features = [
     {
       icon: Calendar,
-      title: "365-Day Reliability",
-      description: "Year-round support and service, every single day of the year."
+      title: "365-Day Local Presence",
+      description: "Your dedicated on-site team working every single day of the year, whether you're across town or across the country."
     },
     {
       icon: Award,
-      title: "Decade of Experience in Vacation Rentals",
-      description: "Over 10 years of proven expertise in the short-term rental industry."
+      title: "Decade of Remote Host Expertise",
+      description: "Over 10 years specializing in supporting self-managing owners who need trusted local hands and eyes."
     },
     {
       icon: Users,
-      title: "Hands-On Local Team",
-      description: "Our team lives and works in Panama City Beach and 30A area."
+      title: "Your Boots on the Ground Team",
+      description: "We become your local presence in Panama City Beach and 30A—handling everything you can't do remotely."
     },
     {
       icon: Target,
-      title: "Dual Focus: Owner Protection + Guest Satisfaction",
-      description: "We balance protecting your investment with creating amazing guest experiences."
+      title: "Revenue & Review Optimization",
+      description: "Professional local management drives higher occupancy, premium rates, and consistent 5-star guest experiences."
     },
     {
       icon: Star,
-      title: "Luxury-Level Service, Accessible to All",
-      description: "Premium service quality at pricing that works for every property owner."
+      title: "Premium Service, Accessible Pricing",
+      description: "High-end property management and concierge services at pricing that makes sense for self-managing hosts."
     }
   ];
 
