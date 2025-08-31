@@ -157,6 +157,66 @@ async def get_contact_submissions():
             "message": str(e)
         }
 
+@api_router.post("/messages", response_model=dict)
+async def submit_owner_message(message: OwnerMessageCreate):
+    try:
+        # Create message object
+        message_dict = message.dict()
+        message_obj = OwnerMessage(**message_dict)
+        
+        # Insert into database
+        result = await db.owner_messages.insert_one(message_obj.dict())
+        
+        if result.inserted_id:
+            logger.info(f"Owner message submitted: {message_obj.ownerEmail} - {message_obj.subject}")
+            return {
+                "success": True,
+                "data": message_obj.dict(),
+                "message": "Message sent successfully"
+            }
+        else:
+            raise Exception("Failed to insert owner message")
+            
+    except Exception as e:
+        logger.error(f"Error submitting owner message: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to send message",
+            "message": str(e)
+        }
+
+@api_router.get("/messages/owner/{owner_email}")
+async def get_owner_messages(owner_email: str):
+    try:
+        messages = await db.owner_messages.find({"ownerEmail": owner_email}).sort("createdAt", -1).to_list(100)
+        return {
+            "success": True,
+            "data": [OwnerMessage(**message).dict() for message in messages]
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving owner messages: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve messages",
+            "message": str(e)
+        }
+
+@api_router.get("/messages")
+async def get_all_messages():
+    try:
+        messages = await db.owner_messages.find().sort("createdAt", -1).to_list(1000)
+        return {
+            "success": True,
+            "data": [OwnerMessage(**message).dict() for message in messages]
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving all messages: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve messages",
+            "message": str(e)
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
