@@ -69,6 +69,33 @@ class ContactSubmission(BaseModel):
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     status: str = Field(default="pending")
 
+class OwnerMessageCreate(BaseModel):
+    subject: str = Field(..., min_length=1, max_length=200, description="Message subject")
+    message: str = Field(..., min_length=1, max_length=2000, description="Message content")
+    priority: str = Field(default="normal", description="Message priority")
+    ownerEmail: EmailStr = Field(..., description="Owner email address")
+    ownerName: str = Field(..., min_length=1, max_length=100, description="Owner name")
+    propertyAddress: str = Field(..., description="Property address")
+
+    @validator('priority')
+    def validate_priority(cls, v):
+        allowed_priorities = ['low', 'normal', 'high', 'urgent']
+        if v not in allowed_priorities:
+            raise ValueError(f'Priority must be one of: {", ".join(allowed_priorities)}')
+        return v
+
+class OwnerMessage(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    subject: str
+    message: str
+    priority: str
+    ownerEmail: str
+    ownerName: str
+    propertyAddress: str
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="pending")
+    readAt: Optional[datetime] = None
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
