@@ -58,7 +58,7 @@ export const Services = () => {
     },
     {
       icon: Monitor,
-      title: "Owner Dashboard with Real-time Updates",
+      title: "Owner Dashboard with Real-Time Updates",
       description: "Stay informed with live updates on your property status and guest activities."
     }
   ];
