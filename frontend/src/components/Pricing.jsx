@@ -51,7 +51,7 @@ export const Pricing = () => {
     {
       name: "Elite Care",
       subtitle: "Luxury Tier",
-      price: "$899",
+      price: "$599",
       period: "/month",
       icon: Crown,
       features: [
