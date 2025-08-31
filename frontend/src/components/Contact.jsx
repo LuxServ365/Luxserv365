@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
-import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
-import { mockSubmitContact } from '../utils/mock';
+import { Phone, Mail, MapPin, Clock, Send, CheckCircle, AlertCircle } from 'lucide-react';
+import { contactApi } from '../services/api';
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
