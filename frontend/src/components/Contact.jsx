@@ -99,7 +99,7 @@ export const Contact = () => {
               We've received your inquiry and will contact you within 24 hours to discuss how LuxServ 365 can help with your vacation rental.
             </p>
             <p className="text-slate-500">
-              For immediate assistance, call us at (123) 456-7890
+              For immediate assistance, call us at (850) 330-9933
             </p>
           </div>
         </div>
