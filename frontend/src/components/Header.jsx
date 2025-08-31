@@ -52,6 +52,14 @@ export const Header = () => {
                 <span className="text-sm font-medium">(850) 330-9933</span>
               </a>
               <Button 
+                onClick={() => navigate('/owner-portal')}
+                variant="outline"
+                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center"
+              >
+                <UserCircle className="h-4 w-4 mr-1" />
+                Owner Portal
+              </Button>
+              <Button 
                 onClick={() => scrollToSection('contact')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
               >
