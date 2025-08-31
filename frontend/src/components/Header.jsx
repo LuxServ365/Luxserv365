@@ -44,6 +44,12 @@ export const Header = () => {
               Services
             </button>
             <button
+              onClick={() => navigate('/mission')}
+              className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium"
+            >
+              Mission
+            </button>
+            <button
               onClick={() => scrollToSection('why-choose-us')}
               className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium"
             >
