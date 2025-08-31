@@ -8,7 +8,7 @@ export const Pricing = () => {
     {
       name: "Essential Care",
       subtitle: "Budget-Friendly, Core Coverage",
-      price: "$300",
+      price: "$299",
       period: "/month",
       icon: Shield,
       features: [
