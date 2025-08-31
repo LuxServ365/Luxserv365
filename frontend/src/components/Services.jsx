@@ -119,7 +119,7 @@ export const Services = () => {
               Empowering Owners. Protecting Investments.
             </p>
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-medium">
-              📌 Peace of mind, every day of the year.
+              📌 Peace of mind, every day of the year
             </div>
           </div>
 
