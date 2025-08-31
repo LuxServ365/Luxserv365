@@ -29,7 +29,7 @@ export const Hero = () => {
 
           {/* Main heading */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-slate-900 mb-6 leading-tight">
-            <span className="block">Empowering remote & busy</span>
+            <span className="block">Empowering</span>
             <span className="block bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
               self-managing hosts to succeed
             </span>
