@@ -111,9 +111,14 @@ export const Pricing = () => {
                       <IconComponent className={`h-12 w-12 mx-auto ${plan.iconColor}`} />
                     </div>
                     <h3 className="text-2xl font-bold mb-2">{plan.name}</h3>
-                    <p className={`text-sm font-medium mb-4 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
+                    <p className={`text-sm font-medium mb-2 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
                       {plan.subtitle}
                     </p>
+                    {plan.description && (
+                      <p className={`text-xs mb-4 ${plan.popular ? 'text-blue-200' : 'text-slate-400'}`}>
+                        {plan.description}
+                      </p>
+                    )}
                     <div className="flex items-baseline justify-center">
                       <span className="text-5xl font-bold">{plan.price}</span>
                       <span className={`text-lg ml-1 ${plan.popular ? 'text-blue-200' : 'text-slate-500'}`}>
