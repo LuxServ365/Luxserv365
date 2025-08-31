@@ -224,6 +224,17 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   <Camera className="h-5 w-5 mr-3" />
                   Photo Album
                 </button>
+                <button
+                  onClick={() => setActiveTab('reviews')}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 flex items-center ${
+                    activeTab === 'reviews' 
+                      ? 'bg-blue-100 text-blue-700 font-medium' 
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Star className="h-5 w-5 mr-3" />
+                  Reviews
+                </button>
               </nav>
             </Card>
 
