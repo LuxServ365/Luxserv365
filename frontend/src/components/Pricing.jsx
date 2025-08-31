@@ -8,7 +8,7 @@ export const Pricing = () => {
     {
       name: "Essential Care",
       subtitle: "Budget-Friendly, Core Coverage",
-      price: "$199",
+      price: "$249",
       period: "/month",
       icon: Shield,
       features: [
@@ -28,7 +28,7 @@ export const Pricing = () => {
     {
       name: "Premium Care",
       subtitle: "Most Popular for 2–4BR Homes",
-      price: "$399",
+      price: "$449",
       period: "/month",
       icon: Star,
       features: [
