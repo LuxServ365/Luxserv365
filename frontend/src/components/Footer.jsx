@@ -34,9 +34,19 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div className="col-span-1 lg:col-span-2">
-            <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent mb-4">
-              LuxServ 365
-            </h3>
+            <div className="relative mb-6">
+              <h3 className="text-4xl font-black tracking-tight">
+                <span className="bg-gradient-to-r from-blue-400 via-teal-400 to-blue-500 bg-clip-text text-transparent drop-shadow-lg">
+                  LuxServ
+                </span>
+                <span className="text-white ml-2 relative">
+                  365
+                  <div className="absolute -top-2 -right-2 w-3 h-3 bg-gradient-to-r from-orange-400 to-red-500 rounded-full animate-pulse shadow-lg"></div>
+                </span>
+              </h3>
+              <div className="absolute -bottom-2 left-0 right-24 h-1 bg-gradient-to-r from-blue-400 via-teal-400 to-blue-500 rounded-full shadow-lg"></div>
+              <div className="absolute -bottom-0.5 left-0 right-24 h-0.5 bg-white/30 rounded-full"></div>
+            </div>
             <p className="text-slate-300 mb-6 leading-relaxed max-w-md">
               Your trusted partner in vacation rental success. With over a decade of experience in Panama City Beach and 30A, we provide comprehensive support services for property owners and unforgettable experiences for guests.
             </p>
