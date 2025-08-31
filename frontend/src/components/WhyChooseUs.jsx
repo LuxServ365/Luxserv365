@@ -82,10 +82,10 @@ export const WhyChooseUs = () => {
         <div className="text-center mt-16">
           <div className="bg-white rounded-2xl shadow-xl p-8 max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-slate-900 mb-4">
-              Ready to Experience the LuxServ 365 Difference?
+              Ready to Have a Local Team You Can Trust?
             </h3>
             <p className="text-slate-600 mb-6">
-              Join hundreds of satisfied property owners who trust us with their vacation rental success.
+              Join hundreds of remote and self-managing hosts who trust LuxServ 365 as their hands-on local support team.
             </p>
             <button 
               onClick={() => {
