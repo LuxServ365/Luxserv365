@@ -34,16 +34,9 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Company Info */}
           <div className="col-span-1 lg:col-span-2">
-            <div className="flex items-center mb-4">
-              <img 
-                src="https://customer-assets.emergentagent.com/job_beach-owner-hub/artifacts/b0exabcq_ChatGPT%20Image%20Aug%2031%2C%202025%2C%2004_12_53%20PM.png"
-                alt="LuxServ 365 Logo"
-                className="h-12 w-auto mr-3 filter brightness-200"
-              />
-              <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
-                LuxServ 365
-              </h3>
-            </div>
+            <h3 className="text-3xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent mb-4">
+              LuxServ 365
+            </h3>
             <p className="text-slate-300 mb-6 leading-relaxed max-w-md">
               Your trusted partner in vacation rental success. With over a decade of experience in Panama City Beach and 30A, we provide comprehensive support services for property owners and unforgettable experiences for guests.
             </p>
