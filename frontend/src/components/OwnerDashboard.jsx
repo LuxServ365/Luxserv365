@@ -159,9 +159,10 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Owner Info Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          {/* Sidebar */}
           <div className="lg:col-span-1">
+            {/* Owner Info Panel */}
             <Card className="p-6 shadow-lg border-0 bg-white mb-6">
               <h3 className="text-lg font-semibold text-slate-900 mb-4">Property Owner</h3>
               <div className="space-y-3">
@@ -171,13 +172,53 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                 </div>
                 <div className="flex items-center text-slate-600">
                   <Mail className="h-5 w-5 mr-3 text-blue-500" />
-                  <span>{userData.email}</span>
+                  <span className="text-sm">{userData.email}</span>
                 </div>
                 <div className="flex items-start text-slate-600">
                   <MapPin className="h-5 w-5 mr-3 text-blue-500 mt-0.5" />
-                  <span>{userData.propertyAddress}</span>
+                  <span className="text-sm">{userData.propertyAddress}</span>
                 </div>
               </div>
+            </Card>
+
+            {/* Navigation Tabs */}
+            <Card className="p-6 shadow-lg border-0 bg-white mb-6">
+              <h3 className="text-lg font-semibold text-slate-900 mb-4">Dashboard</h3>
+              <nav className="space-y-2">
+                <button
+                  onClick={() => setActiveTab('messages')}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 flex items-center ${
+                    activeTab === 'messages' 
+                      ? 'bg-blue-100 text-blue-700 font-medium' 
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <MessageSquare className="h-5 w-5 mr-3" />
+                  Messages
+                </button>
+                <button
+                  onClick={() => setActiveTab('inspections')}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 flex items-center ${
+                    activeTab === 'inspections' 
+                      ? 'bg-blue-100 text-blue-700 font-medium' 
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <FileText className="h-5 w-5 mr-3" />
+                  Inspection Reports
+                </button>
+                <button
+                  onClick={() => setActiveTab('photos')}
+                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors duration-200 flex items-center ${
+                    activeTab === 'photos' 
+                      ? 'bg-blue-100 text-blue-700 font-medium' 
+                      : 'text-slate-600 hover:bg-slate-100'
+                  }`}
+                >
+                  <Camera className="h-5 w-5 mr-3" />
+                  Photo Album
+                </button>
+              </nav>
             </Card>
 
             {/* Quick Contact */}
@@ -218,128 +259,140 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
             </Card>
           </div>
 
-          {/* Messaging Section */}
-          <div className="lg:col-span-2">
-            {/* Send Message Form */}
-            <Card className="p-6 shadow-lg border-0 bg-white mb-6">
-              <h3 className="text-xl font-semibold text-slate-900 mb-6 flex items-center">
-                <MessageSquare className="h-6 w-6 mr-2 text-blue-600" />
-                Send Message to LuxServ 365
-              </h3>
-              
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
-                      Subject *
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      required
-                      value={newMessage.subject}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                      placeholder="Maintenance request, billing question, etc."
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="priority" className="block text-sm font-medium text-slate-700 mb-2">
-                      Priority
-                    </label>
-                    <select
-                      id="priority"
-                      name="priority"
-                      value={newMessage.priority}
-                      onChange={handleInputChange}
-                      className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+          {/* Main Content */}
+          <div className="lg:col-span-3">
+            {activeTab === 'messages' && (
+              <>
+                {/* Send Message Form */}
+                <Card className="p-6 shadow-lg border-0 bg-white mb-6">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-6 flex items-center">
+                    <MessageSquare className="h-6 w-6 mr-2 text-blue-600" />
+                    Send Message to LuxServ 365
+                  </h3>
+                  
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
+                          Subject *
+                        </label>
+                        <input
+                          type="text"
+                          id="subject"
+                          name="subject"
+                          required
+                          value={newMessage.subject}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                          placeholder="Maintenance request, billing question, etc."
+                        />
+                      </div>
+                      <div>
+                        <label htmlFor="priority" className="block text-sm font-medium text-slate-700 mb-2">
+                          Priority
+                        </label>
+                        <select
+                          id="priority"
+                          name="priority"
+                          value={newMessage.priority}
+                          onChange={handleInputChange}
+                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                        >
+                          <option value="low">Low</option>
+                          <option value="normal">Normal</option>
+                          <option value="high">High</option>
+                          <option value="urgent">Urgent</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">
+                        Message *
+                      </label>
+                      <textarea
+                        id="message"
+                        name="message"
+                        rows={6}
+                        required
+                        value={newMessage.message}
+                        onChange={handleInputChange}
+                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
+                        placeholder="Please describe your request or concern in detail..."
+                      ></textarea>
+                    </div>
+
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                     >
-                      <option value="low">Low</option>
-                      <option value="normal">Normal</option>
-                      <option value="high">High</option>
-                      <option value="urgent">Urgent</option>
-                    </select>
-                  </div>
-                </div>
+                      {isSubmitting ? (
+                        <div className="flex items-center justify-center">
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                          Sending Message...
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-center">
+                          <Send className="h-5 w-5 mr-2" />
+                          Send Message
+                        </div>
+                      )}
+                    </Button>
 
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={6}
-                    required
-                    value={newMessage.message}
-                    onChange={handleInputChange}
-                    className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
-                    placeholder="Please describe your request or concern in detail..."
-                  ></textarea>
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center justify-center">
-                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                      Sending Message...
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center">
-                      <Send className="h-5 w-5 mr-2" />
-                      Send Message
-                    </div>
-                  )}
-                </Button>
-
-                {error && (
-                  <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
-                    <div className="flex items-center">
-                      <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
-                      <p className="text-red-700">{error}</p>
-                    </div>
-                  </div>
-                )}
-              </form>
-            </Card>
-
-            {/* Message History */}
-            <Card className="p-6 shadow-lg border-0 bg-white">
-              <h3 className="text-xl font-semibold text-slate-900 mb-6">Message History</h3>
-              
-              {messages.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
-                  <MessageSquare className="h-12 w-12 mx-auto mb-4 text-slate-300" />
-                  <p>No messages yet. Send your first message above!</p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {messages.map((message, index) => (
-                    <div key={index} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-                      <div className="flex items-start justify-between mb-2">
-                        <h4 className="font-semibold text-slate-900">{message.subject}</h4>
-                        <div className="flex items-center space-x-2">
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(message.priority)}`}>
-                            {message.priority.toUpperCase()}
-                          </span>
-                          {getStatusIcon(message.status)}
+                    {error && (
+                      <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+                        <div className="flex items-center">
+                          <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
+                          <p className="text-red-700">{error}</p>
                         </div>
                       </div>
-                      <p className="text-slate-600 mb-3">{message.message}</p>
-                      <div className="flex items-center justify-between text-sm text-slate-500">
-                        <span>{new Date(message.createdAt).toLocaleDateString()}</span>
-                        <span className="capitalize">{message.status}</span>
-                      </div>
+                    )}
+                  </form>
+                </Card>
+
+                {/* Message History */}
+                <Card className="p-6 shadow-lg border-0 bg-white">
+                  <h3 className="text-xl font-semibold text-slate-900 mb-6">Message History</h3>
+                  
+                  {messages.length === 0 ? (
+                    <div className="text-center py-8 text-slate-500">
+                      <MessageSquare className="h-12 w-12 mx-auto mb-4 text-slate-300" />
+                      <p>No messages yet. Send your first message above!</p>
                     </div>
-                  ))}
-                </div>
-              )}
-            </Card>
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.map((message, index) => (
+                        <div key={index} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="font-semibold text-slate-900">{message.subject}</h4>
+                            <div className="flex items-center space-x-2">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(message.priority)}`}>
+                                {message.priority.toUpperCase()}
+                              </span>
+                              {getStatusIcon(message.status)}
+                            </div>
+                          </div>
+                          <p className="text-slate-600 mb-3">{message.message}</p>
+                          <div className="flex items-center justify-between text-sm text-slate-500">
+                            <span>{new Date(message.createdAt).toLocaleDateString()}</span>
+                            <span className="capitalize">{message.status}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </Card>
+              </>
+            )}
+
+            {activeTab === 'inspections' && (
+              <InspectionReports userData={userData} />
+            )}
+
+            {activeTab === 'photos' && (
+              <PhotoAlbum userData={userData} />
+            )}
           </div>
         </div>
       </div>
