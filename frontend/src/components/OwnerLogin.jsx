@@ -54,16 +54,9 @@ export const OwnerLogin = ({ onLogin }) => {
     <section className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4">
       <Card className="w-full max-w-md p-8 shadow-2xl border-0 bg-white">
         <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <img 
-              src="https://customer-assets.emergentagent.com/job_beach-owner-hub/artifacts/b0exabcq_ChatGPT%20Image%20Aug%2031%2C%202025%2C%2004_12_53%20PM.png"
-              alt="LuxServ 365 Logo"
-              className="h-16 w-auto mr-3"
-            />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              LuxServ 365
-            </h1>
-          </div>
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent mb-2">
+            LuxServ 365
+          </h1>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">
             {isLogin ? 'Owner Login' : 'Create Account'}
           </h2>
