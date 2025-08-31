@@ -116,4 +116,100 @@ export const messageApi = {
   }
 };
 
+export const inspectionApi = {
+  // Create inspection report
+  createReport: async (reportData, reportFile) => {
+    try {
+      const formData = new FormData();
+      formData.append('title', reportData.title);
+      formData.append('notes', reportData.notes);
+      formData.append('ownerEmail', reportData.ownerEmail);
+      formData.append('propertyAddress', reportData.propertyAddress);
+      formData.append('inspectionDate', reportData.inspectionDate);
+      
+      if (reportFile) {
+        formData.append('reportFile', reportFile);
+      }
+
+      const response = await apiClient.post('/inspections', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Inspection report creation error:', error);
+      throw error;
+    }
+  },
+
+  // Get inspection reports for owner
+  getOwnerReports: async (ownerEmail) => {
+    try {
+      const response = await apiClient.get(`/inspections/owner/${encodeURIComponent(ownerEmail)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get owner inspections error:', error);
+      throw error;
+    }
+  },
+
+  // Download inspection file
+  downloadFile: async (filename) => {
+    try {
+      const response = await apiClient.get(`/inspections/file/${filename}`, {
+        responseType: 'blob',
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Download inspection file error:', error);
+      throw error;
+    }
+  }
+};
+
+export const photoApi = {
+  // Upload photos
+  uploadPhotos: async (photoData, photoFiles) => {
+    try {
+      const formData = new FormData();
+      formData.append('ownerEmail', photoData.ownerEmail);
+      formData.append('propertyAddress', photoData.propertyAddress);
+      if (photoData.caption) {
+        formData.append('caption', photoData.caption);
+      }
+
+      photoFiles.forEach((file) => {
+        formData.append('photos', file);
+      });
+
+      const response = await apiClient.post('/photos/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Photo upload error:', error);
+      throw error;
+    }
+  },
+
+  // Get photos for owner
+  getOwnerPhotos: async (ownerEmail) => {
+    try {
+      const response = await apiClient.get(`/photos/owner/${encodeURIComponent(ownerEmail)}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get owner photos error:', error);
+      throw error;
+    }
+  },
+
+  // Get photo file URL
+  getPhotoUrl: (filename) => {
+    return `${API}/photos/file/${filename}`;
+  }
+};
+
 export default apiClient;
