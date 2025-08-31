@@ -106,6 +106,32 @@ class OwnerMessage(BaseModel):
     status: str = Field(default="pending")
     readAt: Optional[datetime] = None
 
+class InspectionReportCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200, description="Report title")
+    notes: str = Field(..., min_length=1, max_length=5000, description="Inspection notes")
+    ownerEmail: EmailStr = Field(..., description="Owner email address")
+    propertyAddress: str = Field(..., description="Property address")
+    inspectionDate: datetime = Field(default_factory=datetime.utcnow, description="Inspection date")
+
+class InspectionReport(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    title: str
+    notes: str
+    ownerEmail: str
+    propertyAddress: str
+    inspectionDate: datetime
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    reportFile: Optional[str] = None
+
+class PhotoUpload(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    filename: str
+    originalName: str
+    ownerEmail: str
+    propertyAddress: str
+    caption: Optional[str] = None
+    uploadedAt: datetime = Field(default_factory=datetime.utcnow)
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
