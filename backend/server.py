@@ -5,8 +5,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 import os
 import logging
 from pathlib import Path
-from pydantic import BaseModel, Field
-from typing import List
+from pydantic import BaseModel, Field, EmailStr, validator
+from typing import List, Optional
 import uuid
 from datetime import datetime
 
@@ -34,6 +34,40 @@ class StatusCheck(BaseModel):
 
 class StatusCheckCreate(BaseModel):
     client_name: str
+
+class ContactSubmissionCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=100, description="Full name")
+    email: EmailStr = Field(..., description="Email address")
+    phone: Optional[str] = Field(None, max_length=20, description="Phone number")
+    propertyAddress: Optional[str] = Field(None, max_length=200, description="Property address")
+    currentlyManaging: Optional[str] = Field(None, description="Current management status")
+    message: Optional[str] = Field(None, max_length=1000, description="Message")
+
+    @validator('name')
+    def validate_name(cls, v):
+        if not v.strip():
+            raise ValueError('Name cannot be empty')
+        return v.strip()
+
+    @validator('phone')
+    def validate_phone(cls, v):
+        if v:
+            # Remove common phone formatting characters
+            cleaned = ''.join(filter(str.isdigit, v))
+            if len(cleaned) < 10:
+                raise ValueError('Phone number must be at least 10 digits')
+        return v
+
+class ContactSubmission(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    email: str
+    phone: Optional[str] = None
+    propertyAddress: Optional[str] = None
+    currentlyManaging: Optional[str] = None
+    message: Optional[str] = None
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="pending")
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
