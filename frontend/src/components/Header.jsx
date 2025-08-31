@@ -21,9 +21,18 @@ export const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              LuxServ 365
-            </h1>
+            <div className="relative">
+              <h1 className="text-3xl font-black tracking-tight">
+                <span className="bg-gradient-to-r from-blue-600 via-teal-500 to-blue-700 bg-clip-text text-transparent drop-shadow-sm">
+                  LuxServ
+                </span>
+                <span className="text-slate-800 ml-1 relative">
+                  365
+                  <div className="absolute -top-1 -right-1 w-2 h-2 bg-gradient-to-r from-orange-400 to-red-500 rounded-full animate-pulse"></div>
+                </span>
+              </h1>
+              <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-600 via-teal-500 to-blue-700 rounded-full"></div>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
