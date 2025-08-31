@@ -7,22 +7,23 @@ export const Pricing = () => {
   const plans = [
     {
       name: "Essential Care",
-      subtitle: "Starter Plan",
-      price: "$249",
+      subtitle: "Budget-Friendly, Core Coverage",
+      price: "$199",
       period: "/month",
       icon: Shield,
       features: [
-        "1 monthly inspection",
+        "1 monthly maintenance inspection",
         "Turnover coordination (at cost per clean)",
         "24/7 emergency response",
         "Vendor recommendations",
-        "Owner support hotline"
+        "Owner and guest support"
       ],
       bgColor: "bg-white",
       textColor: "text-slate-900",
       buttonColor: "bg-slate-600 hover:bg-slate-700",
       iconColor: "text-slate-600",
-      popular: false
+      popular: false,
+      description: "Perfect for small condos (1–2BR) or cost-conscious owners"
     },
     {
       name: "Premium Care",
