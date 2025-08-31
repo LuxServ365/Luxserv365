@@ -35,6 +35,15 @@ export const WhyChooseUs = () => {
     <section id="why-choose-us" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
+          {/* Logo Section */}
+          <div className="mb-12">
+            <img 
+              src="https://customer-assets.emergentagent.com/job_beach-owner-hub/artifacts/b0exabcq_ChatGPT%20Image%20Aug%2031%2C%202025%2C%2004_12_53%20PM.png"
+              alt="LuxServ 365 Logo"
+              className="h-32 w-auto mx-auto mb-6"
+            />
+          </div>
+          
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Why Choose LuxServ 365?
           </h2>
