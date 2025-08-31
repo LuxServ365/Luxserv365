@@ -86,6 +86,50 @@ async def get_status_checks():
     status_checks = await db.status_checks.find().to_list(1000)
     return [StatusCheck(**status_check) for status_check in status_checks]
 
+@api_router.post("/contact", response_model=dict)
+async def submit_contact_form(submission: ContactSubmissionCreate):
+    try:
+        # Create contact submission object
+        contact_dict = submission.dict()
+        contact_obj = ContactSubmission(**contact_dict)
+        
+        # Insert into database
+        result = await db.contact_submissions.insert_one(contact_obj.dict())
+        
+        if result.inserted_id:
+            logger.info(f"Contact form submitted: {contact_obj.email}")
+            return {
+                "success": True,
+                "data": contact_obj.dict(),
+                "message": "Contact form submitted successfully"
+            }
+        else:
+            raise Exception("Failed to insert contact submission")
+            
+    except Exception as e:
+        logger.error(f"Error submitting contact form: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to submit contact form",
+            "message": str(e)
+        }
+
+@api_router.get("/contact")
+async def get_contact_submissions():
+    try:
+        submissions = await db.contact_submissions.find().sort("createdAt", -1).to_list(1000)
+        return {
+            "success": True,
+            "data": [ContactSubmission(**submission).dict() for submission in submissions]
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving contact submissions: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve contact submissions",
+            "message": str(e)
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
