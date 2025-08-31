@@ -20,6 +20,7 @@ import { InspectionReports } from './InspectionReports';
 import { PhotoAlbum } from './PhotoAlbum';
 
 export const OwnerDashboard = ({ userData, onLogout }) => {
+  const [activeTab, setActiveTab] = useState('messages');
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState({
     subject: '',
