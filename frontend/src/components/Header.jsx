@@ -21,9 +21,16 @@ export const Header = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-              LuxServ 365
-            </h1>
+            <div className="flex items-center">
+              <img 
+                src="https://customer-assets.emergentagent.com/job_beach-owner-hub/artifacts/b0exabcq_ChatGPT%20Image%20Aug%2031%2C%202025%2C%2004_12_53%20PM.png"
+                alt="LuxServ 365 Logo"
+                className="h-10 w-auto mr-3"
+              />
+              <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+                LuxServ 365
+              </h1>
+            </div>
           </div>
 
           {/* Desktop Navigation */}
