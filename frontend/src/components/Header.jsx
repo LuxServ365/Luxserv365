@@ -78,9 +78,9 @@ export const Header = () => {
                 <MessageSquare className="h-4 w-4 mr-1" />
                 Guest Portal
               </Button>
-              <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200">
-                <Phone className="h-4 w-4 mr-1" />
-                <span className="text-sm font-medium">(850) 330-9933</span>
+              <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-blue-50">
+                <Phone className="h-4 w-4 mr-2" />
+                <span className="text-sm font-medium tracking-wide">(850) 330-9933</span>
               </a>
               <Button 
                 onClick={() => scrollToSection('contact')}
