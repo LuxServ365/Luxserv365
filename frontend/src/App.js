@@ -14,6 +14,7 @@ import { GuestPortal } from "./components/GuestPortal";
 import { OwnerLogin } from "./components/OwnerLogin";
 import { OwnerDashboard } from "./components/OwnerDashboard";
 import { AdminDashboard } from "./components/AdminDashboard";
+import { GuestServices } from "./components/GuestServices";
 
 const Home = () => {
   return (
