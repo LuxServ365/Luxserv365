@@ -35,13 +35,27 @@ export const Header = () => {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          {/* Desktop Navigation - Ordered from most interesting to owners (right to left) */}
+          <nav className="hidden md:flex items-center space-x-6">
             <button
               onClick={() => scrollToSection('services')}
               className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium"
             >
-              Services
+              Owner Services
+            </button>
+            <Button 
+              onClick={() => navigate('/owner-portal')}
+              variant="outline"
+              className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center"
+            >
+              <UserCircle className="h-4 w-4 mr-1" />
+              Owner Portal
+            </Button>
+            <button
+              onClick={() => scrollToSection('pricing')}
+              className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium"
+            >
+              Pricing
             </button>
             <button
               onClick={() => navigate('/mission')}
@@ -50,38 +64,24 @@ export const Header = () => {
               Mission
             </button>
             <button
-              onClick={() => scrollToSection('why-choose-us')}
+              onClick={() => navigate('/guest-services')}
               className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium"
             >
-              Why Choose Us
+              Guest Services
             </button>
-            <button
-              onClick={() => scrollToSection('pricing')}
-              className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium"
-            >
-              Pricing
-            </button>
-            <div className="flex items-center space-x-4">
-              <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200">
-                <Phone className="h-4 w-4 mr-1" />
-                <span className="text-sm font-medium">(850) 330-9933</span>
-              </a>
+            <div className="flex items-center space-x-4 ml-6 border-l border-slate-300 pl-6">
               <Button 
                 onClick={() => navigate('/guest-portal')}
                 variant="outline"
-                className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center"
+                className="border-2 border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center"
               >
                 <MessageSquare className="h-4 w-4 mr-1" />
                 Guest Portal
               </Button>
-              <Button 
-                onClick={() => navigate('/owner-portal')}
-                variant="outline"
-                className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white px-4 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl flex items-center"
-              >
-                <UserCircle className="h-4 w-4 mr-1" />
-                Owner Portal
-              </Button>
+              <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200">
+                <Phone className="h-4 w-4 mr-1" />
+                <span className="text-sm font-medium">(850) 330-9933</span>
+              </a>
               <Button 
                 onClick={() => scrollToSection('contact')}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl"
