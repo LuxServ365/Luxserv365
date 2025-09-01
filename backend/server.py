@@ -733,6 +733,286 @@ async def get_telegram_chat_id():
             "message": str(e)
         }
 
+# Admin Authentication and Management Endpoints
+
+@api_router.post("/admin/login")
+async def admin_login(credentials: AdminAuth):
+    """Admin login endpoint."""
+    try:
+        admin_username = os.environ.get('ADMIN_USERNAME')
+        admin_password = os.environ.get('ADMIN_PASSWORD')
+        
+        if not admin_username or not admin_password:
+            return {
+                "success": False,
+                "error": "Admin credentials not configured"
+            }
+        
+        if credentials.username == admin_username and credentials.password == admin_password:
+            # Log the login
+            login_record = AdminLogin(
+                username=credentials.username,
+                ipAddress="system"  # In real implementation, get from request
+            )
+            await db.admin_logins.insert_one(login_record.dict())
+            
+            return {
+                "success": True,
+                "message": "Login successful",
+                "token": "admin_authenticated",  # Simple token for demo
+                "username": credentials.username
+            }
+        else:
+            return {
+                "success": False,
+                "error": "Invalid credentials"
+            }
+    except Exception as e:
+        logger.error(f"Admin login error: {str(e)}")
+        return {
+            "success": False,
+            "error": "Login failed",
+            "message": str(e)
+        }
+
+@api_router.get("/admin/guest-requests")
+async def get_admin_guest_requests(
+    page: int = 1,
+    limit: int = 50,
+    search: Optional[str] = None,
+    status: Optional[str] = None,
+    priority: Optional[str] = None,
+    request_type: Optional[str] = None,
+    date_from: Optional[str] = None,
+    date_to: Optional[str] = None
+):
+    """Get guest requests for admin dashboard with filtering and pagination."""
+    try:
+        # Build filter query
+        filter_query = {}
+        
+        if search:
+            filter_query["$or"] = [
+                {"guestName": {"$regex": search, "$options": "i"}},
+                {"guestEmail": {"$regex": search, "$options": "i"}},
+                {"propertyAddress": {"$regex": search, "$options": "i"}},
+                {"message": {"$regex": search, "$options": "i"}}
+            ]
+        
+        if status:
+            filter_query["status"] = status
+            
+        if priority:
+            filter_query["priority"] = priority
+            
+        if request_type:
+            filter_query["requestType"] = request_type
+            
+        if date_from or date_to:
+            date_filter = {}
+            if date_from:
+                date_filter["$gte"] = datetime.fromisoformat(date_from.replace('Z', '+00:00'))
+            if date_to:
+                date_filter["$lte"] = datetime.fromisoformat(date_to.replace('Z', '+00:00'))
+            filter_query["createdAt"] = date_filter
+        
+        # Get total count
+        total_count = await db.guest_requests.count_documents(filter_query)
+        
+        # Get paginated results
+        skip = (page - 1) * limit
+        requests = await db.guest_requests.find(filter_query).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+        
+        return {
+            "success": True,
+            "data": {
+                "requests": [GuestRequest(**request).dict() for request in requests],
+                "pagination": {
+                    "current_page": page,
+                    "total_pages": (total_count + limit - 1) // limit,
+                    "total_count": total_count,
+                    "per_page": limit
+                }
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting admin guest requests: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve requests",
+            "message": str(e)
+        }
+
+@api_router.put("/admin/guest-requests/{request_id}")
+async def update_guest_request(request_id: str, update_data: GuestRequestUpdate):
+    """Update guest request status, priority, or add internal notes."""
+    try:
+        # Find the request
+        existing_request = await db.guest_requests.find_one({"id": request_id})
+        if not existing_request:
+            return {
+                "success": False,
+                "error": "Request not found"
+            }
+        
+        # Prepare update data
+        update_fields = {
+            "lastUpdatedBy": update_data.adminUsername,
+            "lastUpdatedAt": datetime.utcnow()
+        }
+        
+        if update_data.status:
+            update_fields["status"] = update_data.status
+            if update_data.status in ["completed", "resolved"]:
+                update_fields["respondedAt"] = datetime.utcnow()
+        
+        if update_data.priority:
+            update_fields["priority"] = update_data.priority
+        
+        # Handle internal notes
+        if update_data.internalNote:
+            current_notes = existing_request.get("internalNotes", [])
+            new_note = f"[{datetime.utcnow().strftime('%Y-%m-%d %H:%M')} - {update_data.adminUsername}] {update_data.internalNote}"
+            current_notes.append(new_note)
+            update_fields["internalNotes"] = current_notes
+        
+        # Update the request
+        result = await db.guest_requests.update_one(
+            {"id": request_id},
+            {"$set": update_fields}
+        )
+        
+        if result.modified_count > 0:
+            # Get updated request
+            updated_request = await db.guest_requests.find_one({"id": request_id})
+            return {
+                "success": True,
+                "data": GuestRequest(**updated_request).dict(),
+                "message": "Request updated successfully"
+            }
+        else:
+            return {
+                "success": False,
+                "error": "No changes made"
+            }
+    except Exception as e:
+        logger.error(f"Error updating guest request: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to update request",
+            "message": str(e)
+        }
+
+@api_router.post("/admin/guest-requests/{request_id}/reply")
+async def reply_to_guest_request(request_id: str, reply_data: AdminReply):
+    """Send email reply to guest for specific request."""
+    try:
+        # Find the request
+        existing_request = await db.guest_requests.find_one({"id": request_id})
+        if not existing_request:
+            return {
+                "success": False,
+                "error": "Request not found"
+            }
+        
+        request_obj = GuestRequest(**existing_request)
+        
+        # Send email reply
+        email_sent = await email_service.send_admin_reply_email(
+            to_email=request_obj.guestEmail,
+            guest_name=request_obj.guestName,
+            subject=reply_data.subject,
+            message=reply_data.message,
+            confirmation_number=request_obj.id[:8].upper(),
+            admin_username=reply_data.adminUsername
+        )
+        
+        if email_sent:
+            # Add internal note about the reply
+            current_notes = existing_request.get("internalNotes", [])
+            reply_note = f"[{datetime.utcnow().strftime('%Y-%m-%d %H:%M')} - {reply_data.adminUsername}] Email reply sent: {reply_data.subject}"
+            current_notes.append(reply_note)
+            
+            # Update request with reply info
+            await db.guest_requests.update_one(
+                {"id": request_id},
+                {"$set": {
+                    "internalNotes": current_notes,
+                    "lastUpdatedBy": reply_data.adminUsername,
+                    "lastUpdatedAt": datetime.utcnow(),
+                    "respondedAt": datetime.utcnow()
+                }}
+            )
+            
+            return {
+                "success": True,
+                "message": "Reply sent successfully"
+            }
+        else:
+            return {
+                "success": False,
+                "error": "Failed to send email reply"
+            }
+    except Exception as e:
+        logger.error(f"Error sending admin reply: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to send reply",
+            "message": str(e)
+        }
+
+@api_router.get("/admin/analytics")
+async def get_admin_analytics():
+    """Get analytics data for admin dashboard."""
+    try:
+        # Get basic counts
+        total_requests = await db.guest_requests.count_documents({})
+        pending_requests = await db.guest_requests.count_documents({"status": "pending"})
+        completed_requests = await db.guest_requests.count_documents({"status": {"$in": ["completed", "resolved"]}})
+        urgent_requests = await db.guest_requests.count_documents({"priority": "urgent"})
+        
+        # Get request types breakdown
+        request_types_pipeline = [
+            {"$group": {"_id": "$requestType", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        request_types = await db.guest_requests.aggregate(request_types_pipeline).to_list(100)
+        
+        # Get requests by status
+        status_pipeline = [
+            {"$group": {"_id": "$status", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        status_breakdown = await db.guest_requests.aggregate(status_pipeline).to_list(100)
+        
+        # Get recent activity (last 7 days)
+        seven_days_ago = datetime.utcnow() - datetime.timedelta(days=7)
+        recent_requests = await db.guest_requests.count_documents({
+            "createdAt": {"$gte": seven_days_ago}
+        })
+        
+        return {
+            "success": True,
+            "data": {
+                "overview": {
+                    "total_requests": total_requests,
+                    "pending_requests": pending_requests,
+                    "completed_requests": completed_requests,
+                    "urgent_requests": urgent_requests,
+                    "recent_requests": recent_requests
+                },
+                "request_types": request_types,
+                "status_breakdown": status_breakdown
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting analytics: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve analytics",
+            "message": str(e)
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
