@@ -14,7 +14,10 @@ import {
   CheckCircle,
   AlertCircle,
   Clock,
-  ArrowLeft
+  ArrowLeft,
+  Camera,
+  X,
+  Upload
 } from 'lucide-react';
 import { guestApi } from '../services/api';
 
