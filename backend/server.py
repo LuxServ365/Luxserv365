@@ -132,6 +132,59 @@ class PhotoUpload(BaseModel):
     caption: Optional[str] = None
     uploadedAt: datetime = Field(default_factory=datetime.utcnow)
 
+class GuestRequestCreate(BaseModel):
+    guestName: str = Field(..., min_length=1, max_length=100, description="Guest full name")
+    guestEmail: EmailStr = Field(..., description="Guest email address")
+    guestPhone: Optional[str] = Field(None, max_length=20, description="Guest phone number")
+    numberOfGuests: Optional[int] = Field(None, ge=1, le=20, description="Number of guests")
+    propertyAddress: str = Field(..., min_length=1, max_length=200, description="Property address or name")
+    checkInDate: str = Field(..., description="Check-in date")
+    checkOutDate: str = Field(..., description="Check-out date")
+    unitNumber: Optional[str] = Field(None, max_length=50, description="Unit or room number")
+    requestType: str = Field(..., description="Type of request")
+    priority: str = Field(default="normal", description="Request priority")
+    message: str = Field(..., min_length=1, max_length=2000, description="Detailed request message")
+
+    @validator('requestType')
+    def validate_request_type(cls, v):
+        allowed_types = [
+            'property-issues',
+            'housekeeping-requests', 
+            'concierge-services',
+            'beach-recreation-gear',
+            'transportation-assistance',
+            'celebration-services',
+            'emergency-urgent',
+            'general-inquiry'
+        ]
+        if v not in allowed_types:
+            raise ValueError(f'Request type must be one of: {", ".join(allowed_types)}')
+        return v
+
+    @validator('priority')
+    def validate_priority(cls, v):
+        allowed_priorities = ['urgent', 'high', 'normal']
+        if v not in allowed_priorities:
+            raise ValueError(f'Priority must be one of: {", ".join(allowed_priorities)}')
+        return v
+
+class GuestRequest(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    guestName: str
+    guestEmail: str
+    guestPhone: Optional[str] = None
+    numberOfGuests: Optional[int] = None
+    propertyAddress: str
+    checkInDate: str
+    checkOutDate: str
+    unitNumber: Optional[str] = None
+    requestType: str
+    priority: str
+    message: str
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    status: str = Field(default="pending")
+    respondedAt: Optional[datetime] = None
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
