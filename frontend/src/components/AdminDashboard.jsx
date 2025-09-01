@@ -578,7 +578,15 @@ export const AdminDashboard = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {requests.map((request) => (
                     <React.Fragment key={request.id}>
-                      <tr className="hover:bg-gray-50">
+                      <tr className={`hover:bg-gray-50 ${selectedRequests.includes(request.id) ? 'bg-blue-50' : ''}`}>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <input
+                            type="checkbox"
+                            checked={selectedRequests.includes(request.id)}
+                            onChange={() => handleSelectRequest(request.id)}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                          />
+                        </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div>
