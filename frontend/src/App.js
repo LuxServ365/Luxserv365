@@ -10,6 +10,7 @@ import { Pricing } from "./components/Pricing";
 import { Contact } from "./components/Contact";
 import { Footer } from "./components/Footer";
 import { Mission } from "./components/Mission";
+import { GuestPortal } from "./components/GuestPortal";
 import { OwnerLogin } from "./components/OwnerLogin";
 import { OwnerDashboard } from "./components/OwnerDashboard";
 
