@@ -1118,6 +1118,74 @@ async def get_booking_for_guest_portal(booking_code: str):
             "message": str(e)
         }
 
+@api_router.put("/admin/guest-requests/bulk-update")
+async def bulk_update_guest_requests(bulk_data: BulkUpdateRequest):
+    """Bulk update multiple guest requests."""
+    try:
+        updated_count = 0
+        failed_updates = []
+        
+        for request_id in bulk_data.requestIds:
+            try:
+                # Find the request
+                existing_request = await db.guest_requests.find_one({"id": request_id})
+                if not existing_request:
+                    failed_updates.append({"id": request_id, "error": "Request not found"})
+                    continue
+                
+                # Prepare update data
+                update_fields = {
+                    "lastUpdatedBy": bulk_data.adminUsername,
+                    "lastUpdatedAt": datetime.utcnow()
+                }
+                
+                if bulk_data.status:
+                    update_fields["status"] = bulk_data.status
+                    if bulk_data.status in ["completed", "resolved"]:
+                        update_fields["respondedAt"] = datetime.utcnow()
+                
+                if bulk_data.priority:
+                    update_fields["priority"] = bulk_data.priority
+                
+                # Handle internal notes for bulk operations
+                if bulk_data.internalNote:
+                    current_notes = existing_request.get("internalNotes", [])
+                    bulk_note = f"[{datetime.utcnow().strftime('%Y-%m-%d %H:%M')} - {bulk_data.adminUsername}] BULK UPDATE: {bulk_data.internalNote}"
+                    current_notes.append(bulk_note)
+                    update_fields["internalNotes"] = current_notes
+                
+                # Update the request
+                result = await db.guest_requests.update_one(
+                    {"id": request_id},
+                    {"$set": update_fields}
+                )
+                
+                if result.modified_count > 0:
+                    updated_count += 1
+                else:
+                    failed_updates.append({"id": request_id, "error": "No changes made"})
+                    
+            except Exception as e:
+                failed_updates.append({"id": request_id, "error": str(e)})
+        
+        return {
+            "success": True,
+            "data": {
+                "updated_count": updated_count,
+                "total_requests": len(bulk_data.requestIds),
+                "failed_updates": failed_updates
+            },
+            "message": f"Successfully updated {updated_count} out of {len(bulk_data.requestIds)} requests"
+        }
+        
+    except Exception as e:
+        logger.error(f"Error in bulk update: {str(e)}")
+        return {
+            "success": False,
+            "error": "Bulk update failed",
+            "message": str(e)
+        }
+
 @api_router.get("/admin/analytics")
 async def get_admin_analytics():
     """Get analytics data for admin dashboard."""
