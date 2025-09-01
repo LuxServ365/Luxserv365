@@ -71,7 +71,7 @@ export const Pricing = () => {
       buttonColor: "bg-white text-amber-600 hover:bg-slate-100",
       iconColor: "text-yellow-300",
       popular: false,
-      description: "White-glove service for owners who want total peace of mind"
+      description: "White-glove service for premium property owners who want total peace of mind"
     }
   ];
 
