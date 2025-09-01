@@ -55,6 +55,12 @@ export const GuestServices = () => {
       features: ["Birthday celebrations", "Anniversary packages", "Welcome amenities", "Custom decorations"]
     },
     {
+      icon: <Star className="h-12 w-12 text-emerald-600" />,
+      title: "🐾 Pet Services & Accommodations",
+      description: "Complete pet care services for your furry family members. From dog walking to veterinary coordination, we ensure your pets are comfortable and well-cared for during your stay.",
+      features: ["Dog walking & pet sitting", "Pet supply delivery", "Veterinary coordination", "Pet-friendly equipment rental", "Emergency pet care", "Pet waste cleanup"]
+    },
+    {
       icon: <MessageCircle className="h-12 w-12 text-orange-600" />,
       title: "🧹 Housekeeping Requests (Cleaning, Trash Removal, Party Clean up)",
       description: "Request additional cleaning, trash removal, or post-event cleanup services. Professional housekeeping available during your stay.",
