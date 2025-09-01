@@ -262,6 +262,11 @@ export const guestApi = {
       console.error('Get all guest requests error:', error);
       throw error;
     }
+  },
+
+  // Get guest photo URL
+  getGuestPhotoUrl: (filename) => {
+    return `${API}/guest-photos/${filename}`;
   }
 };
 
