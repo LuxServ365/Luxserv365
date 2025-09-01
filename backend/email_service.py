@@ -17,6 +17,94 @@ class EmailService:
         self.email_from = os.environ.get('EMAIL_FROM')
         self.email_from_name = os.environ.get('EMAIL_FROM_NAME', 'LuxServ 365')
         
+    async def send_admin_reply_email(
+        self,
+        to_email: str,
+        guest_name: str,
+        subject: str,
+        message: str,
+        confirmation_number: str,
+        admin_username: str
+    ):
+        """Send admin reply email to guest."""
+        try:
+            # Create message
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = f"Re: Your Request {confirmation_number} - {subject}"
+            msg['From'] = f"{self.email_from_name} <{self.email_from}>"
+            msg['To'] = to_email
+            
+            # Create HTML content
+            html_content = f"""
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <style>
+                    body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
+                    .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
+                    .header {{ background: linear-gradient(135deg, #3b82f6, #06b6d4); color: white; padding: 20px; border-radius: 8px 8px 0 0; }}
+                    .content {{ background: #f8fafc; padding: 20px; border-radius: 0 0 8px 8px; }}
+                    .message-box {{ background: white; padding: 15px; border-radius: 6px; margin: 15px 0; }}
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="header">
+                        <h1>🏖️ LuxServ 365</h1>
+                        <p>Response to Your Request #{confirmation_number}</p>
+                    </div>
+                    <div class="content">
+                        <p>Dear {guest_name},</p>
+                        <div class="message-box">
+                            {message.replace(chr(10), '<br>')}
+                        </div>
+                        <p>If you have any additional questions, please don't hesitate to contact us.</p>
+                        <p>Best regards,<br>The LuxServ 365 Team</p>
+                        <hr>
+                        <p style="font-size: 12px; color: #666;">
+                            Request #{confirmation_number} | Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
+                        </p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            
+            # Create plain text content
+            text_content = f"""
+Dear {guest_name},
+
+Re: Your Request #{confirmation_number}
+
+{message}
+
+If you have any additional questions, please don't hesitate to contact us.
+
+Best regards,
+The LuxServ 365 Team
+
+---
+Request #{confirmation_number} | Generated on {datetime.now().strftime('%B %d, %Y at %I:%M %p')}
+            """
+            
+            # Attach parts
+            text_part = MIMEText(text_content, 'plain')
+            html_part = MIMEText(html_content, 'html')
+            
+            msg.attach(text_part)
+            msg.attach(html_part)
+            
+            # Send email
+            await self._send_email(msg, [to_email])
+            
+            logger.info(f"Admin reply sent successfully to {to_email} for request {confirmation_number}")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Failed to send admin reply: {str(e)}")
+            return False
+
     async def send_guest_request_notification(
         self,
         guest_name: str,
