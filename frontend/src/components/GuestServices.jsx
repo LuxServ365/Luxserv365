@@ -24,51 +24,57 @@ export const GuestServices = () => {
   const services = [
     {
       icon: <ShoppingCart className="h-12 w-12 text-blue-600" />,
-      title: "Pre-Arrival Grocery & Beverage Stocking",
-      description: "Arrive to a fully stocked kitchen with your favorite groceries, snacks, and beverages. We handle the shopping so you can start relaxing immediately.",
+      title: "🛒 Pre-Arrival Grocery & Beverage Stocking",
+      description: "Have your vacation rental fully stocked with groceries and beverages before you arrive. We handle the shopping so you can start relaxing immediately.",
       features: ["Custom grocery lists", "Premium beverage selection", "Special dietary accommodations", "Fresh produce and essentials"]
     },
     {
       icon: <Umbrella className="h-12 w-12 text-teal-600" />,
-      title: "Beach Gear & Recreation Equipment",
-      description: "Everything you need for the perfect beach day, delivered right to your rental. From chairs to water sports equipment.",
+      title: "🏖️ Beach/Recreation Gear Coordination",
+      description: "Request beach chairs, umbrellas, water sports equipment, or recreation gear. Everything you need for the perfect beach day, delivered right to your rental.",
       features: ["Beach chairs & umbrellas", "Water sports equipment", "Boogie boards & floats", "Beach toys for kids"]
     },
     {
       icon: <MapPin className="h-12 w-12 text-green-600" />,
-      title: "Local Tours & Activity Coordination",
-      description: "Discover the best of Panama City Beach and 30A with our curated experiences and local insider knowledge.",
+      title: "🎯 Concierge Services (Local info, visitor information, trip ideas & coordination)",
+      description: "Get local recommendations, visitor information, and help coordinating activities. Discover the best of Panama City Beach and 30A with our curated experiences.",
       features: ["Dolphin watching tours", "Fishing charters", "Local restaurant reservations", "Hidden gem recommendations"]
     },
     {
-      icon: <ChefHat className="h-12 w-12 text-purple-600" />,
-      title: "Private Event & Catering Coordination",
-      description: "Make your special occasions unforgettable with our professional catering and event coordination services.",
-      features: ["Private chef services", "Special occasion catering", "Event planning assistance", "Elegant table settings"]
+      icon: <Car className="h-12 w-12 text-red-600" />,
+      title: "🚗 Personal Transportation Assistance/ Luggage Assistance",
+      description: "Airport pickup, local transportation, or luggage handling assistance. Seamless travel experience with professional coordination.",
+      features: ["Airport pickup/drop-off", "Local transportation", "Luggage assistance", "Car rental coordination"]
     },
     {
       icon: <Gift className="h-12 w-12 text-pink-600" />,
-      title: "Celebration Packages",
-      description: "Celebrate life's special moments with our custom celebration packages designed to create lasting memories.",
+      title: "🎉 Celebration Services",
+      description: "Special arrangements for birthdays, anniversaries, or other celebrations. Make your special occasions unforgettable with our custom celebration packages.",
       features: ["Birthday celebrations", "Anniversary packages", "Welcome amenities", "Custom decorations"]
     },
     {
       icon: <MessageCircle className="h-12 w-12 text-orange-600" />,
-      title: "24/7 Concierge Text Support",
-      description: "Get instant assistance and recommendations via text message, any time during your stay.",
-      features: ["Instant response service", "Local recommendations", "Emergency assistance", "Activity bookings"]
+      title: "🧹 Housekeeping Requests (Cleaning, Trash Removal, Party Clean up)",
+      description: "Request additional cleaning, trash removal, or post-event cleanup services. Professional housekeeping available during your stay.",
+      features: ["Additional cleaning service", "Trash removal", "Post-party cleanup", "Linen changes"]
     },
     {
-      icon: <Car className="h-12 w-12 text-red-600" />,
-      title: "Transportation & Luggage Assistance",
-      description: "Seamless travel experience with airport transfers, local transportation, and luggage handling services.",
-      features: ["Airport pickup/drop-off", "Local transportation", "Luggage assistance", "Car rental coordination"]
+      icon: <CheckCircle className="h-12 w-12 text-green-600" />,
+      title: "🏠 Property Issues (AC, WiFi, Appliances)",
+      description: "Report problems with air conditioning, internet, appliances, or other property features. Our local team responds quickly to resolve any issues.",
+      features: ["AC repair & maintenance", "WiFi troubleshooting", "Appliance repairs", "Emergency response"]
     },
     {
-      icon: <Baby className="h-12 w-12 text-indigo-600" />,
-      title: "Baby & Family Gear",
-      description: "Travel light with our comprehensive baby and family equipment rental service.",
-      features: ["Cribs & high chairs", "Strollers & car seats", "Beach wagons", "Pool safety equipment"]
+      icon: <AlertTriangle className="h-12 w-12 text-red-600" />,
+      title: "🆘 Emergency/Urgent",
+      description: "Immediate assistance required for urgent situations. 24/7 emergency response team ready to help with any critical issues.",
+      features: ["24/7 emergency response", "Immediate assistance", "Critical issue resolution", "Safety support"]
+    },
+    {
+      icon: <MessageSquare className="h-12 w-12 text-purple-600" />,
+      title: "💬 General Inquiry",
+      description: "General questions or requests not covered by other categories. Our concierge team is here to help with any questions about your stay.",
+      features: ["General assistance", "Local information", "Stay coordination", "Custom requests"]
     }
   ];
 
