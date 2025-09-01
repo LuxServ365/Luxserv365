@@ -149,7 +149,8 @@ class GuestRequestCreate(BaseModel):
     def validate_request_type(cls, v):
         allowed_types = [
             'property-issues',
-            'housekeeping-requests', 
+            'housekeeping-requests',
+            'pre-arrival-grocery-stocking',
             'concierge-services',
             'beach-recreation-gear',
             'transportation-assistance',
