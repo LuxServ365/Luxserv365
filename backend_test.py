@@ -1096,6 +1096,481 @@ class NotificationTester:
         
         return passed == total
 
+class AdminDashboardTester:
+    def __init__(self):
+        self.api_base = API_BASE_URL
+        self.test_results = []
+        self.admin_token = None
+        self.admin_username = "luxserv_admin"
+        self.admin_password = "LuxServ365Admin2024!"
+        
+    def log_test(self, test_name, success, message, details=None):
+        """Log test results"""
+        result = {
+            'test': test_name,
+            'success': success,
+            'message': message,
+            'timestamp': datetime.now().isoformat(),
+            'details': details
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name} - {message}")
+        if details and not success:
+            print(f"   Details: {details}")
+    
+    def test_admin_login_valid_credentials(self):
+        """Test admin login with valid credentials"""
+        login_data = {
+            "username": self.admin_username,
+            "password": self.admin_password
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/admin/login", json=login_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'token' in data and 'username' in data:
+                    self.admin_token = data['token']
+                    self.log_test("Admin Login - Valid Credentials", True, 
+                                f"Successfully logged in as {data['username']}")
+                    return True
+                else:
+                    self.log_test("Admin Login - Valid Credentials", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Admin Login - Valid Credentials", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Login - Valid Credentials", False, f"Request failed: {str(e)}")
+        
+        return False
+    
+    def test_admin_login_invalid_credentials(self):
+        """Test admin login with invalid credentials"""
+        invalid_credentials = [
+            {"username": "wrong_admin", "password": self.admin_password},
+            {"username": self.admin_username, "password": "wrong_password"},
+            {"username": "wrong_admin", "password": "wrong_password"},
+            {"username": "", "password": ""},
+        ]
+        
+        for i, credentials in enumerate(invalid_credentials):
+            try:
+                response = requests.post(f"{self.api_base}/admin/login", json=credentials, timeout=10)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if not data.get('success') and 'error' in data:
+                        self.log_test(f"Admin Login - Invalid Credentials {i+1}", True, 
+                                    "Correctly rejected invalid credentials")
+                    else:
+                        self.log_test(f"Admin Login - Invalid Credentials {i+1}", False, 
+                                    "Invalid credentials were accepted", data)
+                else:
+                    self.log_test(f"Admin Login - Invalid Credentials {i+1}", False, 
+                                f"HTTP {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_test(f"Admin Login - Invalid Credentials {i+1}", False, f"Request failed: {str(e)}")
+    
+    def test_admin_guest_requests_retrieval(self):
+        """Test admin guest requests retrieval with basic parameters"""
+        try:
+            response = requests.get(f"{self.api_base}/admin/guest-requests", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    admin_data = data['data']
+                    if 'requests' in admin_data and 'pagination' in admin_data:
+                        requests_list = admin_data['requests']
+                        pagination = admin_data['pagination']
+                        
+                        # Verify pagination structure
+                        required_pagination_fields = ['current_page', 'total_pages', 'total_count', 'per_page']
+                        missing_fields = [field for field in required_pagination_fields if field not in pagination]
+                        
+                        if not missing_fields:
+                            self.log_test("Admin Guest Requests - Basic Retrieval", True, 
+                                        f"Successfully retrieved {len(requests_list)} requests with pagination (Total: {pagination['total_count']})")
+                            return requests_list
+                        else:
+                            self.log_test("Admin Guest Requests - Basic Retrieval", False, 
+                                        f"Pagination missing fields: {missing_fields}", pagination)
+                    else:
+                        self.log_test("Admin Guest Requests - Basic Retrieval", False, 
+                                    "Response missing requests or pagination", admin_data)
+                else:
+                    self.log_test("Admin Guest Requests - Basic Retrieval", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Admin Guest Requests - Basic Retrieval", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Guest Requests - Basic Retrieval", False, f"Request failed: {str(e)}")
+        
+        return []
+    
+    def test_admin_guest_requests_filtering(self):
+        """Test admin guest requests with various filters"""
+        filter_tests = [
+            {"search": "emily", "description": "Search by guest name"},
+            {"status": "pending", "description": "Filter by status"},
+            {"priority": "high", "description": "Filter by priority"},
+            {"request_type": "housekeeping-requests", "description": "Filter by request type"},
+            {"page": "1", "limit": "10", "description": "Pagination parameters"},
+            {"search": "beach", "status": "pending", "priority": "normal", "description": "Multiple filters combined"}
+        ]
+        
+        for filter_test in filter_tests:
+            description = filter_test.pop("description")
+            
+            try:
+                response = requests.get(f"{self.api_base}/admin/guest-requests", params=filter_test, timeout=10)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('success') and 'data' in data:
+                        admin_data = data['data']
+                        requests_count = len(admin_data.get('requests', []))
+                        total_count = admin_data.get('pagination', {}).get('total_count', 0)
+                        
+                        self.log_test(f"Admin Filtering - {description}", True, 
+                                    f"Filter applied successfully: {requests_count} results (Total: {total_count})")
+                    else:
+                        self.log_test(f"Admin Filtering - {description}", False, 
+                                    "Response format invalid", data)
+                else:
+                    self.log_test(f"Admin Filtering - {description}", False, 
+                                f"HTTP {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_test(f"Admin Filtering - {description}", False, f"Request failed: {str(e)}")
+    
+    def test_admin_request_status_update(self, request_id=None):
+        """Test updating guest request status and adding internal notes"""
+        if not request_id:
+            # Try to get a request ID from existing requests
+            try:
+                response = requests.get(f"{self.api_base}/admin/guest-requests?limit=1", timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    requests_list = data.get('data', {}).get('requests', [])
+                    if requests_list:
+                        request_id = requests_list[0]['id']
+                    else:
+                        self.log_test("Admin Request Update - No Requests", False, 
+                                    "No existing requests found to test update functionality")
+                        return
+                else:
+                    self.log_test("Admin Request Update - Fetch Failed", False, 
+                                f"Could not fetch requests for testing: HTTP {response.status_code}")
+                    return
+            except Exception as e:
+                self.log_test("Admin Request Update - Fetch Error", False, f"Error fetching requests: {str(e)}")
+                return
+        
+        # Test status update
+        update_data = {
+            "status": "in-progress",
+            "adminUsername": self.admin_username
+        }
+        
+        try:
+            response = requests.put(f"{self.api_base}/admin/guest-requests/{request_id}", json=update_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    updated_request = data['data']
+                    if updated_request.get('status') == 'in-progress' and updated_request.get('lastUpdatedBy') == self.admin_username:
+                        self.log_test("Admin Request Update - Status Change", True, 
+                                    f"Successfully updated request status to 'in-progress'")
+                    else:
+                        self.log_test("Admin Request Update - Status Change", False, 
+                                    "Status or lastUpdatedBy not updated correctly", updated_request)
+                else:
+                    self.log_test("Admin Request Update - Status Change", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Admin Request Update - Status Change", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Request Update - Status Change", False, f"Request failed: {str(e)}")
+        
+        # Test adding internal note
+        note_data = {
+            "internalNote": "Admin testing: This is a test internal note to verify the note system is working correctly.",
+            "adminUsername": self.admin_username
+        }
+        
+        try:
+            response = requests.put(f"{self.api_base}/admin/guest-requests/{request_id}", json=note_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    updated_request = data['data']
+                    internal_notes = updated_request.get('internalNotes', [])
+                    if internal_notes and any('Admin testing' in note for note in internal_notes):
+                        self.log_test("Admin Request Update - Internal Note", True, 
+                                    f"Successfully added internal note (Total notes: {len(internal_notes)})")
+                    else:
+                        self.log_test("Admin Request Update - Internal Note", False, 
+                                    "Internal note not added correctly", internal_notes)
+                else:
+                    self.log_test("Admin Request Update - Internal Note", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Admin Request Update - Internal Note", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Request Update - Internal Note", False, f"Request failed: {str(e)}")
+        
+        # Test priority update
+        priority_data = {
+            "priority": "urgent",
+            "adminUsername": self.admin_username
+        }
+        
+        try:
+            response = requests.put(f"{self.api_base}/admin/guest-requests/{request_id}", json=priority_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    updated_request = data['data']
+                    if updated_request.get('priority') == 'urgent':
+                        self.log_test("Admin Request Update - Priority Change", True, 
+                                    "Successfully updated request priority to 'urgent'")
+                    else:
+                        self.log_test("Admin Request Update - Priority Change", False, 
+                                    "Priority not updated correctly", updated_request)
+                else:
+                    self.log_test("Admin Request Update - Priority Change", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Admin Request Update - Priority Change", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Request Update - Priority Change", False, f"Request failed: {str(e)}")
+    
+    def test_admin_email_reply(self, request_id=None):
+        """Test admin email reply functionality"""
+        if not request_id:
+            # Try to get a request ID from existing requests
+            try:
+                response = requests.get(f"{self.api_base}/admin/guest-requests?limit=1", timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    requests_list = data.get('data', {}).get('requests', [])
+                    if requests_list:
+                        request_id = requests_list[0]['id']
+                    else:
+                        self.log_test("Admin Email Reply - No Requests", False, 
+                                    "No existing requests found to test email reply functionality")
+                        return
+                else:
+                    self.log_test("Admin Email Reply - Fetch Failed", False, 
+                                f"Could not fetch requests for testing: HTTP {response.status_code}")
+                    return
+            except Exception as e:
+                self.log_test("Admin Email Reply - Fetch Error", False, f"Error fetching requests: {str(e)}")
+                return
+        
+        reply_data = {
+            "requestId": request_id,
+            "subject": "Re: Your Service Request - Admin Testing",
+            "message": "Dear Guest,\n\nThank you for your service request. This is a test email reply from the admin dashboard to verify the email reply functionality is working correctly.\n\nWe have received your request and our team is working on it. You will receive updates as we progress.\n\nBest regards,\nLuxServ 365 Team",
+            "adminUsername": self.admin_username
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/admin/guest-requests/{request_id}/reply", json=reply_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success'):
+                    self.log_test("Admin Email Reply", True, 
+                                "Email reply sent successfully (Note: Actual email delivery depends on SMTP configuration)")
+                else:
+                    self.log_test("Admin Email Reply", False, 
+                                "Email reply failed", data)
+            else:
+                self.log_test("Admin Email Reply", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Email Reply", False, f"Request failed: {str(e)}")
+    
+    def test_admin_analytics(self):
+        """Test admin analytics endpoint for dashboard metrics"""
+        try:
+            response = requests.get(f"{self.api_base}/admin/analytics", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    analytics_data = data['data']
+                    
+                    # Verify overview section
+                    overview = analytics_data.get('overview', {})
+                    required_overview_fields = ['total_requests', 'pending_requests', 'completed_requests', 'urgent_requests', 'recent_requests']
+                    missing_overview_fields = [field for field in required_overview_fields if field not in overview]
+                    
+                    # Verify request types and status breakdown
+                    request_types = analytics_data.get('request_types', [])
+                    status_breakdown = analytics_data.get('status_breakdown', [])
+                    
+                    if not missing_overview_fields and isinstance(request_types, list) and isinstance(status_breakdown, list):
+                        self.log_test("Admin Analytics", True, 
+                                    f"Analytics data retrieved successfully - Total: {overview.get('total_requests', 0)}, Pending: {overview.get('pending_requests', 0)}, Recent: {overview.get('recent_requests', 0)}")
+                        
+                        # Log detailed analytics
+                        print(f"   📊 Analytics Details:")
+                        print(f"      Total Requests: {overview.get('total_requests', 0)}")
+                        print(f"      Pending: {overview.get('pending_requests', 0)}")
+                        print(f"      Completed: {overview.get('completed_requests', 0)}")
+                        print(f"      Urgent: {overview.get('urgent_requests', 0)}")
+                        print(f"      Recent (7 days): {overview.get('recent_requests', 0)}")
+                        print(f"      Request Types: {len(request_types)} categories")
+                        print(f"      Status Categories: {len(status_breakdown)} statuses")
+                        
+                    else:
+                        self.log_test("Admin Analytics", False, 
+                                    f"Analytics data incomplete - Missing overview fields: {missing_overview_fields}", analytics_data)
+                else:
+                    self.log_test("Admin Analytics", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Admin Analytics", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Analytics", False, f"Request failed: {str(e)}")
+    
+    def test_admin_request_not_found(self):
+        """Test admin endpoints with non-existent request ID"""
+        fake_request_id = "non-existent-request-id-12345"
+        
+        # Test update non-existent request
+        update_data = {
+            "status": "completed",
+            "adminUsername": self.admin_username
+        }
+        
+        try:
+            response = requests.put(f"{self.api_base}/admin/guest-requests/{fake_request_id}", json=update_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if not data.get('success') and 'error' in data:
+                    self.log_test("Admin Update - Request Not Found", True, 
+                                "Correctly handled non-existent request ID for update")
+                else:
+                    self.log_test("Admin Update - Request Not Found", False, 
+                                "Should have returned error for non-existent request", data)
+            else:
+                self.log_test("Admin Update - Request Not Found", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Update - Request Not Found", False, f"Request failed: {str(e)}")
+        
+        # Test reply to non-existent request
+        reply_data = {
+            "requestId": fake_request_id,
+            "subject": "Test Reply",
+            "message": "Test message",
+            "adminUsername": self.admin_username
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/admin/guest-requests/{fake_request_id}/reply", json=reply_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if not data.get('success') and 'error' in data:
+                    self.log_test("Admin Reply - Request Not Found", True, 
+                                "Correctly handled non-existent request ID for reply")
+                else:
+                    self.log_test("Admin Reply - Request Not Found", False, 
+                                "Should have returned error for non-existent request", data)
+            else:
+                self.log_test("Admin Reply - Request Not Found", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Admin Reply - Request Not Found", False, f"Request failed: {str(e)}")
+    
+    def run_all_tests(self):
+        """Run all admin dashboard tests"""
+        print("=" * 60)
+        print("ADMIN DASHBOARD BACKEND TESTING")
+        print("=" * 60)
+        
+        # Test admin authentication
+        login_success = self.test_admin_login_valid_credentials()
+        self.test_admin_login_invalid_credentials()
+        
+        if not login_success:
+            print("⚠️  Admin login failed - some tests may not work properly")
+        
+        # Test guest requests management
+        requests_list = self.test_admin_guest_requests_retrieval()
+        self.test_admin_guest_requests_filtering()
+        
+        # Test request updates (use first available request if any)
+        test_request_id = requests_list[0]['id'] if requests_list else None
+        self.test_admin_request_status_update(test_request_id)
+        
+        # Test email reply functionality
+        self.test_admin_email_reply(test_request_id)
+        
+        # Test analytics
+        self.test_admin_analytics()
+        
+        # Test error handling
+        self.test_admin_request_not_found()
+        
+        # Summary
+        print("\n" + "=" * 60)
+        print("ADMIN DASHBOARD TEST SUMMARY")
+        print("=" * 60)
+        
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        # Important notes
+        print("\n" + "=" * 60)
+        print("ADMIN DASHBOARD TESTING NOTES")
+        print("=" * 60)
+        print("🔐 Admin Credentials: luxserv_admin / LuxServ365Admin2024!")
+        print("📧 Email Replies: Sent via configured SMTP (850realty@gmail.com)")
+        print("📊 Analytics: Real-time data from guest requests database")
+        print("🔄 Status Updates: Pending → In-Progress → Completed workflow")
+        print("📝 Internal Notes: Admin-only notes with timestamps")
+        
+        if total - passed > 0:
+            print("\nFAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"  - {result['test']}: {result['message']}")
+        
+        return passed == total
+
 if __name__ == "__main__":
     print("LUXSERV 365 COMPREHENSIVE BACKEND TESTING")
     print("=" * 80)
