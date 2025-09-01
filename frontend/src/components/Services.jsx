@@ -181,9 +181,9 @@ export const Services = () => {
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <div className="flex items-center mb-2">
                     <span className="text-2xl mr-3">🛒</span>
-                    <span className="font-semibold text-slate-900">Pre-Arrival Stocking</span>
+                    <span className="font-semibold text-slate-900">Grocery Stocking</span>
                   </div>
-                  <p className="text-xs text-slate-600">Fully stocked kitchen on arrival</p>
+                  <p className="text-xs text-slate-600">Pre-arrival grocery & beverage delivery</p>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4 shadow-sm">
@@ -191,23 +191,39 @@ export const Services = () => {
                     <span className="text-2xl mr-3">🏖️</span>
                     <span className="font-semibold text-slate-900">Beach Gear</span>
                   </div>
-                  <p className="text-xs text-slate-600">Premium equipment delivery</p>
+                  <p className="text-xs text-slate-600">Recreation equipment coordination</p>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <div className="flex items-center mb-2">
                     <span className="text-2xl mr-3">🎯</span>
-                    <span className="font-semibold text-slate-900">Local Tours</span>
+                    <span className="font-semibold text-slate-900">Concierge Services</span>
                   </div>
-                  <p className="text-xs text-slate-600">Curated experience booking</p>
+                  <p className="text-xs text-slate-600">Local info & trip coordination</p>
                 </div>
                 
                 <div className="bg-white rounded-lg p-4 shadow-sm">
                   <div className="flex items-center mb-2">
-                    <span className="text-2xl mr-3">💬</span>
-                    <span className="font-semibold text-slate-900">24/7 Support</span>
+                    <span className="text-2xl mr-3">🚗</span>
+                    <span className="font-semibold text-slate-900">Transportation</span>
                   </div>
-                  <p className="text-xs text-slate-600">Instant text assistance</p>
+                  <p className="text-xs text-slate-600">Airport pickup & luggage assistance</p>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="flex items-center mb-2">
+                    <span className="text-2xl mr-3">🎉</span>
+                    <span className="font-semibold text-slate-900">Celebrations</span>
+                  </div>
+                  <p className="text-xs text-slate-600">Special event arrangements</p>
+                </div>
+                
+                <div className="bg-white rounded-lg p-4 shadow-sm">
+                  <div className="flex items-center mb-2">
+                    <span className="text-2xl mr-3">🆘</span>
+                    <span className="font-semibold text-slate-900">Emergency Support</span>
+                  </div>
+                  <p className="text-xs text-slate-600">24/7 urgent assistance</p>
                 </div>
               </div>
 
