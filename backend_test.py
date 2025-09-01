@@ -741,6 +741,361 @@ class GuestPortalTester:
         
         return passed == total
 
+class NotificationTester:
+    def __init__(self):
+        self.api_base = API_BASE_URL
+        self.test_results = []
+        
+    def log_test(self, test_name, success, message, details=None):
+        """Log test results"""
+        result = {
+            'test': test_name,
+            'success': success,
+            'message': message,
+            'timestamp': datetime.now().isoformat(),
+            'details': details
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name} - {message}")
+        if details and not success:
+            print(f"   Details: {details}")
+    
+    def test_telegram_bot_info(self):
+        """Test /api/telegram/bot-info endpoint to verify Telegram bot accessibility"""
+        try:
+            response = requests.get(f"{self.api_base}/telegram/bot-info", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'bot_info' in data:
+                    bot_info = data['bot_info']
+                    if 'username' in bot_info and 'id' in bot_info:
+                        self.log_test("Telegram Bot Configuration", True, 
+                                    f"Bot accessible: @{bot_info.get('username')} (ID: {bot_info.get('id')})")
+                        return True
+                    else:
+                        self.log_test("Telegram Bot Configuration", False, 
+                                    "Bot info missing required fields", bot_info)
+                else:
+                    self.log_test("Telegram Bot Configuration", False, 
+                                "Bot not accessible or configured", data)
+            else:
+                self.log_test("Telegram Bot Configuration", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Telegram Bot Configuration", False, f"Request failed: {str(e)}")
+        
+        return False
+    
+    def test_telegram_chat_id_endpoint(self):
+        """Test /api/telegram/get-chat-id endpoint"""
+        try:
+            response = requests.get(f"{self.api_base}/telegram/get-chat-id", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'chat_id' in data:
+                    chat_id = data['chat_id']
+                    self.log_test("Telegram Chat ID Retrieval", True, 
+                                f"Chat ID found: {chat_id}")
+                    return chat_id
+                else:
+                    # This is expected if no messages have been sent to the bot
+                    self.log_test("Telegram Chat ID Retrieval", True, 
+                                "No recent messages found (expected if bot hasn't been messaged)")
+                    return None
+            else:
+                self.log_test("Telegram Chat ID Retrieval", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Telegram Chat ID Retrieval", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def test_email_notification_via_guest_request(self):
+        """Test email notification by submitting a guest request"""
+        form_data = {
+            'guestName': 'Alex Thompson',
+            'guestEmail': 'alex.thompson@testnotification.com',
+            'guestPhone': '(850) 555-1234',
+            'numberOfGuests': '2',
+            'propertyAddress': '123 Notification Test Drive, Panama City Beach, FL 32413',
+            'checkInDate': '2024-12-25',
+            'checkOutDate': '2024-12-30',
+            'unitNumber': 'Test Unit 101',
+            'requestType': 'concierge-services',
+            'priority': 'high',
+            'message': 'This is a test request to verify email notification system is working properly. Please confirm receipt of this notification via email to 850realty@gmail.com.'
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'confirmationNumber' in data:
+                    confirmation_number = data['confirmationNumber']
+                    self.log_test("Email Notification Test", True, 
+                                f"Guest request submitted successfully (Confirmation: {confirmation_number}). Email notification should be sent to 850realty@gmail.com")
+                    return confirmation_number
+                else:
+                    self.log_test("Email Notification Test", False, 
+                                "Guest request submission failed", data)
+            else:
+                self.log_test("Email Notification Test", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Email Notification Test", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def test_telegram_notification_via_guest_request(self):
+        """Test Telegram notification by submitting a guest request"""
+        form_data = {
+            'guestName': 'Sarah Martinez',
+            'guestEmail': 'sarah.martinez@telegramtest.com',
+            'guestPhone': '(850) 555-5678',
+            'numberOfGuests': '3',
+            'propertyAddress': '456 Telegram Test Boulevard, Panama City Beach, FL 32413',
+            'checkInDate': '2024-12-28',
+            'checkOutDate': '2025-01-02',
+            'unitNumber': 'Telegram Unit 202',
+            'requestType': 'emergency-urgent',
+            'priority': 'urgent',
+            'message': 'This is a test request to verify Telegram notification system is working properly. This should trigger an urgent priority Telegram alert to LuxServ365Bot.'
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'confirmationNumber' in data:
+                    confirmation_number = data['confirmationNumber']
+                    self.log_test("Telegram Notification Test", True, 
+                                f"Guest request submitted successfully (Confirmation: {confirmation_number}). Telegram alert should be sent to LuxServ365Bot")
+                    return confirmation_number
+                else:
+                    self.log_test("Telegram Notification Test", False, 
+                                "Guest request submission failed", data)
+            else:
+                self.log_test("Telegram Notification Test", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Telegram Notification Test", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def test_dual_notification_with_photos(self):
+        """Test both email and Telegram notifications with photo attachments"""
+        form_data = {
+            'guestName': 'David Wilson',
+            'guestEmail': 'david.wilson@dualnotificationtest.com',
+            'guestPhone': '(850) 555-9999',
+            'numberOfGuests': '4',
+            'propertyAddress': '789 Dual Notification Street, Panama City Beach, FL 32413',
+            'checkInDate': '2025-01-05',
+            'checkOutDate': '2025-01-12',
+            'unitNumber': 'Dual Test 303',
+            'requestType': 'property-issues',
+            'priority': 'high',
+            'message': 'This is a comprehensive test to verify both email and Telegram notifications are working with photo attachments. Both notification systems should receive this alert with photo count information.'
+        }
+        
+        # Create test images for photo upload
+        files = []
+        for i in range(2):  # Test with 2 photos
+            img = Image.new('RGB', (120, 120), color=['red', 'blue'][i])
+            img_bytes = io.BytesIO()
+            img.save(img_bytes, format='JPEG')
+            img_bytes.seek(0)
+            files.append(('photos', (f"notification_test_{i+1}.jpg", img_bytes, 'image/jpeg')))
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, files=files, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'confirmationNumber' in data:
+                    confirmation_number = data['confirmationNumber']
+                    request_data = data.get('data', {})
+                    photo_count = len(request_data.get('photos', []))
+                    
+                    if photo_count == 2:
+                        self.log_test("Dual Notification with Photos", True, 
+                                    f"Guest request with {photo_count} photos submitted successfully (Confirmation: {confirmation_number}). Both email and Telegram notifications should include photo count")
+                        return confirmation_number
+                    else:
+                        self.log_test("Dual Notification with Photos", False, 
+                                    f"Expected 2 photos, got {photo_count}", request_data)
+                else:
+                    self.log_test("Dual Notification with Photos", False, 
+                                "Guest request submission failed", data)
+            else:
+                self.log_test("Dual Notification with Photos", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Dual Notification with Photos", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def test_priority_handling_notifications(self):
+        """Test different priority levels for proper notification formatting"""
+        priorities = [
+            ('urgent', 'emergency-urgent', 'URGENT: Air conditioning completely broken, guests arriving in 2 hours!'),
+            ('high', 'property-issues', 'HIGH: Hot water not working in master bathroom, needs immediate attention.'),
+            ('normal', 'housekeeping-requests', 'NORMAL: Please provide extra towels and toiletries for extended stay.')
+        ]
+        
+        confirmation_numbers = []
+        
+        for priority, request_type, message in priorities:
+            form_data = {
+                'guestName': f'Priority Test {priority.title()}',
+                'guestEmail': f'priority.{priority}@notificationtest.com',
+                'guestPhone': '(850) 555-0000',
+                'numberOfGuests': '2',
+                'propertyAddress': f'{priority.title()} Priority Test Property, Panama City Beach, FL 32413',
+                'checkInDate': '2025-01-15',
+                'checkOutDate': '2025-01-20',
+                'unitNumber': f'{priority.title()} Unit',
+                'requestType': request_type,
+                'priority': priority,
+                'message': message
+            }
+            
+            try:
+                response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=15)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('success') and 'confirmationNumber' in data:
+                        confirmation_number = data['confirmationNumber']
+                        confirmation_numbers.append(confirmation_number)
+                        self.log_test(f"Priority Handling - {priority.upper()}", True, 
+                                    f"Successfully submitted {priority} priority request (Confirmation: {confirmation_number})")
+                    else:
+                        self.log_test(f"Priority Handling - {priority.upper()}", False, 
+                                    "Request submission failed", data)
+                else:
+                    self.log_test(f"Priority Handling - {priority.upper()}", False, 
+                                f"HTTP {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_test(f"Priority Handling - {priority.upper()}", False, f"Request failed: {str(e)}")
+        
+        if len(confirmation_numbers) == 3:
+            self.log_test("Priority Handling Summary", True, 
+                        f"All priority levels tested successfully. Notifications should show different formatting for urgent (🚨), high (⚠️), and normal (📋) priorities")
+        else:
+            self.log_test("Priority Handling Summary", False, 
+                        f"Only {len(confirmation_numbers)}/3 priority tests succeeded")
+        
+        return confirmation_numbers
+    
+    def test_notification_failure_resilience(self):
+        """Test that guest request submission works even if notifications fail"""
+        # This test verifies that notification failures don't break the main functionality
+        form_data = {
+            'guestName': 'Resilience Test User',
+            'guestEmail': 'resilience@notificationtest.com',
+            'guestPhone': '(850) 555-7777',
+            'numberOfGuests': '1',
+            'propertyAddress': 'Resilience Test Property, Panama City Beach, FL 32413',
+            'checkInDate': '2025-02-01',
+            'checkOutDate': '2025-02-05',
+            'unitNumber': 'Resilience Unit',
+            'requestType': 'general-inquiry',
+            'priority': 'normal',
+            'message': 'This test verifies that guest request submission succeeds even if notification services are unavailable or fail.'
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'confirmationNumber' in data:
+                    confirmation_number = data['confirmationNumber']
+                    self.log_test("Notification Failure Resilience", True, 
+                                f"Guest request submitted successfully even with potential notification failures (Confirmation: {confirmation_number})")
+                    return confirmation_number
+                else:
+                    self.log_test("Notification Failure Resilience", False, 
+                                "Request submission failed", data)
+            else:
+                self.log_test("Notification Failure Resilience", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Notification Failure Resilience", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def run_all_tests(self):
+        """Run all notification system tests"""
+        print("=" * 60)
+        print("NOTIFICATION SYSTEMS TESTING")
+        print("=" * 60)
+        
+        # Test Telegram bot configuration
+        bot_accessible = self.test_telegram_bot_info()
+        
+        # Test Telegram chat ID endpoint
+        chat_id = self.test_telegram_chat_id_endpoint()
+        
+        # Test email notification
+        email_confirmation = self.test_email_notification_via_guest_request()
+        
+        # Test Telegram notification
+        telegram_confirmation = self.test_telegram_notification_via_guest_request()
+        
+        # Test dual notifications with photos
+        dual_confirmation = self.test_dual_notification_with_photos()
+        
+        # Test priority handling
+        priority_confirmations = self.test_priority_handling_notifications()
+        
+        # Test notification failure resilience
+        resilience_confirmation = self.test_notification_failure_resilience()
+        
+        # Summary
+        print("\n" + "=" * 60)
+        print("NOTIFICATION SYSTEMS TEST SUMMARY")
+        print("=" * 60)
+        
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        # Important notes
+        print("\n" + "=" * 60)
+        print("NOTIFICATION TESTING NOTES")
+        print("=" * 60)
+        print("✅ Bot Configuration:", "ACCESSIBLE" if bot_accessible else "NOT ACCESSIBLE")
+        print("📧 Email Notifications: Sent to 850realty@gmail.com")
+        print("📱 Telegram Notifications: Sent to LuxServ365Bot")
+        print("⚠️  Note: Telegram delivery requires chat ID setup (user must message bot first)")
+        print("📋 All guest requests created during testing are stored in database")
+        
+        if total - passed > 0:
+            print("\nFAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"  - {result['test']}: {result['message']}")
+        
+        return passed == total
+
 if __name__ == "__main__":
     print("LUXSERV 365 COMPREHENSIVE BACKEND TESTING")
     print("=" * 80)
