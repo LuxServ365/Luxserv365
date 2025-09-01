@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
-import { Menu, X, Phone, UserCircle } from 'lucide-react';
+import { Menu, X, Phone, UserCircle, MessageSquare } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 export const Header = () => {
