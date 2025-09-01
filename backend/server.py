@@ -254,6 +254,13 @@ class AdminReply(BaseModel):
     message: str
     adminUsername: str
 
+class BulkUpdateRequest(BaseModel):
+    requestIds: List[str]
+    status: Optional[str] = None
+    priority: Optional[str] = None
+    internalNote: Optional[str] = None
+    adminUsername: str
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
