@@ -39,6 +39,8 @@ export const GuestPortal = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [confirmationNumber, setConfirmationNumber] = useState('');
+  const [selectedPhotos, setSelectedPhotos] = useState([]);
+  const [photoPreview, setPhotoPreview] = useState([]);
 
   const requestTypes = [
     {
