@@ -78,6 +78,7 @@ function App() {
           <Route path="/mission" element={<Mission />} />
           <Route path="/guest-portal" element={<GuestPortal />} />
           <Route path="/owner-portal" element={<OwnerPortal />} />
+          <Route path="/admin" element={<AdminDashboard />} />
         </Routes>
       </BrowserRouter>
     </div>
