@@ -337,6 +337,410 @@ class ContactFormTester:
         
         return passed == total
 
+class GuestPortalTester:
+    def __init__(self):
+        self.api_base = API_BASE_URL
+        self.test_results = []
+        
+    def log_test(self, test_name, success, message, details=None):
+        """Log test results"""
+        result = {
+            'test': test_name,
+            'success': success,
+            'message': message,
+            'timestamp': datetime.now().isoformat(),
+            'details': details
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name} - {message}")
+        if details and not success:
+            print(f"   Details: {details}")
+    
+    def create_test_image(self, filename="test_image.jpg", size=(100, 100)):
+        """Create a test image file in memory"""
+        img = Image.new('RGB', size, color='red')
+        img_bytes = io.BytesIO()
+        img.save(img_bytes, format='JPEG')
+        img_bytes.seek(0)
+        return img_bytes, filename
+    
+    def test_guest_request_without_photos(self):
+        """Test guest request submission without photos (text-only form data)"""
+        form_data = {
+            'guestName': 'Emily Rodriguez',
+            'guestEmail': 'emily.rodriguez@vacation.com',
+            'guestPhone': '(850) 555-7890',
+            'numberOfGuests': '4',
+            'propertyAddress': '456 Gulf Shore Drive, Panama City Beach, FL 32413',
+            'checkInDate': '2024-12-20',
+            'checkOutDate': '2024-12-27',
+            'unitNumber': 'Unit 302',
+            'requestType': 'housekeeping-requests',
+            'priority': 'normal',
+            'message': 'We need extra towels and beach chairs for our family vacation. Also, could you please arrange for daily housekeeping service during our stay?'
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    request_data = data['data']
+                    required_fields = ['id', 'guestName', 'guestEmail', 'requestType', 'createdAt', 'status', 'photos']
+                    missing_fields = [field for field in required_fields if field not in request_data]
+                    
+                    if not missing_fields:
+                        # Verify photos array is empty
+                        if isinstance(request_data.get('photos'), list) and len(request_data['photos']) == 0:
+                            confirmation_number = data.get('confirmationNumber')
+                            self.log_test("Guest Request Without Photos", True, 
+                                        f"Successfully submitted text-only request. Confirmation: {confirmation_number}")
+                            return request_data.get('id'), confirmation_number
+                        else:
+                            self.log_test("Guest Request Without Photos", False, 
+                                        "Photos array should be empty for text-only request", request_data.get('photos'))
+                    else:
+                        self.log_test("Guest Request Without Photos", False, 
+                                    f"Response missing required fields: {missing_fields}", data)
+                else:
+                    self.log_test("Guest Request Without Photos", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Guest Request Without Photos", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Guest Request Without Photos", False, f"Request failed: {str(e)}")
+        
+        return None, None
+    
+    def test_guest_request_with_single_photo(self):
+        """Test guest request submission with 1 photo (multipart form data)"""
+        form_data = {
+            'guestName': 'Michael Thompson',
+            'guestEmail': 'michael.thompson@beachstay.com',
+            'guestPhone': '(850) 555-4567',
+            'numberOfGuests': '2',
+            'propertyAddress': '789 Beachfront Avenue, Panama City Beach, FL 32413',
+            'checkInDate': '2024-12-15',
+            'checkOutDate': '2024-12-22',
+            'unitNumber': 'Condo 5B',
+            'requestType': 'property-issues',
+            'priority': 'high',
+            'message': 'The air conditioning unit is making loud noises and not cooling properly. I have attached a photo showing the issue with the thermostat display.'
+        }
+        
+        # Create test image
+        img_bytes, filename = self.create_test_image("ac_issue.jpg")
+        
+        files = {
+            'photos': (filename, img_bytes, 'image/jpeg')
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, files=files, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    request_data = data['data']
+                    
+                    # Verify photos array has 1 photo
+                    photos = request_data.get('photos', [])
+                    if isinstance(photos, list) and len(photos) == 1:
+                        photo = photos[0]
+                        if 'filename' in photo and 'originalName' in photo and 'id' in photo:
+                            confirmation_number = data.get('confirmationNumber')
+                            self.log_test("Guest Request With Single Photo", True, 
+                                        f"Successfully submitted request with 1 photo. Confirmation: {confirmation_number}")
+                            return request_data.get('id'), photo['filename'], confirmation_number
+                        else:
+                            self.log_test("Guest Request With Single Photo", False, 
+                                        "Photo object missing required fields", photo)
+                    else:
+                        self.log_test("Guest Request With Single Photo", False, 
+                                    f"Expected 1 photo, got {len(photos) if isinstance(photos, list) else 'invalid'}", photos)
+                else:
+                    self.log_test("Guest Request With Single Photo", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Guest Request With Single Photo", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Guest Request With Single Photo", False, f"Request failed: {str(e)}")
+        
+        return None, None, None
+    
+    def test_guest_request_with_multiple_photos(self):
+        """Test guest request submission with multiple photos (up to 10)"""
+        form_data = {
+            'guestName': 'Jennifer Martinez',
+            'guestEmail': 'jennifer.martinez@familyvacation.com',
+            'guestPhone': '(850) 555-9876',
+            'numberOfGuests': '6',
+            'propertyAddress': '321 Ocean View Boulevard, Panama City Beach, FL 32413',
+            'checkInDate': '2024-12-10',
+            'checkOutDate': '2024-12-17',
+            'unitNumber': 'Beach House A',
+            'requestType': 'pre-arrival-grocery-stocking',
+            'priority': 'normal',
+            'message': 'Please stock the kitchen with groceries for our family of 6. I have attached photos of our preferred brands and dietary requirements.'
+        }
+        
+        # Create multiple test images
+        files = []
+        for i in range(3):  # Test with 3 photos
+            img_bytes, _ = self.create_test_image(f"grocery_list_{i+1}.jpg", (150, 150))
+            files.append(('photos', (f"grocery_list_{i+1}.jpg", img_bytes, 'image/jpeg')))
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, files=files, timeout=15)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    request_data = data['data']
+                    
+                    # Verify photos array has 3 photos
+                    photos = request_data.get('photos', [])
+                    if isinstance(photos, list) and len(photos) == 3:
+                        # Verify each photo has required fields
+                        all_photos_valid = True
+                        photo_filenames = []
+                        for photo in photos:
+                            if not all(field in photo for field in ['filename', 'originalName', 'id']):
+                                all_photos_valid = False
+                                break
+                            photo_filenames.append(photo['filename'])
+                        
+                        if all_photos_valid:
+                            confirmation_number = data.get('confirmationNumber')
+                            self.log_test("Guest Request With Multiple Photos", True, 
+                                        f"Successfully submitted request with 3 photos. Confirmation: {confirmation_number}")
+                            return request_data.get('id'), photo_filenames, confirmation_number
+                        else:
+                            self.log_test("Guest Request With Multiple Photos", False, 
+                                        "One or more photos missing required fields", photos)
+                    else:
+                        self.log_test("Guest Request With Multiple Photos", False, 
+                                    f"Expected 3 photos, got {len(photos) if isinstance(photos, list) else 'invalid'}", photos)
+                else:
+                    self.log_test("Guest Request With Multiple Photos", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Guest Request With Multiple Photos", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Guest Request With Multiple Photos", False, f"Request failed: {str(e)}")
+        
+        return None, None, None
+    
+    def test_photo_serving_endpoint(self, photo_filename):
+        """Test photo file serving endpoint"""
+        if not photo_filename:
+            self.log_test("Photo Serving Endpoint", False, "No photo filename provided for testing")
+            return
+        
+        try:
+            response = requests.get(f"{self.api_base}/guest-photos/{photo_filename}", timeout=10)
+            
+            if response.status_code == 200:
+                # Check if response is an image
+                content_type = response.headers.get('content-type', '')
+                if content_type.startswith('image/'):
+                    self.log_test("Photo Serving Endpoint", True, 
+                                f"Successfully retrieved photo: {photo_filename}")
+                else:
+                    self.log_test("Photo Serving Endpoint", False, 
+                                f"Response is not an image. Content-Type: {content_type}")
+            else:
+                self.log_test("Photo Serving Endpoint", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Photo Serving Endpoint", False, f"Request failed: {str(e)}")
+    
+    def test_request_type_validation(self):
+        """Test request type validation including the new grocery stocking option"""
+        valid_request_types = [
+            'property-issues',
+            'housekeeping-requests', 
+            'pre-arrival-grocery-stocking',
+            'concierge-services',
+            'beach-recreation-gear',
+            'transportation-assistance',
+            'celebration-services',
+            'emergency-urgent',
+            'general-inquiry'
+        ]
+        
+        # Test valid request types
+        for request_type in valid_request_types:
+            form_data = {
+                'guestName': 'Test Guest',
+                'guestEmail': 'test@example.com',
+                'propertyAddress': 'Test Property',
+                'checkInDate': '2024-12-01',
+                'checkOutDate': '2024-12-08',
+                'requestType': request_type,
+                'message': f'Testing {request_type} request type validation.'
+            }
+            
+            try:
+                response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=10)
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('success'):
+                        self.log_test(f"Request Type Validation - {request_type}", True, 
+                                    "Valid request type accepted")
+                    else:
+                        self.log_test(f"Request Type Validation - {request_type}", False, 
+                                    "Valid request type rejected", data)
+                else:
+                    self.log_test(f"Request Type Validation - {request_type}", False, 
+                                f"HTTP {response.status_code}", response.text)
+            except Exception as e:
+                self.log_test(f"Request Type Validation - {request_type}", False, f"Request failed: {str(e)}")
+        
+        # Test invalid request type
+        form_data = {
+            'guestName': 'Test Guest',
+            'guestEmail': 'test@example.com',
+            'propertyAddress': 'Test Property',
+            'checkInDate': '2024-12-01',
+            'checkOutDate': '2024-12-08',
+            'requestType': 'invalid-request-type',
+            'message': 'Testing invalid request type validation.'
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/guest-requests", data=form_data, timeout=10)
+            if response.status_code == 422:  # Validation error expected
+                self.log_test("Request Type Validation - Invalid Type", True, 
+                            "Correctly rejected invalid request type")
+            else:
+                self.log_test("Request Type Validation - Invalid Type", False, 
+                            f"Expected 422, got {response.status_code}", response.text)
+        except Exception as e:
+            self.log_test("Request Type Validation - Invalid Type", False, f"Request failed: {str(e)}")
+    
+    def test_get_all_guest_requests(self):
+        """Test GET /api/guest-requests endpoint for retrieving all requests"""
+        try:
+            response = requests.get(f"{self.api_base}/guest-requests", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    requests_list = data['data']
+                    if isinstance(requests_list, list):
+                        self.log_test("GET All Guest Requests", True, 
+                                    f"Successfully retrieved {len(requests_list)} guest requests")
+                        
+                        # Verify structure if any requests exist
+                        if requests_list:
+                            first_request = requests_list[0]
+                            required_fields = ['id', 'guestName', 'guestEmail', 'requestType', 'createdAt', 'status', 'photos']
+                            missing_fields = [field for field in required_fields if field not in first_request]
+                            
+                            if missing_fields:
+                                self.log_test("GET Guest Requests Structure", False, 
+                                            f"Request missing required fields: {missing_fields}")
+                            else:
+                                self.log_test("GET Guest Requests Structure", True, 
+                                            "Request structure is correct")
+                    else:
+                        self.log_test("GET All Guest Requests", False, 
+                                    "Data is not a list", data)
+                else:
+                    self.log_test("GET All Guest Requests", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("GET All Guest Requests", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("GET All Guest Requests", False, f"Request failed: {str(e)}")
+    
+    def test_guest_request_status_lookup(self, confirmation_number):
+        """Test guest request status lookup by confirmation number"""
+        if not confirmation_number:
+            self.log_test("Guest Request Status Lookup", False, "No confirmation number provided for testing")
+            return
+        
+        try:
+            response = requests.get(f"{self.api_base}/guest-requests/{confirmation_number}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    request_data = data['data']
+                    if request_data.get('id', '')[:8].upper() == confirmation_number.upper():
+                        self.log_test("Guest Request Status Lookup", True, 
+                                    f"Successfully retrieved request by confirmation number: {confirmation_number}")
+                    else:
+                        self.log_test("Guest Request Status Lookup", False, 
+                                    "Confirmation number mismatch", request_data)
+                else:
+                    self.log_test("Guest Request Status Lookup", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Guest Request Status Lookup", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Guest Request Status Lookup", False, f"Request failed: {str(e)}")
+    
+    def run_all_tests(self):
+        """Run all guest portal tests"""
+        print("=" * 60)
+        print("GUEST PORTAL PHOTO UPLOAD TESTING")
+        print("=" * 60)
+        
+        # Test guest request submissions
+        request_id_1, confirmation_1 = self.test_guest_request_without_photos()
+        request_id_2, photo_filename, confirmation_2 = self.test_guest_request_with_single_photo()
+        request_id_3, photo_filenames, confirmation_3 = self.test_guest_request_with_multiple_photos()
+        
+        # Test photo serving endpoint
+        if photo_filename:
+            self.test_photo_serving_endpoint(photo_filename)
+        
+        # Test request type validation
+        self.test_request_type_validation()
+        
+        # Test retrieval endpoints
+        self.test_get_all_guest_requests()
+        
+        # Test status lookup
+        if confirmation_1:
+            self.test_guest_request_status_lookup(confirmation_1)
+        
+        # Summary
+        print("\n" + "=" * 60)
+        print("GUEST PORTAL TEST SUMMARY")
+        print("=" * 60)
+        
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        if total - passed > 0:
+            print("\nFAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"  - {result['test']}: {result['message']}")
+        
+        return passed == total
+
 if __name__ == "__main__":
     tester = ContactFormTester()
     success = tester.run_all_tests()
