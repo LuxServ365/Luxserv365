@@ -505,8 +505,11 @@ async def submit_guest_request(
             "message": message
         }
         
+        # Validate using Pydantic model first
+        validated_data = GuestRequestCreate(**request_data)
+        
         # Create guest request object
-        request_obj = GuestRequest(**request_data)
+        request_obj = GuestRequest(**validated_data.dict())
         
         # Handle photo uploads
         uploaded_photos = []
