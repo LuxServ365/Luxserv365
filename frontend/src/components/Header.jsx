@@ -145,9 +145,9 @@ export const Header = () => {
                   <MessageSquare className="h-4 w-4 mr-2" />
                   Guest Portal
                 </Button>
-                <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200 py-2 px-3 rounded-lg hover:bg-blue-50">
-                  <Phone className="h-4 w-4 mr-3" />
-                  <span className="font-medium text-base tracking-wide">(850) 330-9933</span>
+                <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200 py-4 px-4 rounded-lg hover:bg-blue-50 border border-slate-200 hover:border-blue-300 w-full justify-center">
+                  <Phone className="h-6 w-6 mr-4 text-blue-600" />
+                  <span className="font-bold text-lg tracking-widest text-center">(850) 330-9933</span>
                 </a>
                 <Button 
                   onClick={() => { scrollToSection('contact'); setIsMenuOpen(false); }}
