@@ -107,52 +107,50 @@ export const Header = () => {
           <div className="md:hidden bg-white border-t border-slate-200 py-4">
             <div className="flex flex-col space-y-4">
               <button
-                onClick={() => scrollToSection('services')}
+                onClick={() => { scrollToSection('services'); setIsMenuOpen(false); }}
                 className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium text-left"
               >
-                Services
+                Owner Services
               </button>
               <button
-                onClick={() => navigate('/mission')}
+                onClick={() => { navigate('/owner-portal'); setIsMenuOpen(false); }}
+                className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium text-left"
+              >
+                Owner Portal
+              </button>
+              <button
+                onClick={() => { scrollToSection('pricing'); setIsMenuOpen(false); }}
+                className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium text-left"
+              >
+                Pricing
+              </button>
+              <button
+                onClick={() => { navigate('/mission'); setIsMenuOpen(false); }}
                 className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium text-left"
               >
                 Mission
               </button>
               <button
-                onClick={() => scrollToSection('why-choose-us')}
+                onClick={() => { navigate('/guest-services'); setIsMenuOpen(false); }}
                 className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium text-left"
               >
-                Why Choose Us
-              </button>
-              <button
-                onClick={() => scrollToSection('pricing')}
-                className="text-slate-600 hover:text-blue-600 transition-colors duration-200 font-medium text-left"
-              >
-                Pricing
+                Guest Services
               </button>
               <div className="flex flex-col space-y-2 pt-4 border-t border-slate-200">
+                <Button 
+                  onClick={() => { navigate('/guest-portal'); setIsMenuOpen(false); }}
+                  variant="outline"
+                  className="border-2 border-teal-600 text-teal-600 hover:bg-teal-600 hover:text-white w-full rounded-lg transition-all duration-200 flex items-center justify-center"
+                >
+                  <MessageSquare className="h-4 w-4 mr-2" />
+                  Guest Portal
+                </Button>
                 <a href="tel:+18503309933" className="flex items-center text-slate-600 hover:text-blue-600 transition-colors duration-200">
                   <Phone className="h-4 w-4 mr-2" />
                   <span className="font-medium">(850) 330-9933</span>
                 </a>
                 <Button 
-                  onClick={() => navigate('/guest-portal')}
-                  variant="outline"
-                  className="border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white w-full rounded-lg transition-all duration-200 flex items-center justify-center"
-                >
-                  <MessageSquare className="h-4 w-4 mr-2" />
-                  Guest Portal
-                </Button>
-                <Button 
-                  onClick={() => navigate('/owner-portal')}
-                  variant="outline"
-                  className="border-2 border-blue-600 text-blue-600 hover:bg-blue-600 hover:text-white w-full rounded-lg transition-all duration-200 flex items-center justify-center"
-                >
-                  <UserCircle className="h-4 w-4 mr-2" />
-                  Owner Portal
-                </Button>
-                <Button 
-                  onClick={() => scrollToSection('contact')}
+                  onClick={() => { scrollToSection('contact'); setIsMenuOpen(false); }}
                   className="bg-blue-600 hover:bg-blue-700 text-white w-full rounded-lg transition-all duration-200"
                 >
                   Get Started
