@@ -180,8 +180,38 @@ class GuestRequestPhoto(BaseModel):
     originalName: str
     uploadedAt: datetime = Field(default_factory=datetime.utcnow)
 
+class Booking(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    platformBookingId: str  # Airbnb/VRBO booking ID
+    platform: str  # airbnb, vrbo, direct, etc.
+    propertyId: str
+    propertyAddress: str
+    guestName: str
+    guestEmail: str
+    guestPhone: Optional[str] = None
+    guestCount: int
+    checkInDate: str
+    checkOutDate: str
+    bookingAmount: Optional[float] = None
+    specialRequests: Optional[str] = None
+    bookingStatus: str = Field(default="confirmed")
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
+class Property(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    ownerId: str
+    address: str
+    propertyType: str  # condo, house, etc.
+    bedrooms: int
+    bathrooms: int
+    maxGuests: int
+    platformListings: dict = Field(default_factory=dict)  # {airbnb: "listing123", vrbo: "property456"}
+    serviceLevel: str = Field(default="essential")  # essential, premium, elite
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+
 class GuestRequest(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    bookingId: Optional[str] = None  # Link to booking
     guestName: str
     guestEmail: str
     guestPhone: Optional[str] = None
