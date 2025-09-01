@@ -270,4 +270,68 @@ export const guestApi = {
   }
 };
 
+export const adminApi = {
+  // Admin login
+  login: async (credentials) => {
+    try {
+      const response = await apiClient.post('/admin/login', credentials);
+      return response.data;
+    } catch (error) {
+      console.error('Admin login error:', error);
+      throw error;
+    }
+  },
+
+  // Get guest requests with filtering
+  getRequests: async (filters = {}) => {
+    try {
+      const params = new URLSearchParams();
+      Object.keys(filters).forEach(key => {
+        if (filters[key]) {
+          params.append(key, filters[key]);
+        }
+      });
+      
+      const response = await apiClient.get(`/admin/guest-requests?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get admin requests error:', error);
+      throw error;
+    }
+  },
+
+  // Update guest request
+  updateRequest: async (requestId, updateData) => {
+    try {
+      const response = await apiClient.put(`/admin/guest-requests/${requestId}`, updateData);
+      return response.data;
+    } catch (error) {
+      console.error('Update request error:', error);
+      throw error;
+    }
+  },
+
+  // Send reply to guest
+  sendReply: async (requestId, replyData) => {
+    try {
+      const response = await apiClient.post(`/admin/guest-requests/${requestId}/reply`, replyData);
+      return response.data;
+    } catch (error) {
+      console.error('Send reply error:', error);
+      throw error;
+    }
+  },
+
+  // Get analytics
+  getAnalytics: async () => {
+    try {
+      const response = await apiClient.get('/admin/analytics');
+      return response.data;
+    } catch (error) {
+      console.error('Get analytics error:', error);
+      throw error;
+    }
+  }
+};
+
 export default apiClient;
