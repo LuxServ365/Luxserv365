@@ -208,6 +208,55 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Guest Portal Photo Upload"
+    implemented: false
+    working: "NA"
+    file: "GuestPortal.jsx, server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Starting implementation of photo upload functionality for guest requests. Need to update backend models, API endpoints, and frontend interface to handle multiple image uploads per request."
+
+backend:
+  - task: "Guest Request Photo Storage"
+    implemented: false
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Need to extend GuestRequest model to support photo attachments and create photo upload endpoint for guest requests."
+
+  - task: "Notification System - Email"
+    implemented: false
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Will implement Gmail SMTP notifications for guest requests using 850realty@gmail.com."
+
+  - task: "Notification System - Telegram"
+    implemented: false
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Will implement Telegram Bot notifications for instant alerts on guest requests."
+
 agent_communication:
   - agent: "main"
     message: "Implemented full backend integration for contact form. Created API endpoints, data models with validation, and updated frontend to use real API instead of mock data. Need backend testing to verify endpoints work correctly with proper data validation and database storage."
@@ -218,4 +267,6 @@ agent_communication:
   - agent: "testing"
     message: "BACKEND TESTING COMPLETED SUCCESSFULLY: All 18 backend tests passed with 100% success rate. Contact Form API endpoints, data models, and database integration are working perfectly. POST /api/contact accepts valid submissions, properly validates required fields (name, email), handles email format validation, phone number validation in multiple formats, and correctly manages optional fields. GET /api/contact successfully retrieves submissions. Database storage confirmed with MongoDB integration working correctly. Server running stable at https://host-empowered.preview.emergentagent.com/api. All backend tasks marked as working=true and needs_retesting=false. Backend implementation is production-ready."
   - agent: "testing"
-    message: "FRONTEND TESTING COMPLETED SUCCESSFULLY: All frontend integration tests passed with 100% success rate. Contact Form Frontend and API Service Layer both working perfectly. Complete end-to-end functionality verified: Landing page loads correctly with LuxServ 365 branding, navigation menu working (Services, Get Started buttons), contact form structure complete with all required fields, form validation working (required fields, email format), successful form submissions with real backend API integration (200 OK responses), success messages displaying correctly, form reset functionality working, mobile responsiveness verified across desktop/tablet/mobile viewports, mobile navigation menu working, no console errors found. API service layer properly configured with correct endpoints, timeout settings, error handling, and request/response interceptors. Frontend-backend integration fully functional and production-ready."
+    message: "FRONTEND TESTING COMPLETED SUCCESSFULLY: All frontend integration tests passed with 100% success rate. Contact Form Frontend and API Service Layer both working perfectly. Complete end-to-end functionality verified: Landing page loads correctly with LuxServ 365 branding, navigation menu working (Services, Get Started buttons), contact form structure complete with all required fields, form validation working (required fields, email format), successful form submissions with real backend API integration (200 OK responses), success messages displaying correctly, form reset functionality working, mobile responsiveness verified across desktop/tablet/mobile viewports, mobile navigation menu working, no console errors found. Frontend-backend integration fully functional and production-ready."
+  - agent: "main"
+    message: "Starting Phase 1: Adding photo upload functionality to Guest Portal. Users should be able to attach multiple images to their service requests. Also planning notification systems (Gmail SMTP + Telegram Bot) and Admin Dashboard for managing requests."
