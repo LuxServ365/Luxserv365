@@ -58,9 +58,10 @@ class TelegramService:
                 priority, message, confirmation_number, photo_count
             )
             
-            # Send message
+            # Send message (ensure chat_id is integer)
+            chat_id_int = int(target_chat_id) if isinstance(target_chat_id, str) else target_chat_id
             await self.bot.send_message(
-                chat_id=target_chat_id,
+                chat_id=chat_id_int,
                 text=message_text,
                 parse_mode='MarkdownV2'
             )
