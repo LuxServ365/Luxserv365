@@ -160,6 +160,7 @@ class GuestRequestCreate(BaseModel):
             'beach-recreation-gear',
             'transportation-assistance',
             'celebration-services',
+            'pet-services',
             'emergency-urgent',
             'general-inquiry'
         ]
