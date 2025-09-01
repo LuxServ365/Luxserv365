@@ -172,6 +172,67 @@ export const AdminDashboard = () => {
     }
   };
 
+  // Bulk operation functions
+  const handleSelectAll = () => {
+    if (selectedRequests.length === requests.length) {
+      setSelectedRequests([]);
+    } else {
+      setSelectedRequests(requests.map(request => request.id));
+    }
+  };
+
+  const handleSelectRequest = (requestId) => {
+    setSelectedRequests(prev => {
+      if (prev.includes(requestId)) {
+        return prev.filter(id => id !== requestId);
+      } else {
+        return [...prev, requestId];
+      }
+    });
+  };
+
+  const handleBulkOperation = (operation) => {
+    if (selectedRequests.length === 0) {
+      setError('Please select at least one request');
+      return;
+    }
+    setBulkOperationModal({ open: true, operation });
+  };
+
+  const executeBulkOperation = async () => {
+    try {
+      const updateData = {
+        adminUsername: localStorage.getItem('admin_username')
+      };
+
+      if (bulkOperationModal.operation === 'complete') {
+        updateData.status = 'completed';
+        updateData.internalNote = 'Bulk completed via admin dashboard';
+      } else if (bulkOperationModal.operation === 'cancel') {
+        updateData.status = 'cancelled';
+        updateData.internalNote = 'Bulk cancelled via admin dashboard';
+      } else if (bulkData.status) {
+        updateData.status = bulkData.status;
+        if (bulkData.note) {
+          updateData.internalNote = bulkData.note;
+        }
+      }
+
+      const response = await adminApi.bulkUpdateRequests(selectedRequests, updateData);
+
+      if (response.success) {
+        setBulkOperationModal({ open: false, operation: '' });
+        setBulkData({ status: '', priority: '', note: '' });
+        setSelectedRequests([]);
+        loadData(); // Reload data
+      } else {
+        setError(response.error || 'Bulk operation failed');
+      }
+    } catch (err) {
+      setError(err.message || 'Bulk operation failed');
+    }
+  };
+
   const getPriorityColor = (priority) => {
     switch (priority) {
       case 'urgent': return 'text-red-600 bg-red-100 border-red-200';
