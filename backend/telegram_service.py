@@ -70,7 +70,35 @@ class TelegramService:
             return True
             
         except Exception as e:
-            logger.error(f"Failed to send Telegram alert for request {confirmation_number}: {str(e)}")
+            error_msg = str(e)
+            logger.error(f"Failed to send Telegram alert for request {confirmation_number}: {error_msg}")
+            
+            # Try with plain text if MarkdownV2 fails
+            if "parse" in error_msg.lower() or "markdown" in error_msg.lower():
+                try:
+                    # Simple text version without formatting
+                    simple_message = f"""🏖️ LuxServ 365 - New Guest Request
+
+{priority.upper()} PRIORITY
+Confirmation: {confirmation_number}
+
+Guest: {guest_name}
+Email: {guest_email}
+Property: {property_address}
+Type: {request_type}
+
+Message: {message[:200]}{"..." if len(message) > 200 else ""}"""
+                    
+                    chat_id_int = int(target_chat_id) if isinstance(target_chat_id, str) else target_chat_id
+                    await self.bot.send_message(
+                        chat_id=chat_id_int,
+                        text=simple_message
+                    )
+                    logger.info(f"Telegram alert sent with plain text for request {confirmation_number}")
+                    return True
+                except Exception as e2:
+                    logger.error(f"Plain text Telegram also failed: {str(e2)}")
+            
             return False
     
     def _create_telegram_message(
