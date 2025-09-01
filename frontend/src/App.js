@@ -75,6 +75,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/mission" element={<Mission />} />
+          <Route path="/guest-portal" element={<GuestPortal />} />
           <Route path="/owner-portal" element={<OwnerPortal />} />
         </Routes>
       </BrowserRouter>
