@@ -28,7 +28,7 @@ export const Pricing = () => {
     },
     {
       name: "Premium Care",
-      subtitle: "Most Popular for 2–4BR Homes",
+      subtitle: "Most Popular Choice",
       price: "$449",
       dailyValue: "$14.97",
       period: "/month",
