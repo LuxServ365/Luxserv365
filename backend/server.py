@@ -11,12 +11,13 @@ from typing import List, Optional
 import uuid
 from datetime import datetime
 import shutil
-from email_service import email_service
-from telegram_service import telegram_service
-
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
+
+# Import services after loading environment variables
+from email_service import email_service
+from telegram_service import telegram_service
 
 # Create uploads directory
 UPLOAD_DIR = ROOT_DIR / "uploads"
