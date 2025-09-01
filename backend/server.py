@@ -597,6 +597,18 @@ async def get_guest_request_status(confirmation_number: str):
             "message": str(e)
         }
 
+@api_router.get("/guest-photos/{filename}")
+async def get_guest_photo(filename: str):
+    try:
+        file_path = GUEST_PHOTOS_DIR / filename
+        if file_path.exists():
+            return FileResponse(path=file_path)
+        else:
+            return {"error": "Photo not found"}
+    except Exception as e:
+        logger.error(f"Error retrieving guest photo: {str(e)}")
+        return {"error": "Unable to retrieve photo"}
+
 # Include the router in the main app
 app.include_router(api_router)
 
