@@ -212,4 +212,39 @@ export const photoApi = {
   }
 };
 
+export const guestApi = {
+  // Submit guest request
+  submitRequest: async (requestData) => {
+    try {
+      const response = await apiClient.post('/guest-requests', requestData);
+      return response.data;
+    } catch (error) {
+      console.error('Guest request submission error:', error);
+      throw error;
+    }
+  },
+
+  // Get request status by confirmation number
+  getRequestStatus: async (confirmationNumber) => {
+    try {
+      const response = await apiClient.get(`/guest-requests/${confirmationNumber}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get request status error:', error);
+      throw error;
+    }
+  },
+
+  // Get all guest requests (admin)
+  getAllRequests: async () => {
+    try {
+      const response = await apiClient.get('/guest-requests');
+      return response.data;
+    } catch (error) {
+      console.error('Get all guest requests error:', error);
+      throw error;
+    }
+  }
+};
+
 export default apiClient;
