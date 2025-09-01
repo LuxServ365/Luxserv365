@@ -52,7 +52,7 @@ export const Pricing = () => {
     },
     {
       name: "Elite Care",
-      subtitle: "Luxury Partner (High-End Homes, 30A, 4BR+)",
+      subtitle: "Luxury Partner for Premium Properties",
       price: "$599",
       dailyValue: "$19.97",
       period: "/month",
