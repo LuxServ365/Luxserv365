@@ -17,7 +17,9 @@ import {
   ArrowRight,
   Phone,
   Mail,
-  Clock
+  Clock,
+  AlertTriangle,
+  MessageSquare
 } from 'lucide-react';
 
 export const GuestServices = () => {
