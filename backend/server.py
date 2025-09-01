@@ -991,6 +991,126 @@ async def reply_to_guest_request(request_id: str, reply_data: AdminReply):
             "message": str(e)
         }
 
+# Booking Management Endpoints
+
+@api_router.post("/webhooks/booking-created")
+async def handle_booking_webhook(booking_data: dict):
+    """Handle new booking webhooks from channel managers."""
+    try:
+        # Create booking record
+        booking = Booking(
+            platformBookingId=booking_data.get("booking_id"),
+            platform=booking_data.get("platform", "unknown"),
+            propertyAddress=booking_data.get("property_address"),
+            guestName=booking_data.get("guest_name"),
+            guestEmail=booking_data.get("guest_email"),
+            guestPhone=booking_data.get("guest_phone"),
+            guestCount=booking_data.get("guest_count", 1),
+            checkInDate=booking_data.get("check_in_date"),
+            checkOutDate=booking_data.get("check_out_date"),
+            specialRequests=booking_data.get("special_requests")
+        )
+        
+        # Save to database
+        result = await db.bookings.insert_one(booking.dict())
+        
+        if result.inserted_id:
+            # TODO: Trigger automated services based on booking
+            # await schedule_automated_services(booking)
+            
+            logger.info(f"New booking created: {booking.platformBookingId}")
+            return {
+                "success": True,
+                "booking_id": booking.id,
+                "message": "Booking processed successfully"
+            }
+        else:
+            raise Exception("Failed to save booking")
+            
+    except Exception as e:
+        logger.error(f"Error processing booking webhook: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to process booking",
+            "message": str(e)
+        }
+
+@api_router.get("/admin/bookings")
+async def get_admin_bookings(
+    page: int = 1,
+    limit: int = 50,
+    property_address: Optional[str] = None,
+    platform: Optional[str] = None,
+    status: Optional[str] = None
+):
+    """Get bookings for admin dashboard."""
+    try:
+        filter_query = {}
+        
+        if property_address:
+            filter_query["propertyAddress"] = {"$regex": property_address, "$options": "i"}
+        if platform:
+            filter_query["platform"] = platform
+        if status:
+            filter_query["bookingStatus"] = status
+            
+        # Get total count
+        total_count = await db.bookings.count_documents(filter_query)
+        
+        # Get paginated results
+        skip = (page - 1) * limit
+        bookings = await db.bookings.find(filter_query).sort("checkInDate", -1).skip(skip).limit(limit).to_list(limit)
+        
+        return {
+            "success": True,
+            "data": {
+                "bookings": [Booking(**booking).dict() for booking in bookings],
+                "pagination": {
+                    "current_page": page,
+                    "total_pages": (total_count + limit - 1) // limit,
+                    "total_count": total_count,
+                    "per_page": limit
+                }
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting admin bookings: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve bookings",
+            "message": str(e)
+        }
+
+@api_router.get("/guest-portal/booking/{booking_code}")
+async def get_booking_for_guest_portal(booking_code: str):
+    """Get booking data for pre-filling guest portal."""
+    try:
+        # Find booking by platform booking ID or confirmation code
+        booking = await db.bookings.find_one({
+            "$or": [
+                {"platformBookingId": booking_code},
+                {"id": booking_code}
+            ]
+        })
+        
+        if booking:
+            return {
+                "success": True,
+                "booking": Booking(**booking).dict()
+            }
+        else:
+            return {
+                "success": False,
+                "error": "Booking not found"
+            }
+    except Exception as e:
+        logger.error(f"Error getting booking for guest portal: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve booking",
+            "message": str(e)
+        }
+
 @api_router.get("/admin/analytics")
 async def get_admin_analytics():
     """Get analytics data for admin dashboard."""
@@ -1000,6 +1120,14 @@ async def get_admin_analytics():
         pending_requests = await db.guest_requests.count_documents({"status": "pending"})
         completed_requests = await db.guest_requests.count_documents({"status": {"$in": ["completed", "resolved"]}})
         urgent_requests = await db.guest_requests.count_documents({"priority": "urgent"})
+        
+        # Get booking analytics
+        total_bookings = await db.bookings.count_documents({})
+        current_guests = await db.bookings.count_documents({
+            "checkInDate": {"$lte": datetime.utcnow().isoformat()},
+            "checkOutDate": {"$gte": datetime.utcnow().isoformat()},
+            "bookingStatus": "confirmed"
+        })
         
         # Get request types breakdown
         request_types_pipeline = [
@@ -1029,7 +1157,9 @@ async def get_admin_analytics():
                     "pending_requests": pending_requests,
                     "completed_requests": completed_requests,
                     "urgent_requests": urgent_requests,
-                    "recent_requests": recent_requests
+                    "recent_requests": recent_requests,
+                    "total_bookings": total_bookings,
+                    "current_guests": current_guests
                 },
                 "request_types": request_types,
                 "status_breakdown": status_breakdown
