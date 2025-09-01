@@ -986,7 +986,7 @@ async def get_admin_analytics():
         status_breakdown = await db.guest_requests.aggregate(status_pipeline).to_list(100)
         
         # Get recent activity (last 7 days)
-        seven_days_ago = datetime.utcnow() - datetime.timedelta(days=7)
+        seven_days_ago = datetime.utcnow() - timedelta(days=7)
         recent_requests = await db.guest_requests.count_documents({
             "createdAt": {"$gte": seven_days_ago}
         })
