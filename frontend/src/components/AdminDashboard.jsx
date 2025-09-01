@@ -482,10 +482,67 @@ export const AdminDashboard = () => {
           </div>
         </Card>
 
+        {/* Bulk Operations */}
+        {requests.length > 0 && (
+          <Card className="p-4 mb-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4">
+                <Button
+                  onClick={handleSelectAll}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center"
+                >
+                  {selectedRequests.length === requests.length ? 
+                    <CheckSquare className="h-4 w-4 mr-2" /> : 
+                    <Square className="h-4 w-4 mr-2" />
+                  }
+                  {selectedRequests.length === requests.length ? 'Select None' : 'Select All'}
+                </Button>
+                
+                {selectedRequests.length > 0 && (
+                  <span className="text-sm text-gray-600">
+                    {selectedRequests.length} request{selectedRequests.length > 1 ? 's' : ''} selected
+                  </span>
+                )}
+              </div>
+              
+              {selectedRequests.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <Button
+                    onClick={() => handleBulkOperation('complete')}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    size="sm"
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Mark Completed
+                  </Button>
+                  <Button
+                    onClick={() => handleBulkOperation('cancel')}
+                    variant="outline"
+                    className="border-red-600 text-red-600 hover:bg-red-50"
+                    size="sm"
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Cancel Orders
+                  </Button>
+                </div>
+              )}
+            </div>
+          </Card>
+        )}
+
         {/* Requests Table */}
         <Card className="overflow-hidden">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h3 className="text-lg font-medium text-gray-900">Guest Requests</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium text-gray-900">Guest Requests</h3>
+              {selectedRequests.length > 0 && (
+                <span className="text-sm text-blue-600 font-medium">
+                  {selectedRequests.length} selected
+                </span>
+              )}
+            </div>
           </div>
           
           {loading ? (
