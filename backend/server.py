@@ -169,6 +169,12 @@ class GuestRequestCreate(BaseModel):
             raise ValueError(f'Priority must be one of: {", ".join(allowed_priorities)}')
         return v
 
+class GuestRequestPhoto(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    filename: str
+    originalName: str
+    uploadedAt: datetime = Field(default_factory=datetime.utcnow)
+
 class GuestRequest(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     guestName: str
@@ -182,6 +188,7 @@ class GuestRequest(BaseModel):
     requestType: str
     priority: str
     message: str
+    photos: List[GuestRequestPhoto] = Field(default_factory=list)
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     status: str = Field(default="pending")
     respondedAt: Optional[datetime] = None
