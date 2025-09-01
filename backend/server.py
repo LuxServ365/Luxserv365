@@ -464,6 +464,76 @@ async def get_photo_file(filename: str):
         logger.error(f"Error retrieving photo: {str(e)}")
         return {"error": "Unable to retrieve photo"}
 
+@api_router.post("/guest-requests", response_model=dict)
+async def submit_guest_request(request: GuestRequestCreate):
+    try:
+        # Create guest request object
+        request_dict = request.dict()
+        request_obj = GuestRequest(**request_dict)
+        
+        # Insert into database
+        result = await db.guest_requests.insert_one(request_obj.dict())
+        
+        if result.inserted_id:
+            logger.info(f"Guest request submitted: {request_obj.guestEmail} - {request_obj.requestType}")
+            return {
+                "success": True,
+                "data": request_obj.dict(),
+                "message": "Guest request submitted successfully",
+                "confirmationNumber": request_obj.id[:8].upper()
+            }
+        else:
+            raise Exception("Failed to insert guest request")
+            
+    except Exception as e:
+        logger.error(f"Error submitting guest request: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to submit request",
+            "message": str(e)
+        }
+
+@api_router.get("/guest-requests")
+async def get_all_guest_requests():
+    try:
+        requests = await db.guest_requests.find().sort("createdAt", -1).to_list(1000)
+        return {
+            "success": True,
+            "data": [GuestRequest(**request).dict() for request in requests]
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving guest requests: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve guest requests",
+            "message": str(e)
+        }
+
+@api_router.get("/guest-requests/{confirmation_number}")
+async def get_guest_request_status(confirmation_number: str):
+    try:
+        # Find request by confirmation number (first 8 chars of ID)
+        requests = await db.guest_requests.find().to_list(1000)
+        for request in requests:
+            if request['id'][:8].upper() == confirmation_number.upper():
+                return {
+                    "success": True,
+                    "data": GuestRequest(**request).dict()
+                }
+        
+        return {
+            "success": False,
+            "error": "Request not found",
+            "message": "No request found with this confirmation number"
+        }
+    except Exception as e:
+        logger.error(f"Error retrieving guest request status: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve request status",
+            "message": str(e)
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
