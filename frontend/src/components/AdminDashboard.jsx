@@ -771,6 +771,78 @@ export const AdminDashboard = () => {
         </div>
       )}
 
+      {/* Bulk Operation Modal */}
+      {bulkOperationModal.open && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-md w-full">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-medium text-gray-900">
+                {bulkOperationModal.operation === 'complete' ? 'Mark as Completed' : 
+                 bulkOperationModal.operation === 'cancel' ? 'Cancel Orders' : 'Bulk Update'}
+              </h3>
+              <p className="text-sm text-gray-600">
+                This will affect {selectedRequests.length} request{selectedRequests.length > 1 ? 's' : ''}
+              </p>
+            </div>
+            
+            <div className="px-6 py-4">
+              {bulkOperationModal.operation === 'complete' && (
+                <div className="text-center">
+                  <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                  <p className="text-gray-700 mb-4">
+                    Are you sure you want to mark {selectedRequests.length} request{selectedRequests.length > 1 ? 's' : ''} as completed?
+                  </p>
+                </div>
+              )}
+              
+              {bulkOperationModal.operation === 'cancel' && (
+                <div className="text-center">
+                  <Trash2 className="h-12 w-12 text-red-600 mx-auto mb-4" />
+                  <p className="text-gray-700 mb-4">
+                    Are you sure you want to cancel {selectedRequests.length} order{selectedRequests.length > 1 ? 's' : ''}?
+                  </p>
+                  <p className="text-sm text-gray-500 mb-4">
+                    This action will mark the selected requests as cancelled.
+                  </p>
+                </div>
+              )}
+            </div>
+            
+            <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setBulkOperationModal({ open: false, operation: '' });
+                  setBulkData({ status: '', priority: '', note: '' });
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={executeBulkOperation}
+                className={
+                  bulkOperationModal.operation === 'complete' 
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "bg-red-600 hover:bg-red-700 text-white"
+                }
+              >
+                {bulkOperationModal.operation === 'complete' ? (
+                  <>
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    Mark Completed
+                  </>
+                ) : (
+                  <>
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Cancel Orders
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="fixed top-4 right-4 bg-red-50 border-l-4 border-red-400 p-4 rounded-r-lg shadow-lg z-50">
           <div className="flex">
