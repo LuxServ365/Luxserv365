@@ -248,6 +248,7 @@ export const AdminDashboard = () => {
     switch (status) {
       case 'completed': return 'text-green-600 bg-green-100 border-green-200';
       case 'in-progress': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
+      case 'cancelled': return 'text-red-600 bg-red-100 border-red-200';
       default: return 'text-gray-600 bg-gray-100 border-gray-200';
     }
   };
