@@ -49,6 +49,11 @@ export const GuestPortal = () => {
       description: 'Request additional cleaning, trash removal, or post-event cleanup services'
     },
     {
+      value: 'pre-arrival-grocery-stocking',
+      label: '🛒 Pre-Arrival Grocery & Beverage Stocking',
+      description: 'Have your vacation rental fully stocked with groceries and beverages before you arrive'
+    },
+    {
       value: 'concierge-services',
       label: '🎯 Concierge Services (Local info, visitor information, trip ideas & coordination)',
       description: 'Get local recommendations, visitor information, and help coordinating activities'
