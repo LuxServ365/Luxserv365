@@ -79,6 +79,11 @@ export const GuestPortal = () => {
       description: 'Special arrangements for birthdays, anniversaries, or other celebrations'
     },
     {
+      value: 'pet-services',
+      label: '🐾 Pet Services & Accommodations',
+      description: 'Pet care, walking, supplies, veterinary coordination, and pet-friendly arrangements'
+    },
+    {
       value: 'emergency-urgent',
       label: '🆘 Emergency/Urgent',
       description: 'Immediate assistance required for urgent situations'
