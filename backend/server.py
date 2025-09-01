@@ -197,6 +197,32 @@ class GuestRequest(BaseModel):
     createdAt: datetime = Field(default_factory=datetime.utcnow)
     status: str = Field(default="pending")
     respondedAt: Optional[datetime] = None
+    internalNotes: List[str] = Field(default_factory=list)
+    adminPhotos: List[GuestRequestPhoto] = Field(default_factory=list)
+    lastUpdatedBy: Optional[str] = None
+    lastUpdatedAt: Optional[datetime] = None
+
+class AdminAuth(BaseModel):
+    username: str
+    password: str
+
+class AdminLogin(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    username: str
+    loginAt: datetime = Field(default_factory=datetime.utcnow)
+    ipAddress: Optional[str] = None
+
+class GuestRequestUpdate(BaseModel):
+    status: Optional[str] = None
+    priority: Optional[str] = None
+    internalNote: Optional[str] = None
+    adminUsername: str
+
+class AdminReply(BaseModel):
+    requestId: str
+    subject: str
+    message: str
+    adminUsername: str
 
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
