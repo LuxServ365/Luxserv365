@@ -12,6 +12,7 @@ import uuid
 from datetime import datetime
 import shutil
 from email_service import email_service
+from telegram_service import telegram_service
 
 
 ROOT_DIR = Path(__file__).parent
