@@ -63,49 +63,6 @@ export const Services = () => {
     }
   ];
 
-  const guestServices = [
-    {
-      icon: ShoppingCart,
-      title: "Pre-Arrival Grocery & Beverage Stocking",
-      description: "Have your vacation rental fully stocked before guests arrive."
-    },
-    {
-      icon: Umbrella,
-      title: "Beach Gear Rentals",
-      description: "Chairs, umbrellas, paddleboards, and other beach equipment rentals."
-    },
-    {
-      icon: MapPin,
-      title: "Exclusive Local Tours & Experience Booking",
-      description: "Curated local experiences and tour bookings for memorable vacations."
-    },
-    {
-      icon: ChefHat,
-      title: "Private Event & Catering Coordination",
-      description: "Professional event planning and catering services for special occasions and convenience."
-    },
-    {
-      icon: Gift,
-      title: "Celebration Packages",
-      description: "Special arrangements for birthdays, honeymoons, anniversaries, and more."
-    },
-    {
-      icon: MessageCircle,
-      title: "On-Demand Concierge Text Line",
-      description: "24/7 text support for guest questions and requests during their stay."
-    },
-    {
-      icon: Car,
-      title: "Transportation Assistance",
-      description: "Airport pickup coordination and golf cart rental arrangements."
-    },
-    {
-      icon: Baby,
-      title: "Baby & Family Gear Rentals",
-      description: "Cribs, high chairs, strollers, and other family-friendly equipment."
-    }
-  ];
-
   return (
     <section id="services" className="py-20 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
