@@ -542,12 +542,35 @@ async def submit_guest_request(
         result = await db.guest_requests.insert_one(request_obj.dict())
         
         if result.inserted_id:
+            confirmation_number = request_obj.id[:8].upper()
             logger.info(f"Guest request submitted: {request_obj.guestEmail} - {request_obj.requestType} with {len(uploaded_photos)} photos")
+            
+            # Send email notification
+            try:
+                email_sent = await email_service.send_guest_request_notification(
+                    guest_name=request_obj.guestName,
+                    guest_email=request_obj.guestEmail,
+                    guest_phone=request_obj.guestPhone,
+                    property_address=request_obj.propertyAddress,
+                    request_type=request_obj.requestType,
+                    priority=request_obj.priority,
+                    message=request_obj.message,
+                    confirmation_number=confirmation_number,
+                    photo_count=len(uploaded_photos)
+                )
+                if email_sent:
+                    logger.info(f"Email notification sent for request {confirmation_number}")
+                else:
+                    logger.warning(f"Email notification failed for request {confirmation_number}")
+            except Exception as e:
+                logger.error(f"Email notification error for request {confirmation_number}: {str(e)}")
+                # Don't fail the request if email fails
+            
             return {
                 "success": True,
                 "data": request_obj.dict(),
                 "message": "Guest request submitted successfully",
-                "confirmationNumber": request_obj.id[:8].upper()
+                "confirmationNumber": confirmation_number
             }
         else:
             raise Exception("Failed to insert guest request")
