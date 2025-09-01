@@ -567,6 +567,26 @@ async def submit_guest_request(
                 logger.error(f"Email notification error for request {confirmation_number}: {str(e)}")
                 # Don't fail the request if email fails
             
+            # Send Telegram notification
+            try:
+                telegram_sent = await telegram_service.send_guest_request_alert(
+                    guest_name=request_obj.guestName,
+                    guest_email=request_obj.guestEmail,
+                    property_address=request_obj.propertyAddress,
+                    request_type=request_obj.requestType,
+                    priority=request_obj.priority,
+                    message=request_obj.message,
+                    confirmation_number=confirmation_number,
+                    photo_count=len(uploaded_photos)
+                )
+                if telegram_sent:
+                    logger.info(f"Telegram alert sent for request {confirmation_number}")
+                else:
+                    logger.warning(f"Telegram alert failed for request {confirmation_number}")
+            except Exception as e:
+                logger.error(f"Telegram alert error for request {confirmation_number}: {str(e)}")
+                # Don't fail the request if Telegram fails
+            
             return {
                 "success": True,
                 "data": request_obj.dict(),
