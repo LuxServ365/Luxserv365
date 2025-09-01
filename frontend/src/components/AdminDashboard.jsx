@@ -50,6 +50,11 @@ export const AdminDashboard = () => {
   const [bulkOperationModal, setBulkOperationModal] = useState({ open: false, operation: '' });
   const [bulkData, setBulkData] = useState({ status: '', priority: '', note: '' });
 
+  // Bulk operations
+  const [selectedRequests, setSelectedRequests] = useState([]);
+  const [bulkOperationModal, setBulkOperationModal] = useState({ open: false, operation: '' });
+  const [bulkData, setBulkData] = useState({ status: '', priority: '', note: '' });
+
   useEffect(() => {
     // Check if already authenticated (simple demo - in production use proper JWT)
     const authToken = localStorage.getItem('admin_token');
