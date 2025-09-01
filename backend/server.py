@@ -657,6 +657,55 @@ async def get_guest_photo(filename: str):
         logger.error(f"Error retrieving guest photo: {str(e)}")
         return {"error": "Unable to retrieve photo"}
 
+@api_router.get("/telegram/bot-info")
+async def get_telegram_bot_info():
+    """Get Telegram bot information for testing."""
+    try:
+        bot_info = await telegram_service.get_bot_info()
+        if bot_info:
+            return {
+                "success": True,
+                "bot_info": bot_info,
+                "message": "Bot is configured and accessible"
+            }
+        else:
+            return {
+                "success": False,
+                "error": "Bot not configured or inaccessible"
+            }
+    except Exception as e:
+        logger.error(f"Error getting bot info: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to get bot information",
+            "message": str(e)
+        }
+
+@api_router.get("/telegram/get-chat-id")
+async def get_telegram_chat_id():
+    """Get chat ID from recent bot messages (for setup)."""
+    try:
+        chat_id = await telegram_service.get_chat_id_from_updates()
+        if chat_id:
+            return {
+                "success": True,
+                "chat_id": chat_id,
+                "message": "Chat ID found from recent messages"
+            }
+        else:
+            return {
+                "success": False,
+                "error": "No recent messages found",
+                "message": "Please send a message to the bot first"
+            }
+    except Exception as e:
+        logger.error(f"Error getting chat ID: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to get chat ID",
+            "message": str(e)
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
