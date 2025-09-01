@@ -98,37 +98,7 @@ export const Services = () => {
           </div>
         </div>
 
-        {/* Guest Concierge */}
-        <div>
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
-              Guest Concierge
-            </h2>
-            <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-4">
-              Elevating the Guest Experience.
-            </p>
-            <div className="inline-flex items-center px-4 py-2 rounded-full bg-teal-100 text-teal-700 font-medium">
-              📌 Your vacation, upgraded
-            </div>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {guestServices.map((service, index) => {
-              const IconComponent = service.icon;
-              return (
-                <Card key={index} className="p-6 h-full hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 border-0 shadow-lg bg-gradient-to-br from-white to-slate-50 group">
-                  <div className="flex flex-col items-start h-full">
-                    <div className="bg-teal-100 p-3 rounded-xl mb-4 group-hover:bg-teal-200 transition-colors duration-300">
-                      <IconComponent className="h-6 w-6 text-teal-600" />
-                    </div>
-                    <h3 className="font-bold text-slate-900 mb-3 leading-tight">{service.title}</h3>
-                    <p className="text-slate-600 text-sm leading-relaxed flex-1">{service.description}</p>
-                  </div>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
       </div>
     </section>
   );
