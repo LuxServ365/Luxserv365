@@ -490,6 +490,70 @@ export const GuestPortal = () => {
                     placeholder="Please provide detailed information about your request. The more specific you are, the better we can assist you."
                   ></textarea>
                 </div>
+
+                {/* Photo Upload Section */}
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center">
+                    <Camera className="h-4 w-4 mr-2" />
+                    Attach Photos (Optional)
+                  </label>
+                  <p className="text-sm text-slate-500 mb-4">
+                    Upload photos to help us better understand your request. Maximum 10 photos allowed.
+                  </p>
+                  
+                  <div className="border-2 border-dashed border-slate-300 rounded-lg p-6 text-center hover:border-blue-400 transition-colors duration-200">
+                    <input
+                      type="file"
+                      id="photoUpload"
+                      multiple
+                      accept="image/*"
+                      onChange={handlePhotoSelect}
+                      className="hidden"
+                    />
+                    <label 
+                      htmlFor="photoUpload" 
+                      className="cursor-pointer flex flex-col items-center justify-center"
+                    >
+                      <Upload className="h-12 w-12 text-slate-400 mb-2" />
+                      <span className="text-sm font-medium text-slate-700 mb-1">
+                        Click to select photos or drag and drop
+                      </span>
+                      <span className="text-xs text-slate-500">
+                        PNG, JPG, GIF up to 10MB each
+                      </span>
+                    </label>
+                  </div>
+
+                  {/* Photo Previews */}
+                  {photoPreview.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-sm font-medium text-slate-700 mb-2">
+                        Selected Photos ({photoPreview.length}/10):
+                      </p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                        {photoPreview.map((photo) => (
+                          <div key={photo.id} className="relative group">
+                            <img
+                              src={photo.url}
+                              alt="Preview"
+                              className="w-full h-24 object-cover rounded-lg border border-slate-200"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removePhoto(photo.id)}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                            >
+                              <X className="h-4 w-4" />
+                            </button>
+                            <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-xs p-1 rounded-b-lg truncate">
+                              {photo.file.name}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 
