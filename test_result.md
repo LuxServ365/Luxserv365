@@ -295,6 +295,43 @@ backend:
       - working: "NA"
         agent: "main"
         comment: "IMPLEMENTED: Created Telegram Bot service using LuxServ365Bot token, integrated with guest request endpoint to send instant alerts for ALL requests (not just urgent). Includes MarkdownV2 formatting, priority-based emojis, request details, and bot info/chat ID endpoints for setup. Need testing to verify Telegram delivery."
+
+  - task: "Admin Dashboard Backend"
+    implemented: false
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Starting implementation of comprehensive admin dashboard backend. Features include: password-protected authentication, CRUD operations for guest requests, status updates, internal notes, email reply system, admin photo upload, analytics & reporting endpoints."
+
+frontend:
+  - task: "Admin Dashboard Frontend"
+    implemented: false
+    working: "NA"
+    file: "AdminDashboard.jsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Will create responsive admin dashboard interface with advanced search & filtering, status management, communication tools, email templates, bulk actions, and report generation capabilities."
+
+  - task: "Guest Services Restructuring"
+    implemented: false
+    working: "NA"
+    file: "GuestServices.jsx, Header.jsx"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Will move guest concierge services to separate page (/guest-services) and redesign header navigation menu ordered from most interesting to owners (right to left): Services, Owner Portal, Mission, Guest Services, Guest Portal."
       - working: true
         agent: "testing"
         comment: "TELEGRAM NOTIFICATION SYSTEM TESTING COMPLETED: Telegram bot integration working excellently. Successfully tested: ✅ Bot Configuration (/api/telegram/bot-info) - LuxServ365Bot accessible with ID 8306535651 and username @LuxServ365Bot. ✅ Chat ID Endpoint (/api/telegram/get-chat-id) - working correctly, returns appropriate response when no messages found. ✅ Notification Triggering - Telegram alerts properly triggered for all guest request submissions with different priorities, request types, and photo counts. ✅ Message Formatting - MarkdownV2 formatting working with priority emojis (🚨 urgent, ⚠️ high, 📋 normal), proper text escaping, and comprehensive request details. ✅ Error Handling - gracefully handles missing chat ID (expected until user messages bot first) without breaking main functionality. Fixed environment variable loading issue during testing. Telegram notification system fully functional and ready for production use."
