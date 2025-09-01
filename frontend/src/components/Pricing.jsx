@@ -24,7 +24,7 @@ export const Pricing = () => {
       buttonColor: "bg-slate-600 hover:bg-slate-700",
       iconColor: "text-slate-600",
       popular: false,
-      description: "Perfect for small condos (1–2BR) or cost-conscious owners"
+      description: "Perfect for cost-conscious owners"
     },
     {
       name: "Premium Care",
