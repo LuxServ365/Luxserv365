@@ -742,6 +742,35 @@ class GuestPortalTester:
         return passed == total
 
 if __name__ == "__main__":
-    tester = ContactFormTester()
-    success = tester.run_all_tests()
-    sys.exit(0 if success else 1)
+    print("LUXSERV 365 COMPREHENSIVE BACKEND TESTING")
+    print("=" * 80)
+    
+    # Run Contact Form Tests
+    contact_tester = ContactFormTester()
+    contact_success = contact_tester.run_all_tests()
+    
+    print("\n" + "=" * 80)
+    
+    # Run Guest Portal Tests
+    guest_tester = GuestPortalTester()
+    guest_success = guest_tester.run_all_tests()
+    
+    # Overall Summary
+    print("\n" + "=" * 80)
+    print("OVERALL TEST SUMMARY")
+    print("=" * 80)
+    
+    contact_passed = sum(1 for result in contact_tester.test_results if result['success'])
+    contact_total = len(contact_tester.test_results)
+    guest_passed = sum(1 for result in guest_tester.test_results if result['success'])
+    guest_total = len(guest_tester.test_results)
+    
+    total_passed = contact_passed + guest_passed
+    total_tests = contact_total + guest_total
+    
+    print(f"Contact Form Tests: {contact_passed}/{contact_total} passed")
+    print(f"Guest Portal Tests: {guest_passed}/{guest_total} passed")
+    print(f"Overall: {total_passed}/{total_tests} passed ({(total_passed/total_tests)*100:.1f}%)")
+    
+    overall_success = contact_success and guest_success
+    sys.exit(0 if overall_success else 1)
