@@ -98,13 +98,56 @@ export const GuestPortal = () => {
     }));
   };
 
+  const handlePhotoSelect = (e) => {
+    const files = Array.from(e.target.files);
+    const validFiles = files.filter(file => file.type.startsWith('image/'));
+    
+    if (validFiles.length !== files.length) {
+      setError('Some files were not images and were skipped.');
+    }
+    
+    // Limit to 10 photos total
+    const totalPhotos = selectedPhotos.length + validFiles.length;
+    if (totalPhotos > 10) {
+      setError('Maximum 10 photos allowed. Some photos were not added.');
+      const remainingSlots = 10 - selectedPhotos.length;
+      validFiles.splice(remainingSlots);
+    }
+    
+    setSelectedPhotos(prev => [...prev, ...validFiles]);
+    
+    // Create preview URLs
+    validFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setPhotoPreview(prev => [...prev, {
+          file: file,
+          url: event.target.result,
+          id: `${file.name}-${Date.now()}` 
+        }]);
+      };
+      reader.readAsDataURL(file);
+    });
+    
+    // Clear the input
+    e.target.value = '';
+  };
+
+  const removePhoto = (photoId) => {
+    const photoToRemove = photoPreview.find(p => p.id === photoId);
+    if (photoToRemove) {
+      setSelectedPhotos(prev => prev.filter(file => file !== photoToRemove.file));
+      setPhotoPreview(prev => prev.filter(p => p.id !== photoId));
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     try {
-      const response = await guestApi.submitRequest(formData);
+      const response = await guestApi.submitRequest(formData, selectedPhotos);
       
       if (response.success) {
         setConfirmationNumber(response.confirmationNumber);
