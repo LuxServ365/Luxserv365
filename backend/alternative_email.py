@@ -43,7 +43,7 @@ MESSAGE:
 {message}
 
 Please log into your admin dashboard to respond:
-https://host-empowered.preview.emergentagent.com/admin
+https://vacation-concierge.preview.emergentagent.com/admin
 
 Time: {os.environ.get('TZ', 'UTC')}
             """
