@@ -180,6 +180,8 @@ export const GuestPortal = () => {
     setCurrentStep('form');
     setError(null);
     setConfirmationNumber('');
+    setSelectedPhotos([]);
+    setPhotoPreview([]);
   };
 
   const getPriorityColor = (priority) => {
