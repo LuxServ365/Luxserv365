@@ -8,15 +8,7 @@ import {
   Smartphone, 
   Cloud, 
   Users, 
-  Monitor,
-  ShoppingCart,
-  Umbrella,
-  MapPin,
-  ChefHat,
-  Gift,
-  MessageCircle,
-  Car,
-  Baby
+  Monitor
 } from 'lucide-react';
 
 export const Services = () => {
