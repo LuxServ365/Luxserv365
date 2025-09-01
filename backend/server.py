@@ -1141,7 +1141,7 @@ async def bulk_update_guest_requests(bulk_data: BulkUpdateRequest):
                 
                 if bulk_data.status:
                     update_fields["status"] = bulk_data.status
-                    if bulk_data.status in ["completed", "resolved"]:
+                    if bulk_data.status in ["completed", "resolved", "cancelled"]:
                         update_fields["respondedAt"] = datetime.utcnow()
                 
                 if bulk_data.priority:
