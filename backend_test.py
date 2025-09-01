@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backend API Testing for LuxServ 365 Contact Form
-Tests the contact form API endpoints and data validation
+Backend API Testing for LuxServ 365 
+Tests the contact form API endpoints, guest portal photo upload functionality, and data validation
 """
 
 import requests
@@ -10,6 +10,8 @@ import sys
 from datetime import datetime
 import os
 from dotenv import load_dotenv
+import io
+from PIL import Image
 
 # Load environment variables
 load_dotenv('/app/frontend/.env')
