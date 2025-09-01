@@ -237,7 +237,17 @@ This is an automated notification from LuxServ 365 Guest Portal.
         
         try:
             await smtp.connect()
-            await smtp.starttls()
+            if not smtp.is_connected:
+                raise Exception("Failed to connect to SMTP server")
+            
+            # Only start TLS if not already using it
+            if not smtp.is_ehlo_or_helo_needed:
+                await smtp.ehlo()
+            
+            if smtp.supports_extension("STARTTLS") and not smtp.is_tls:
+                await smtp.starttls()
+                await smtp.ehlo()  # Re-identify after STARTTLS
+            
             await smtp.login(self.smtp_username, self.smtp_password)
             await smtp.send_message(message, recipients=to_emails)
             logger.info(f"Email sent successfully to {', '.join(to_emails)}")
