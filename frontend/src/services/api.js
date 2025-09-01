@@ -331,6 +331,20 @@ export const adminApi = {
       console.error('Get analytics error:', error);
       throw error;
     }
+  },
+
+  // Bulk update requests
+  bulkUpdateRequests: async (requestIds, updateData) => {
+    try {
+      const response = await apiClient.put('/admin/guest-requests/bulk-update', {
+        requestIds,
+        ...updateData
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Bulk update error:', error);
+      throw error;
+    }
   }
 };
 
