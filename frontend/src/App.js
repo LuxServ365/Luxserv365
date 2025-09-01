@@ -13,6 +13,7 @@ import { Mission } from "./components/Mission";
 import { GuestPortal } from "./components/GuestPortal";
 import { OwnerLogin } from "./components/OwnerLogin";
 import { OwnerDashboard } from "./components/OwnerDashboard";
+import { AdminDashboard } from "./components/AdminDashboard";
 
 const Home = () => {
   return (
