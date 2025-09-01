@@ -212,7 +212,7 @@ test_plan:
 
 frontend:
   - task: "Guest Portal Photo Upload"
-    implemented: false
+    implemented: true
     working: "NA"
     file: "GuestPortal.jsx, server.py"
     stuck_count: 0
@@ -222,9 +222,12 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Starting implementation of photo upload functionality for guest requests. Need to update backend models, API endpoints, and frontend interface to handle multiple image uploads per request."
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED: Added photo upload functionality to Guest Portal. Frontend now includes photo selection, preview, drag-and-drop interface with 10 photo limit. Backend updated to handle multipart form data with photo files. Need backend testing to verify endpoints work correctly."
 
   - task: "Guest Request Photo Storage"
-    implemented: false
+    implemented: true
     working: "NA"
     file: "server.py"
     stuck_count: 0
@@ -234,6 +237,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "Need to extend GuestRequest model to support photo attachments and create photo upload endpoint for guest requests."
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED: Extended GuestRequest model with GuestRequestPhoto model, created guest_photos directory, modified /api/guest-requests endpoint to accept Form data with file uploads, added /api/guest-photos/{filename} endpoint to serve photos. Updated API service to handle multipart form data."
 
   - task: "Notification System - Email"
     implemented: false
