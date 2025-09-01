@@ -203,11 +203,14 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Guest Portal Photo Upload"
+    - "Guest Request Photo Storage"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
+frontend:
   - task: "Guest Portal Photo Upload"
     implemented: false
     working: "NA"
@@ -220,7 +223,6 @@ test_plan:
         agent: "main"
         comment: "Starting implementation of photo upload functionality for guest requests. Need to update backend models, API endpoints, and frontend interface to handle multiple image uploads per request."
 
-backend:
   - task: "Guest Request Photo Storage"
     implemented: false
     working: "NA"
