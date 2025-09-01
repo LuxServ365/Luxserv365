@@ -1591,6 +1591,12 @@ if __name__ == "__main__":
     notification_tester = NotificationTester()
     notification_success = notification_tester.run_all_tests()
     
+    print("\n" + "=" * 80)
+    
+    # Run Admin Dashboard Tests
+    admin_tester = AdminDashboardTester()
+    admin_success = admin_tester.run_all_tests()
+    
     # Overall Summary
     print("\n" + "=" * 80)
     print("OVERALL TEST SUMMARY")
@@ -1602,14 +1608,17 @@ if __name__ == "__main__":
     guest_total = len(guest_tester.test_results)
     notification_passed = sum(1 for result in notification_tester.test_results if result['success'])
     notification_total = len(notification_tester.test_results)
+    admin_passed = sum(1 for result in admin_tester.test_results if result['success'])
+    admin_total = len(admin_tester.test_results)
     
-    total_passed = contact_passed + guest_passed + notification_passed
-    total_tests = contact_total + guest_total + notification_total
+    total_passed = contact_passed + guest_passed + notification_passed + admin_passed
+    total_tests = contact_total + guest_total + notification_total + admin_total
     
     print(f"Contact Form Tests: {contact_passed}/{contact_total} passed")
     print(f"Guest Portal Tests: {guest_passed}/{guest_total} passed")
     print(f"Notification Tests: {notification_passed}/{notification_total} passed")
+    print(f"Admin Dashboard Tests: {admin_passed}/{admin_total} passed")
     print(f"Overall: {total_passed}/{total_tests} passed ({(total_passed/total_tests)*100:.1f}%)")
     
-    overall_success = contact_success and guest_success and notification_success
+    overall_success = contact_success and guest_success and notification_success and admin_success
     sys.exit(0 if overall_success else 1)
