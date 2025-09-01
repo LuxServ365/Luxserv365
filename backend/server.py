@@ -475,17 +475,70 @@ async def get_photo_file(filename: str):
         return {"error": "Unable to retrieve photo"}
 
 @api_router.post("/guest-requests", response_model=dict)
-async def submit_guest_request(request: GuestRequestCreate):
+async def submit_guest_request(
+    guestName: str = Form(...),
+    guestEmail: str = Form(...),
+    guestPhone: Optional[str] = Form(None),
+    numberOfGuests: Optional[int] = Form(None),
+    propertyAddress: str = Form(...),
+    checkInDate: str = Form(...),
+    checkOutDate: str = Form(...),
+    unitNumber: Optional[str] = Form(None),
+    requestType: str = Form(...),
+    priority: str = Form(default="normal"),
+    message: str = Form(...),
+    photos: List[UploadFile] = File(default=[])
+):
     try:
+        # Create base request data
+        request_data = {
+            "guestName": guestName,
+            "guestEmail": guestEmail,
+            "guestPhone": guestPhone,
+            "numberOfGuests": numberOfGuests,
+            "propertyAddress": propertyAddress,
+            "checkInDate": checkInDate,
+            "checkOutDate": checkOutDate,
+            "unitNumber": unitNumber,
+            "requestType": requestType,
+            "priority": priority,
+            "message": message
+        }
+        
         # Create guest request object
-        request_dict = request.dict()
-        request_obj = GuestRequest(**request_dict)
+        request_obj = GuestRequest(**request_data)
+        
+        # Handle photo uploads
+        uploaded_photos = []
+        for photo in photos:
+            if photo.filename:
+                # Validate image file
+                if not photo.content_type.startswith('image/'):
+                    continue
+                
+                file_extension = photo.filename.split('.')[-1] if '.' in photo.filename else 'jpg'
+                unique_filename = f"{request_obj.id}_{uuid.uuid4().hex[:8]}.{file_extension}"
+                file_path = GUEST_PHOTOS_DIR / unique_filename
+                
+                # Save photo file
+                with open(file_path, "wb") as buffer:
+                    shutil.copyfileobj(photo.file, buffer)
+                
+                # Create photo record
+                photo_record = GuestRequestPhoto(
+                    filename=unique_filename,
+                    originalName=photo.filename
+                )
+                uploaded_photos.append(photo_record)
+        
+        # Add photos to request
+        request_obj.photos = uploaded_photos
         
         # Insert into database
         result = await db.guest_requests.insert_one(request_obj.dict())
         
         if result.inserted_id:
-            logger.info(f"Guest request submitted: {request_obj.guestEmail} - {request_obj.requestType}")
+            logger.info(f"Guest request submitted: {request_obj.guestEmail} - {request_obj.requestType} with {len(uploaded_photos)} photos")
             return {
                 "success": True,
                 "data": request_obj.dict(),
