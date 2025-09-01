@@ -23,6 +23,8 @@ REPORTS_DIR = UPLOAD_DIR / "reports"
 REPORTS_DIR.mkdir(exist_ok=True)
 PHOTOS_DIR = UPLOAD_DIR / "photos"
 PHOTOS_DIR.mkdir(exist_ok=True)
+GUEST_PHOTOS_DIR = UPLOAD_DIR / "guest_photos"
+GUEST_PHOTOS_DIR.mkdir(exist_ok=True)
 
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
