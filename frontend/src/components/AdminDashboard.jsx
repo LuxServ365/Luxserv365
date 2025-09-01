@@ -21,7 +21,10 @@ import {
   ChevronDown,
   ChevronUp,
   Mail,
-  Phone
+  Phone,
+  Square,
+  CheckSquare,
+  Trash2
 } from 'lucide-react';
 import { adminApi } from '../services/api';
 
