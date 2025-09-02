@@ -104,17 +104,56 @@ export const GuestPortal = () => {
     setError(null);
 
     try {
-      const response = await guestApi.submitRequest(formData);
+      // Use the working contact form endpoint with formatted message
+      const contactData = {
+        name: formData.guestName,
+        email: formData.guestEmail,
+        phone: formData.guestPhone || null,
+        propertyAddress: formData.propertyAddress,
+        currentlyManaging: "Guest Request",
+        message: `GUEST SERVICE REQUEST
+
+Guest Information:
+- Name: ${formData.guestName}
+- Email: ${formData.guestEmail}
+- Phone: ${formData.guestPhone || 'Not provided'}
+- Number of Guests: ${formData.numberOfGuests || 'Not provided'}
+
+Property Information:
+- Address: ${formData.propertyAddress}
+- Check-in Date: ${formData.checkInDate}
+- Check-out Date: ${formData.checkOutDate}
+- Unit Number: ${formData.unitNumber || 'Not provided'}
+
+Request Details:
+- Type: ${requestTypes.find(type => type.value === formData.requestType)?.label || formData.requestType}
+- Priority: ${formData.priority.toUpperCase()}
+- Message: ${formData.message}
+
+Please process this guest service request promptly.`
+      };
+
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(contactData)
+      });
+
+      const result = await response.json();
       
-      if (response.success) {
-        setConfirmationNumber(response.confirmationNumber);
+      if (result.success) {
+        // Generate a simple confirmation number from timestamp
+        const confirmationNumber = Date.now().toString(36).toUpperCase().slice(-8);
+        setConfirmationNumber(confirmationNumber);
         setCurrentStep('success');
       } else {
-        setError(response.error || 'Failed to submit request');
+        setError(result.error || 'Failed to submit request');
       }
     } catch (err) {
       console.error('Guest request submission error:', err);
-      setError(err.message || 'Failed to submit request. Please try again.');
+      setError('Failed to submit request. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
