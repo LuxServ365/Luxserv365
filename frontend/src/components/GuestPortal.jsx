@@ -180,7 +180,7 @@ export const GuestPortal = () => {
         </div>
 
         <Card className="p-8 shadow-lg">
-          <form onSubmit={handleFormSubmit}>
+          <form onSubmit={handleSubmit} className="space-y-6">
             {/* Guest Information */}
             <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
