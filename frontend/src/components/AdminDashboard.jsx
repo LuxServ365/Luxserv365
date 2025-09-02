@@ -591,8 +591,8 @@ export const AdminDashboard = () => {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
                             <div>
-                              <p className="text-sm font-medium text-gray-900">{request.guestName}</p>
-                              <p className="text-sm text-gray-500">{request.guestEmail}</p>
+                              <p className="text-sm font-medium text-gray-900">{request.name || request.guestName}</p>
+                              <p className="text-sm text-gray-500">{request.email || request.guestEmail}</p>
                             </div>
                           </div>
                         </td>
