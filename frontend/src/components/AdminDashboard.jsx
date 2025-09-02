@@ -97,7 +97,7 @@ export const AdminDashboard = () => {
     try {
       // Load requests and analytics in parallel
       const [requestsResponse, analyticsResponse] = await Promise.all([
-        adminApi.getRequests({
+        adminApi.getAllRequests({
           page: currentPage,
           search: searchTerm,
           status: statusFilter,
