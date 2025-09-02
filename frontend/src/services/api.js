@@ -213,28 +213,11 @@ export const photoApi = {
 };
 
 export const guestApi = {
-  // Submit guest request with photos
-  submitRequest: async (requestData, photos = []) => {
+  // Submit guest request (simplified without photos)
+  submitRequest: async (requestData) => {
     try {
-      const formData = new FormData();
-      
-      // Add all form fields
-      Object.keys(requestData).forEach(key => {
-        if (requestData[key] !== null && requestData[key] !== undefined && requestData[key] !== '') {
-          formData.append(key, requestData[key]);
-        }
-      });
-      
-      // Add photos if any
-      photos.forEach((photo) => {
-        formData.append('photos', photo);
-      });
-
-      const response = await apiClient.post('/guest-requests', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      // Simple JSON submission without photos
+      const response = await apiClient.post('/guest-requests', requestData);
       return response.data;
     } catch (error) {
       console.error('Guest request submission error:', error);
