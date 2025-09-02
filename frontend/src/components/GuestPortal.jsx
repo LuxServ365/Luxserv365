@@ -3,39 +3,18 @@ import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { 
   MessageSquare, 
-  Send, 
   User, 
-  MapPin, 
-  Calendar,
+  MapPin,
   Phone,
   Mail,
   Users,
   Home,
   CheckCircle,
-  AlertCircle,
-  Clock,
   ArrowLeft
 } from 'lucide-react';
-import { guestApi } from '../services/api';
 
 export const GuestPortal = () => {
-  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'success', 'status'
-  const [formData, setFormData] = useState({
-    guestName: '',
-    guestEmail: '',
-    guestPhone: '',
-    numberOfGuests: '',
-    propertyAddress: '',
-    checkInDate: '',
-    checkOutDate: '',
-    unitNumber: '',
-    requestType: '',
-    priority: 'normal',
-    message: ''
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const [confirmationNumber, setConfirmationNumber] = useState('');
+  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'success'
 
   const requestTypes = [
     {
@@ -90,107 +69,6 @@ export const GuestPortal = () => {
     }
   ];
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
-    try {
-      // Use the working contact form endpoint with formatted message
-      const contactData = {
-        name: formData.guestName,
-        email: formData.guestEmail,
-        phone: formData.guestPhone || null,
-        propertyAddress: formData.propertyAddress,
-        currentlyManaging: "Guest Request",
-        message: `GUEST SERVICE REQUEST
-
-Guest Information:
-- Name: ${formData.guestName}
-- Email: ${formData.guestEmail}
-- Phone: ${formData.guestPhone || 'Not provided'}
-- Number of Guests: ${formData.numberOfGuests || 'Not provided'}
-
-Property Information:
-- Address: ${formData.propertyAddress}
-- Check-in Date: ${formData.checkInDate}
-- Check-out Date: ${formData.checkOutDate}
-- Unit Number: ${formData.unitNumber || 'Not provided'}
-
-Request Details:
-- Type: ${requestTypes.find(type => type.value === formData.requestType)?.label || formData.requestType}
-- Priority: ${formData.priority.toUpperCase()}
-- Message: ${formData.message}
-
-Please process this guest service request promptly.`
-      };
-
-      console.log('Submitting contact data:', contactData);
-
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(contactData)
-      });
-
-      console.log('Response status:', response.status);
-      const result = await response.json();
-      console.log('Response data:', result);
-      
-      // The backend returns success even if email fails, so we check for the data
-      if (response.ok && (result.success || result.data)) {
-        // Generate a simple confirmation number from timestamp
-        const confirmationNumber = Date.now().toString(36).toUpperCase().slice(-8);
-        setConfirmationNumber(confirmationNumber);
-        setCurrentStep('success');
-      } else {
-        setError(result.error || result.message || 'Failed to submit request');
-      }
-    } catch (err) {
-      console.error('Guest request submission error:', err);
-      setError('Failed to submit request. Please try again.');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      guestName: '',
-      guestEmail: '',
-      guestPhone: '',
-      numberOfGuests: '',
-      propertyAddress: '',
-      checkInDate: '',
-      checkOutDate: '',
-      unitNumber: '',
-      requestType: '',
-      priority: 'normal',
-      message: ''
-    });
-    setCurrentStep('form');
-    setError(null);
-    setConfirmationNumber('');
-  };
-
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'urgent': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      default: return 'text-blue-600 bg-blue-100';
-    }
-  };
-
   if (currentStep === 'success') {
     return (
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4">
@@ -200,11 +78,11 @@ Please process this guest service request promptly.`
               <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
               <h1 className="text-3xl font-bold text-gray-900 mb-4">Request Submitted Successfully!</h1>
               <div className="bg-green-50 p-6 rounded-lg mb-6">
-                <h2 className="text-xl font-semibold text-green-800 mb-2">Confirmation Number</h2>
+                <h2 className="text-xl font-semibold text-green-800 mb-2">Confirmation</h2>
                 <div className="text-2xl font-mono font-bold text-green-700 bg-white p-3 rounded border">
-                  {confirmationNumber}
+                  Your request has been received
                 </div>
-                <p className="text-green-600 mt-2 text-sm">Please save this number for your records</p>
+                <p className="text-green-600 mt-2 text-sm">We will contact you within 1-4 hours</p>
               </div>
               <div className="text-left bg-blue-50 p-6 rounded-lg mb-6">
                 <h3 className="text-lg font-semibold text-blue-800 mb-3">What happens next?</h3>
@@ -217,7 +95,7 @@ Please process this guest service request promptly.`
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <Clock className="h-5 w-5 mt-0.5 flex-shrink-0" />
+                    <Phone className="h-5 w-5 mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="font-medium">Response Time</p>
                       <p className="text-sm">Our team will respond within 1-4 hours during business hours</p>
@@ -232,59 +110,11 @@ Please process this guest service request promptly.`
                   </div>
                 </div>
               </div>
-              <div className="flex gap-4 justify-center">
-                <Button 
-                  onClick={resetForm}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
-                >
-                  Submit Another Request
-                </Button>
-                <Button 
-                  onClick={() => setCurrentStep('status')}
-                  variant="outline"
-                  className="px-6 py-2"
-                >
-                  Check Request Status
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-
-  if (currentStep === 'status') {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white py-12 px-4">
-        <div className="max-w-2xl mx-auto">
-          <Card className="p-8 shadow-lg">
-            <div className="mb-6">
               <Button 
                 onClick={() => setCurrentStep('form')}
-                variant="outline"
-                className="mb-4"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2"
               >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Request Form
-              </Button>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Check Request Status</h1>
-              <p className="text-gray-600">Enter your confirmation number to track your request</p>
-            </div>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirmation Number
-                </label>
-                <input
-                  type="text"
-                  placeholder="Enter your 8-character confirmation number"
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 font-mono uppercase"
-                  maxLength={8}
-                />
-              </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3">
-                Check Status
+                Submit Another Request
               </Button>
             </div>
           </Card>
@@ -304,9 +134,9 @@ Please process this guest service request promptly.`
         </div>
 
         <Card className="p-8 shadow-lg">
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form action="https://luxserv365.onrender.com/api/contact" method="POST" onSubmit={() => setTimeout(() => setCurrentStep('success'), 1000)}>
             {/* Guest Information */}
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <User className="h-5 w-5" />
                 Guest Information
@@ -318,9 +148,7 @@ Please process this guest service request promptly.`
                   </label>
                   <input
                     type="text"
-                    name="guestName"
-                    value={formData.guestName}
-                    onChange={handleInputChange}
+                    name="name"
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter your full name"
@@ -332,9 +160,7 @@ Please process this guest service request promptly.`
                   </label>
                   <input
                     type="email"
-                    name="guestEmail"
-                    value={formData.guestEmail}
-                    onChange={handleInputChange}
+                    name="email"
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="your.email@example.com"
@@ -346,9 +172,7 @@ Please process this guest service request promptly.`
                   </label>
                   <input
                     type="tel"
-                    name="guestPhone"
-                    value={formData.guestPhone}
-                    onChange={handleInputChange}
+                    name="phone"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="(123) 456-7890"
                   />
@@ -360,8 +184,6 @@ Please process this guest service request promptly.`
                   <input
                     type="number"
                     name="numberOfGuests"
-                    value={formData.numberOfGuests}
-                    onChange={handleInputChange}
                     min="1"
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="2"
@@ -371,7 +193,7 @@ Please process this guest service request promptly.`
             </div>
 
             {/* Property Information */}
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <Home className="h-5 w-5" />
                 Property Information
@@ -384,8 +206,6 @@ Please process this guest service request promptly.`
                   <input
                     type="text"
                     name="propertyAddress"
-                    value={formData.propertyAddress}
-                    onChange={handleInputChange}
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="123 Beach Drive, Panama City Beach, FL or Property Name"
@@ -398,8 +218,6 @@ Please process this guest service request promptly.`
                   <input
                     type="date"
                     name="checkInDate"
-                    value={formData.checkInDate}
-                    onChange={handleInputChange}
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -411,8 +229,6 @@ Please process this guest service request promptly.`
                   <input
                     type="date"
                     name="checkOutDate"
-                    value={formData.checkOutDate}
-                    onChange={handleInputChange}
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
@@ -424,8 +240,6 @@ Please process this guest service request promptly.`
                   <input
                     type="text"
                     name="unitNumber"
-                    value={formData.unitNumber}
-                    onChange={handleInputChange}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Unit 101, Room A, etc."
                   />
@@ -434,7 +248,7 @@ Please process this guest service request promptly.`
             </div>
 
             {/* Request Details */}
-            <div className="bg-gray-50 p-6 rounded-lg">
+            <div className="bg-gray-50 p-6 rounded-lg mb-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
                 <MessageSquare className="h-5 w-5" />
                 Request Details
@@ -446,8 +260,6 @@ Please process this guest service request promptly.`
                   </label>
                   <select
                     name="requestType"
-                    value={formData.requestType}
-                    onChange={handleInputChange}
                     required
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
@@ -458,11 +270,6 @@ Please process this guest service request promptly.`
                       </option>
                     ))}
                   </select>
-                  {formData.requestType && (
-                    <p className="mt-2 text-sm text-gray-600">
-                      {requestTypes.find(type => type.value === formData.requestType)?.description}
-                    </p>
-                  )}
                 </div>
 
                 <div>
@@ -471,8 +278,6 @@ Please process this guest service request promptly.`
                   </label>
                   <select
                     name="priority"
-                    value={formData.priority}
-                    onChange={handleInputChange}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   >
                     <option value="normal">Normal - Response within 4 hours</option>
@@ -486,9 +291,7 @@ Please process this guest service request promptly.`
                     Detailed Message *
                   </label>
                   <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleInputChange}
+                    name="guestMessage"
                     required
                     rows={6}
                     className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -498,30 +301,18 @@ Please process this guest service request promptly.`
               </div>
             </div>
 
-            {error && (
-              <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
-                <p className="text-red-700">{error}</p>
-              </div>
-            )}
-
+            {/* Hidden fields to format the message properly */}
+            <input type="hidden" name="currentlyManaging" value="Guest Request" />
+            
             <div className="flex justify-center">
               <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
               >
-                {isSubmitting ? (
-                  <div className="flex items-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                    Submitting Request...
-                  </div>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <Send className="h-5 w-5" />
-                    Submit Request
-                  </div>
-                )}
+                <div className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Submit Request
+                </div>
               </Button>
             </div>
           </form>
