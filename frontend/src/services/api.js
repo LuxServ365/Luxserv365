@@ -213,7 +213,7 @@ export const photoApi = {
 };
 
 export const guestApi = {
-  // Submit guest request (simplified without photos)
+  // Submit guest request (back to proper API)
   submitRequest: async (requestData) => {
     try {
       // Clean up the data - convert empty strings to null and proper types
@@ -231,7 +231,7 @@ export const guestApi = {
         message: requestData.message
       };
 
-      // Simple JSON submission without photos
+      // Use the working guest-requests endpoint
       const response = await apiClient.post('/guest-requests', cleanedData);
       return response.data;
     } catch (error) {
