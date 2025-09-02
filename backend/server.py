@@ -547,74 +547,17 @@ async def get_photo_file(filename: str):
         return {"error": "Unable to retrieve photo"}
 
 @api_router.post("/guest-requests", response_model=dict)
-async def submit_guest_request(
-    guestName: str = Form(...),
-    guestEmail: str = Form(...),
-    guestPhone: Optional[str] = Form(None),
-    numberOfGuests: Optional[int] = Form(None),
-    propertyAddress: str = Form(...),
-    checkInDate: str = Form(...),
-    checkOutDate: str = Form(...),
-    unitNumber: Optional[str] = Form(None),
-    requestType: str = Form(...),
-    priority: str = Form(default="normal"),
-    message: str = Form(...),
-    photos: List[UploadFile] = File(default=[])
-):
+async def submit_guest_request(request: GuestRequestCreate):
     try:
-        # Create base request data
-        request_data = {
-            "guestName": guestName,
-            "guestEmail": guestEmail,
-            "guestPhone": guestPhone,
-            "numberOfGuests": numberOfGuests,
-            "propertyAddress": propertyAddress,
-            "checkInDate": checkInDate,
-            "checkOutDate": checkOutDate,
-            "unitNumber": unitNumber,
-            "requestType": requestType,
-            "priority": priority,
-            "message": message
-        }
-        
-        # Validate using Pydantic model first
-        validated_data = GuestRequestCreate(**request_data)
-        
         # Create guest request object
-        request_obj = GuestRequest(**validated_data.dict())
-        
-        # Handle photo uploads
-        uploaded_photos = []
-        for photo in photos:
-            if photo.filename:
-                # Validate image file
-                if not photo.content_type.startswith('image/'):
-                    continue
-                
-                file_extension = photo.filename.split('.')[-1] if '.' in photo.filename else 'jpg'
-                unique_filename = f"{request_obj.id}_{uuid.uuid4().hex[:8]}.{file_extension}"
-                file_path = GUEST_PHOTOS_DIR / unique_filename
-                
-                # Save photo file
-                with open(file_path, "wb") as buffer:
-                    shutil.copyfileobj(photo.file, buffer)
-                
-                # Create photo record
-                photo_record = GuestRequestPhoto(
-                    filename=unique_filename,
-                    originalName=photo.filename
-                )
-                uploaded_photos.append(photo_record)
-        
-        # Add photos to request
-        request_obj.photos = uploaded_photos
+        request_obj = GuestRequest(**request.dict())
         
         # Insert into database
         result = await db.guest_requests.insert_one(request_obj.dict())
         
         if result.inserted_id:
             confirmation_number = request_obj.id[:8].upper()
-            logger.info(f"Guest request submitted: {request_obj.guestEmail} - {request_obj.requestType} with {len(uploaded_photos)} photos")
+            logger.info(f"Guest request submitted: {request_obj.guestEmail} - {request_obj.requestType}")
             
             # Send email notification
             try:
@@ -627,7 +570,7 @@ async def submit_guest_request(
                     priority=request_obj.priority,
                     message=request_obj.message,
                     confirmation_number=confirmation_number,
-                    photo_count=len(uploaded_photos)
+                    photo_count=0
                 )
                 if email_sent:
                     logger.info(f"Email notification sent for request {confirmation_number}")
@@ -647,7 +590,7 @@ async def submit_guest_request(
                     priority=request_obj.priority,
                     message=request_obj.message,
                     confirmation_number=confirmation_number,
-                    photo_count=len(uploaded_photos)
+                    photo_count=0
                 )
                 if telegram_sent:
                     logger.info(f"Telegram alert sent for request {confirmation_number}")
