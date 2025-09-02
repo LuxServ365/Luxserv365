@@ -615,9 +615,9 @@ export const AdminDashboard = () => {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <select
-                            value={request.status}
+                            value={request.status || 'pending'}
                             onChange={(e) => handleStatusUpdate(request.id, e.target.value)}
-                            className={`text-xs font-medium rounded-full border px-2 py-1 ${getStatusColor(request.status)}`}
+                            className={`text-xs font-medium rounded-full border px-2 py-1 ${getStatusColor(request.status || 'pending')}`}
                           >
                             <option value="pending">Pending</option>
                             <option value="in-progress">In Progress</option>
