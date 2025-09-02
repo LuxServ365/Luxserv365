@@ -598,7 +598,7 @@ export const AdminDashboard = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div>
-                            <p className="text-sm font-medium text-gray-900">{formatRequestType(request.requestType)}</p>
+                            <p className="text-sm font-medium text-gray-900">{formatRequestType(request.requestType || 'general-inquiry')}</p>
                             <p className="text-sm text-gray-500">{request.propertyAddress}</p>
                             {request.photos && request.photos.length > 0 && (
                               <p className="text-xs text-blue-600 flex items-center mt-1">
