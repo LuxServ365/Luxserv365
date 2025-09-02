@@ -40,6 +40,11 @@ app = FastAPI()
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
+# Add root health check for Render
+@app.get("/")
+async def health_check():
+    return {"status": "healthy", "service": "LuxServ 365 Backend", "version": "1.0"}
+
 
 # Define Models
 class StatusCheck(BaseModel):
