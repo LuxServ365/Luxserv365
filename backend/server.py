@@ -723,29 +723,14 @@ async def get_telegram_chat_id():
 
 @api_router.post("/admin/login")
 async def admin_login(credentials: AdminAuth):
-    """Admin login endpoint."""
+    """Simple hardcoded admin login - no database required."""
     try:
-        admin_username = os.environ.get('ADMIN_USERNAME')
-        admin_password = os.environ.get('ADMIN_PASSWORD')
-        
-        if not admin_username or not admin_password:
-            return {
-                "success": False,
-                "error": "Admin credentials not configured"
-            }
-        
-        if credentials.username == admin_username and credentials.password == admin_password:
-            # Log the login
-            login_record = AdminLogin(
-                username=credentials.username,
-                ipAddress="system"  # In real implementation, get from request
-            )
-            await db.admin_logins.insert_one(login_record.dict())
-            
+        # Hardcoded credentials for reliability
+        if credentials.username == "luxserv_admin" and credentials.password == "LuxServ2025":
             return {
                 "success": True,
                 "message": "Login successful",
-                "token": "admin_authenticated",  # Simple token for demo
+                "token": "admin_authenticated",
                 "username": credentials.username
             }
         else:
