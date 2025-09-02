@@ -609,8 +609,8 @@ export const AdminDashboard = () => {
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(request.priority)}`}>
-                            {request.priority.toUpperCase()}
+                          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getPriorityColor(request.priority || 'normal')}`}>
+                            {(request.priority || 'normal').toUpperCase()}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
