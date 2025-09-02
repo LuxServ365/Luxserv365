@@ -643,8 +643,8 @@ export const AdminDashboard = () => {
                               onClick={() => setReplyModal({
                                 open: true,
                                 requestId: request.id,
-                                guestName: request.guestName,
-                                guestEmail: request.guestEmail
+                                guestName: request.name || request.guestName,
+                                guestEmail: request.email || request.guestEmail
                               })}
                             >
                               <Reply className="h-4 w-4" />
