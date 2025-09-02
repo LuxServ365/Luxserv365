@@ -216,8 +216,23 @@ export const guestApi = {
   // Submit guest request (simplified without photos)
   submitRequest: async (requestData) => {
     try {
+      // Clean up the data - convert empty strings to null and proper types
+      const cleanedData = {
+        guestName: requestData.guestName,
+        guestEmail: requestData.guestEmail,
+        guestPhone: requestData.guestPhone || null,
+        numberOfGuests: requestData.numberOfGuests ? parseInt(requestData.numberOfGuests) : null,
+        propertyAddress: requestData.propertyAddress,
+        checkInDate: requestData.checkInDate,
+        checkOutDate: requestData.checkOutDate,
+        unitNumber: requestData.unitNumber || null,
+        requestType: requestData.requestType,
+        priority: requestData.priority || 'normal',
+        message: requestData.message
+      };
+
       // Simple JSON submission without photos
-      const response = await apiClient.post('/guest-requests', requestData);
+      const response = await apiClient.post('/guest-requests', cleanedData);
       return response.data;
     } catch (error) {
       console.error('Guest request submission error:', error);
