@@ -133,6 +133,8 @@ Request Details:
 Please process this guest service request promptly.`
       };
 
+      console.log('Submitting contact data:', contactData);
+
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
         method: 'POST',
         headers: {
@@ -141,15 +143,18 @@ Please process this guest service request promptly.`
         body: JSON.stringify(contactData)
       });
 
+      console.log('Response status:', response.status);
       const result = await response.json();
+      console.log('Response data:', result);
       
-      if (result.success) {
+      // The backend returns success even if email fails, so we check for the data
+      if (response.ok && (result.success || result.data)) {
         // Generate a simple confirmation number from timestamp
         const confirmationNumber = Date.now().toString(36).toUpperCase().slice(-8);
         setConfirmationNumber(confirmationNumber);
         setCurrentStep('success');
       } else {
-        setError(result.error || 'Failed to submit request');
+        setError(result.error || result.message || 'Failed to submit request');
       }
     } catch (err) {
       console.error('Guest request submission error:', err);
