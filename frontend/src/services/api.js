@@ -280,99 +280,69 @@ export const adminApi = {
     }
   },
 
-  // Get all requests for admin (using contact endpoint that works)
+  // Get all requests for admin (back to proper API)
   getAllRequests: async (filters = {}) => {
     try {
-      // Use the working contact endpoint instead of broken guest-requests
-      const response = await apiClient.get('/contact');
-      return {
-        success: true,
-        data: {
-          requests: response.data.data || [],
-          pagination: {
-            current_page: 1,
-            total_pages: 1,
-            total_count: (response.data.data || []).length,
-            per_page: 50
-          }
-        }
-      };
+      const params = new URLSearchParams();
+      
+      if (filters.search) params.append('search', filters.search);
+      if (filters.status) params.append('status', filters.status);
+      if (filters.priority) params.append('priority', filters.priority);
+      if (filters.requestType) params.append('request_type', filters.requestType);
+      if (filters.page) params.append('page', filters.page);
+      if (filters.limit) params.append('limit', filters.limit);
+      if (filters.dateFrom) params.append('date_from', filters.dateFrom);
+      if (filters.dateTo) params.append('date_to', filters.dateTo);
+
+      const response = await apiClient.get(`/admin/guest-requests?${params.toString()}`);
+      return response.data;
     } catch (error) {
       console.error('Get admin requests error:', error);
       throw error;
     }
   },
 
-  // Update guest request (simplified to work with contact data)
+  // Update guest request (back to proper API)
   updateRequest: async (requestId, updateData) => {
     try {
-      // Since we're using contact form data, we'll simulate the update
-      // In a real scenario, you'd update the contact record
-      console.log('Updating request:', requestId, updateData);
-      return {
-        success: true,
-        message: 'Request updated successfully'
-      };
+      const response = await apiClient.put(`/admin/guest-requests/${requestId}`, updateData);
+      return response.data;
     } catch (error) {
       console.error('Update request error:', error);
       throw error;
     }
   },
 
-  // Send reply to guest (placeholder)
+  // Send reply to guest (back to proper API)
   sendReply: async (requestId, replyData) => {
     try {
-      console.log('Sending reply:', requestId, replyData);
-      return {
-        success: true,
-        message: 'Reply sent successfully'
-      };
+      const response = await apiClient.post(`/admin/guest-requests/${requestId}/reply`, replyData);
+      return response.data;
     } catch (error) {
       console.error('Send reply error:', error);
       throw error;
     }
   },
 
-  // Get analytics (simplified)
+  // Get analytics (back to proper API)
   getAnalytics: async () => {
     try {
-      const response = await apiClient.get('/contact');
-      const requests = response.data.data || [];
-      return {
-        success: true,
-        data: {
-          overview: {
-            total_requests: requests.length,
-            pending_requests: requests.filter(r => r.status === 'pending').length,
-            completed_requests: requests.filter(r => r.status === 'completed').length,
-            urgent_requests: 0,
-            recent_requests: requests.length,
-            total_bookings: 0,
-            current_guests: 0
-          },
-          request_types: [],
-          status_breakdown: []
-        }
-      };
+      const response = await apiClient.get('/admin/analytics');
+      return response.data;
     } catch (error) {
       console.error('Get analytics error:', error);
       throw error;
     }
   },
 
-  // Bulk update requests (simplified)
+  // Bulk update requests (back to proper API)
   bulkUpdateRequests: async (requestIds, updateData) => {
     try {
-      console.log('Bulk updating requests:', requestIds, updateData);
-      return {
-        success: true,
-        data: {
-          updated_count: requestIds.length,
-          total_requests: requestIds.length,
-          failed_updates: []
-        },
-        message: `Successfully updated ${requestIds.length} requests`
-      };
+      const response = await apiClient.put('/admin/guest-requests/bulk-update', {
+        requestIds,
+        ...updateData
+      });
+      return response.data;
     } catch (error) {
       console.error('Bulk update error:', error);
       throw error;
