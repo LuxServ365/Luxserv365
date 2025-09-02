@@ -600,7 +600,7 @@ export const AdminDashboard = () => {
                           <div>
                             <p className="text-sm font-medium text-gray-900">{formatRequestType(request.requestType)}</p>
                             <p className="text-sm text-gray-500">{request.propertyAddress}</p>
-                            {request.photos.length > 0 && (
+                            {request.photos && request.photos.length > 0 && (
                               <p className="text-xs text-blue-600 flex items-center mt-1">
                                 <Camera className="h-3 w-3 mr-1" />
                                 {request.photos.length} photo(s)
