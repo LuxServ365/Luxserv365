@@ -14,7 +14,31 @@ import {
 } from 'lucide-react';
 
 export const GuestPortal = () => {
-  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'success'
+  const [currentStep, setCurrentStep] = useState('form'); // 'form', 'success', 'status'
+  const [formData, setFormData] = useState({
+    guestName: '',
+    guestEmail: '',
+    guestPhone: '',
+    numberOfGuests: '',
+    propertyAddress: '',
+    checkInDate: '',
+    checkOutDate: '',
+    unitNumber: '',
+    requestType: '',
+    priority: 'normal',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState(null);
+  const [confirmationNumber, setConfirmationNumber] = useState('');
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
