@@ -34,7 +34,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
     
     setIsSubmitting(true);
     try {
-      // Send to backend which will forward to Telegram bot
+      // Send to backend which will forward to team
       const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/messages`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
