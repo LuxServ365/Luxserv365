@@ -102,14 +102,14 @@ export const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 mt-16">
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             return (
-              <div key={index} className={`${plan.popular ? 'pt-8' : ''}`}>
-                {/* Popular badge */}
+              <div key={index}>
+                {/* Popular badge - BEFORE the container */}
                 {plan.popular && (
-                  <div className="text-center mb-4">
+                  <div className="text-center mb-6">
                     <span className="bg-yellow-400 text-slate-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg whitespace-nowrap inline-block">
                       MOST POPULAR
                     </span>
