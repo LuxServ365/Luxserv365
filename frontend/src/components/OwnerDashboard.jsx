@@ -312,18 +312,41 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   <h2 className="text-2xl font-semibold text-gray-900 mb-4">Send Message to LuxServ 365</h2>
                   <p className="text-gray-600 mb-6">Communicate directly with our management team. We'll respond within 24 hours during business days.</p>
                   
-                  <iframe 
-                    src="https://docs.google.com/forms/d/e/1FAIpQLSfk820GC4AHVOBiIxpGvz8bwwwrlw_YBn4CiS7EGQE35Boi9A/viewform?embedded=true" 
-                    width="100%" 
-                    height="800" 
-                    frameBorder="0" 
-                    marginHeight="0" 
-                    marginWidth="0"
-                    className="rounded-lg border"
-                    title="Owner Communication Form"
-                  >
-                    Loading owner communication form...
-                  </iframe>
+                  {propertyData.loading ? (
+                    <div className="flex items-center justify-center py-20">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <span className="ml-3 text-gray-600">Loading messaging system...</span>
+                    </div>
+                  ) : propertyData.googleFormsUrl ? (
+                    <iframe 
+                      src={propertyData.googleFormsUrl} 
+                      width="100%" 
+                      height="800" 
+                      frameBorder="0" 
+                      marginHeight="0" 
+                      marginWidth="0"
+                      className="rounded-lg border"
+                      title="Property-Specific Owner Communication Form"
+                    >
+                      Loading owner communication form...
+                    </iframe>
+                  ) : (
+                    <div className="text-center py-20 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <MessageSquare className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">Property Not Yet Configured</h3>
+                      <p className="text-gray-600 mb-4">Your property-specific messaging system is being set up.</p>
+                      <p className="text-sm text-gray-500">Please contact our admin team to complete your property setup.</p>
+                      <div className="mt-6">
+                        <a 
+                          href="mailto:850realty@gmail.com" 
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          <Mail className="h-4 w-4 mr-2" />
+                          Contact Admin
+                        </a>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Previous Messages */}
