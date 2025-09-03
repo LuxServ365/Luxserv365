@@ -73,7 +73,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
           <Bot className="h-20 w-20 text-green-500 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-slate-900 mb-4">Message Sent!</h2>
           <p className="text-xl text-slate-600 mb-6">
-            Your message has been sent to our team via bot. We'll respond soon!
+            Your message has been sent to our team. We'll respond soon!
           </p>
           <Button
             onClick={() => setSubmitSuccess(false)}
