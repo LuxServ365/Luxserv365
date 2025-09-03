@@ -161,13 +161,13 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
             </Button>
           </Card>
 
-          {/* Send Bot Message Card */}
+          {/* Send Team Message Card */}
           <Card className="p-6 shadow-lg border-0 bg-white">
             <div className="flex items-center mb-4">
               <Bot className="h-6 w-6 text-green-600 mr-3" />
-              <h3 className="text-lg font-semibold text-gray-900">Message Our Bot</h3>
+              <h3 className="text-lg font-semibold text-gray-900">Message Our Team</h3>
             </div>
-            <p className="text-gray-600 mb-4">Send a quick message to our Telegram bot for faster response.</p>
+            <p className="text-gray-600 mb-4">Send a quick message to our team for faster response.</p>
             <div className="mb-4">
               <textarea
                 value={messageText}
