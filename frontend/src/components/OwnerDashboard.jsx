@@ -348,30 +348,19 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
             {activeTab === 'inspections' && (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg shadow-lg p-6">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Reports</h2>
-                  <p className="text-gray-600 mb-6">View and download inspection reports for your property. Reports are automatically uploaded after each inspection.</p>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Report</h2>
+                  <p className="text-gray-600 mb-6">View your property inspection report including photos and maintenance notes.</p>
                   
                   {/* Google Drive Folder Embed */}
                   <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📁 Inspection Reports Folder</h3>
-                    <p className="text-sm text-gray-600 mb-4">Click the link below to access your property's inspection reports:</p>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Current Inspection Report</h3>
+                    <p className="text-sm text-gray-600 mb-4">Access your property's latest inspection report:</p>
                     
                     {/* This will be dynamically populated based on property */}
                     <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
                       <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600 mb-3">Your inspection reports will appear here</p>
-                      <p className="text-sm text-gray-500">Reports are organized by date and include photos, maintenance notes, and recommendations</p>
-                    </div>
-                    
-                    {/* Example of what it will look like when populated */}
-                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
-                      <h4 className="font-semibold text-blue-800 mb-2">📋 Sample Report Structure:</h4>
-                      <ul className="text-sm text-blue-700 space-y-1">
-                        <li>• Monthly Inspection - [Date]</li>
-                        <li>• Maintenance Report - [Date]</li> 
-                        <li>• Move-in/Move-out Inspection</li>
-                        <li>• Emergency Repair Documentation</li>
-                      </ul>
+                      <p className="text-gray-600 mb-3">Your inspection report will appear here</p>
+                      <p className="text-sm text-gray-500">Report includes property condition, photos, and maintenance recommendations</p>
                     </div>
                   </div>
 
@@ -382,7 +371,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                       <div>
                         <h3 className="text-sm font-medium text-green-800">Automatic Notifications</h3>
                         <p className="mt-1 text-sm text-green-700">
-                          You'll receive email notifications whenever new inspection reports are uploaded for your property.
+                          You'll receive an email notification when your property inspection report is updated.
                         </p>
                       </div>
                     </div>
