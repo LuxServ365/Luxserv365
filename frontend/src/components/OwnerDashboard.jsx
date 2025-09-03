@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { 
@@ -13,6 +13,7 @@ import {
   ExternalLink,
   Bot
 } from 'lucide-react';
+import { propertyApi } from '../services/api';
 
 export const OwnerDashboard = ({ userData, onLogout }) => {
   const [messageText, setMessageText] = useState('');
