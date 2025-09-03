@@ -464,7 +464,7 @@ async def send_telegram_notification_owner(owner_message):
 *Time:* {escape_markdown(str(datetime.utcnow()))}
         """
         
-        await send_telegram_message(message_text)
+        await send_telegram_message(owner_message)
         logger.info(f"Telegram notification sent for owner message: {owner_message.ownerEmail}")
         
     except Exception as e:
