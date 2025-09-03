@@ -16,7 +16,7 @@ import {
   Camera,
   Star
 } from 'lucide-react';
-import { messageApi } from '../services/api';
+import { messageApi, propertyApi } from '../services/api';
 import { InspectionReports } from './InspectionReports';
 import { PhotoAlbum } from './PhotoAlbum';
 import { ReviewsTestimonials } from './ReviewsTestimonials';
