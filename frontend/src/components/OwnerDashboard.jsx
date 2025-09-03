@@ -279,128 +279,62 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
           {/* Main Content */}
           <div className="lg:col-span-3">
             {activeTab === 'messages' && (
-              <>
-                {/* Send Message Form */}
-                <Card className="p-6 shadow-lg border-0 bg-white mb-6">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-6 flex items-center">
-                    <MessageSquare className="h-6 w-6 mr-2 text-blue-600" />
-                    Send Message to LuxServ 365
-                  </h3>
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Send Message to LuxServ 365</h2>
+                  <p className="text-gray-600 mb-6">Communicate directly with our management team. We'll respond within 24 hours during business days.</p>
                   
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="subject" className="block text-sm font-medium text-slate-700 mb-2">
-                          Subject *
-                        </label>
-                        <input
-                          type="text"
-                          id="subject"
-                          name="subject"
-                          required
-                          value={newMessage.subject}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                          placeholder="Maintenance request, billing question, etc."
-                        />
-                      </div>
-                      <div>
-                        <label htmlFor="priority" className="block text-sm font-medium text-slate-700 mb-2">
-                          Priority
-                        </label>
-                        <select
-                          id="priority"
-                          name="priority"
-                          value={newMessage.priority}
-                          onChange={handleInputChange}
-                          className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                        >
-                          <option value="low">Low</option>
-                          <option value="normal">Normal</option>
-                          <option value="high">High</option>
-                          <option value="urgent">Urgent</option>
-                        </select>
-                      </div>
-                    </div>
+                  <iframe 
+                    src="https://docs.google.com/forms/d/e/1FAIpQLSfk820GC4AHVOBiIxpGvz8bwwwrlw_YBn4CiS7EGQE35Boi9A/viewform?embedded=true" 
+                    width="100%" 
+                    height="800" 
+                    frameBorder="0" 
+                    marginHeight="0" 
+                    marginWidth="0"
+                    className="rounded-lg border"
+                    title="Owner Communication Form"
+                  >
+                    Loading owner communication form...
+                  </iframe>
+                </div>
 
-                    <div>
-                      <label htmlFor="message" className="block text-sm font-medium text-slate-700 mb-2">
-                        Message *
-                      </label>
-                      <textarea
-                        id="message"
-                        name="message"
-                        rows={6}
-                        required
-                        value={newMessage.message}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 resize-none"
-                        placeholder="Please describe your request or concern in detail..."
-                      ></textarea>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      disabled={isSubmitting}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                    >
-                      {isSubmitting ? (
-                        <div className="flex items-center justify-center">
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                          Sending Message...
-                        </div>
-                      ) : (
-                        <div className="flex items-center justify-center">
-                          <Send className="h-5 w-5 mr-2" />
-                          Send Message
-                        </div>
-                      )}
-                    </Button>
-
-                    {error && (
-                      <div className="p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
-                        <div className="flex items-center">
-                          <AlertCircle className="h-5 w-5 text-red-600 mr-2" />
-                          <p className="text-red-700">{error}</p>
-                        </div>
-                      </div>
-                    )}
-                  </form>
-                </Card>
-
-                {/* Message History */}
-                <Card className="p-6 shadow-lg border-0 bg-white">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-6">Message History</h3>
-                  
+                {/* Previous Messages */}
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Message History</h3>
                   {messages.length === 0 ? (
-                    <div className="text-center py-8 text-slate-500">
-                      <MessageSquare className="h-12 w-12 mx-auto mb-4 text-slate-300" />
-                      <p>No messages yet. Send your first message above!</p>
-                    </div>
+                    <p className="text-gray-500 text-center py-8">No previous messages found.</p>
                   ) : (
                     <div className="space-y-4">
-                      {messages.map((message, index) => (
-                        <div key={index} className="border border-slate-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-semibold text-slate-900">{message.subject}</h4>
-                            <div className="flex items-center space-x-2">
-                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPriorityColor(message.priority)}`}>
-                                {message.priority.toUpperCase()}
-                              </span>
-                              {getStatusIcon(message.status)}
-                            </div>
+                      {messages.map((message) => (
+                        <Card key={message.id} className="p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <h4 className="font-semibold text-gray-900">{message.subject}</h4>
+                            <span className="text-sm text-gray-500">
+                              {new Date(message.createdAt).toLocaleDateString()}
+                            </span>
                           </div>
-                          <p className="text-slate-600 mb-3">{message.message}</p>
-                          <div className="flex items-center justify-between text-sm text-slate-500">
-                            <span>{new Date(message.createdAt).toLocaleDateString()}</span>
-                            <span className="capitalize">{message.status}</span>
+                          <p className="text-gray-700 mb-2">{message.message}</p>
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              message.priority === 'urgent' ? 'bg-red-100 text-red-800' :
+                              message.priority === 'high' ? 'bg-orange-100 text-orange-800' :
+                              'bg-blue-100 text-blue-800'
+                            }`}>
+                              {message.priority.charAt(0).toUpperCase() + message.priority.slice(1)}
+                            </span>
+                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                              message.status === 'read' ? 'bg-green-100 text-green-800' :
+                              'bg-yellow-100 text-yellow-800'
+                            }`}>
+                              {message.status === 'read' ? 'Read' : 'Unread'}
+                            </span>
                           </div>
-                        </div>
+                        </Card>
                       ))}
                     </div>
                   )}
-                </Card>
-              </>
+                </div>
+              </div>
             )}
 
             {activeTab === 'inspections' && (
