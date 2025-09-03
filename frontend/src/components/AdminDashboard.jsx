@@ -331,6 +331,13 @@ export const AdminDashboard = () => {
             );
           })}
         </div>
+          </>
+        )}
+
+        {/* Properties Tab */}
+        {activeTab === 'properties' && (
+          <PropertyManagement />
+        )}
       </div>
     </div>
   );
