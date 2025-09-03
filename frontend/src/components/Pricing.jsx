@@ -109,7 +109,7 @@ export const Pricing = () => {
               <Card key={index} className={`relative p-8 h-full transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border-0 shadow-lg ${plan.bgColor} overflow-hidden`}>
                 {/* Popular badge */}
                 {plan.popular && (
-                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
                     <span className="bg-yellow-400 text-slate-900 px-4 py-1 rounded-full text-sm font-bold shadow-lg">
                       MOST POPULAR
                     </span>
