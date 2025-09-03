@@ -181,7 +181,6 @@ export const Pricing = () => {
                     Get Started
                   </Button>
                 </div>
-                </div>
                 </Card>
               </div>
             );
