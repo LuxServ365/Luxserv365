@@ -26,7 +26,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
     window.location.href = `mailto:850realty@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
   };
 
-  const handleSendBotMessage = async () => {
+  const handleSendTeamMessage = async () => {
     if (!messageText.trim()) {
       alert('Please enter a message first');
       return;
