@@ -267,6 +267,41 @@ class BulkUpdateRequest(BaseModel):
     internalNote: Optional[str] = None
     adminUsername: str
 
+# Property Management Models
+class PropertyCreate(BaseModel):
+    ownerEmail: EmailStr = Field(..., description="Owner email address")
+    ownerName: str = Field(..., min_length=1, max_length=100, description="Owner name") 
+    propertyAddress: str = Field(..., min_length=1, max_length=200, description="Property address")
+    googleDocsUrl: Optional[str] = Field(None, description="Google Docs inspection report URL")
+    googlePhotosUrl: Optional[str] = Field(None, description="Google Photos album URL")
+    googleFormsUrl: Optional[str] = Field(None, description="Google Forms messaging URL")
+    propertyType: Optional[str] = Field(None, description="Property type (condo, house, etc.)")
+    notes: Optional[str] = Field(None, description="Admin notes about property")
+
+class PropertyModel(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    ownerEmail: str
+    ownerName: str
+    propertyAddress: str
+    googleDocsUrl: Optional[str] = None
+    googlePhotosUrl: Optional[str] = None
+    googleFormsUrl: Optional[str] = None
+    propertyType: Optional[str] = None
+    notes: Optional[str] = None
+    createdAt: datetime = Field(default_factory=datetime.utcnow)
+    updatedAt: datetime = Field(default_factory=datetime.utcnow)
+    isActive: bool = Field(default=True)
+
+class PropertyUpdate(BaseModel):
+    ownerName: Optional[str] = None
+    propertyAddress: Optional[str] = None
+    googleDocsUrl: Optional[str] = None
+    googlePhotosUrl: Optional[str] = None
+    googleFormsUrl: Optional[str] = None
+    propertyType: Optional[str] = None
+    notes: Optional[str] = None
+    isActive: Optional[bool] = None
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
