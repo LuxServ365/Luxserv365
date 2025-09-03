@@ -384,45 +384,19 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
             {activeTab === 'photos' && (
               <div className="space-y-6">
                 <div className="bg-white rounded-lg shadow-lg p-6">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Photos</h2>
-                  <p className="text-gray-600 mb-6">View professional photos of your property, including before/after maintenance photos and room galleries.</p>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Photos</h2>
+                  <p className="text-gray-600 mb-6">View photos from your property inspection including interior, exterior, and maintenance documentation.</p>
                   
-                  {/* Google Photos Albums */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3">📸 Property Exterior</h3>
-                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600 mb-2">Exterior Photos</p>
-                        <p className="text-sm text-gray-500">Front, back, landscaping, parking</p>
-                      </div>
-                    </div>
+                  {/* Google Photos Album */}
+                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📸 Inspection Photo Gallery</h3>
+                    <p className="text-sm text-gray-600 mb-4">Access your property inspection photos:</p>
                     
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3">🏠 Interior Rooms</h3>
-                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600 mb-2">Interior Photos</p>
-                        <p className="text-sm text-gray-500">Living areas, bedrooms, kitchen, bathrooms</p>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3">🔧 Maintenance Photos</h3>
-                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600 mb-2">Before/After</p>
-                        <p className="text-sm text-gray-500">Maintenance and repair documentation</p>
-                      </div>
-                    </div>
-                    
-                    <div className="bg-gray-50 rounded-lg p-6">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-3">⭐ Marketing Photos</h3>
-                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                        <p className="text-gray-600 mb-2">Listing Photos</p>
-                        <p className="text-sm text-gray-500">Professional photos for listings</p>
-                      </div>
+                    {/* This will be dynamically populated based on property */}
+                    <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                      <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 mb-3">Your property inspection photos will appear here</p>
+                      <p className="text-sm text-gray-500">Photos include exterior, interior, and maintenance documentation</p>
                     </div>
                   </div>
 
@@ -433,7 +407,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                       <div>
                         <h3 className="text-sm font-medium text-blue-800">Photo Updates</h3>
                         <p className="mt-1 text-sm text-blue-700">
-                          New photos are added regularly after maintenance, cleaning, and property improvements. You'll be notified of all updates.
+                          New inspection photos are added after each property visit. You'll be notified when photos are updated.
                         </p>
                       </div>
                     </div>
