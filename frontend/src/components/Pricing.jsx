@@ -106,16 +106,16 @@ export const Pricing = () => {
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             return (
-              <div key={index}>
-                {/* Popular badge - BEFORE the container */}
+              <div key={index} className="flex-1 max-w-sm mx-auto relative">
+                {/* Popular badge with HUGE space */}
                 {plan.popular && (
-                  <div className="text-center mb-6">
-                    <span className="bg-yellow-400 text-slate-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg whitespace-nowrap inline-block">
-                      MOST POPULAR
+                  <div className="text-center mb-8 pt-4">
+                    <span className="bg-yellow-400 text-slate-900 px-6 py-3 rounded-full text-base font-bold shadow-xl whitespace-nowrap inline-block border-2 border-yellow-600">
+                      ⭐ MOST POPULAR ⭐
                     </span>
                   </div>
                 )}
-                <Card className={`relative p-8 h-full transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border-0 shadow-lg ${plan.bgColor} overflow-hidden`}>
+                <Card className={`relative p-8 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border-0 shadow-lg ${plan.bgColor} overflow-visible`}>
 
                 {/* Daily Value Sticker */}
                 <div className="absolute top-4 right-4 transform rotate-12">
