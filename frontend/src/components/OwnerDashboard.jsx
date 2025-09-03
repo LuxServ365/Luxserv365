@@ -1,25 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { 
   MessageSquare, 
-  Send, 
   User, 
   MapPin, 
   LogOut, 
-  Clock,
-  CheckCircle,
-  AlertCircle,
   Phone,
   Mail,
   FileText,
   Camera,
-  Star
+  ExternalLink,
+  Bot
 } from 'lucide-react';
-import { messageApi, propertyApi } from '../services/api';
-import { InspectionReports } from './InspectionReports';
-import { PhotoAlbum } from './PhotoAlbum';
-import { ReviewsTestimonials } from './ReviewsTestimonials';
 
 export const OwnerDashboard = ({ userData, onLogout }) => {
   const [activeTab, setActiveTab] = useState('messages');
