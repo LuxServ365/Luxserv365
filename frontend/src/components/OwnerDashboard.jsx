@@ -329,12 +329,6 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                             }`}>
                               {message.priority.charAt(0).toUpperCase() + message.priority.slice(1)}
                             </span>
-                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              message.status === 'read' ? 'bg-green-100 text-green-800' :
-                              'bg-yellow-100 text-yellow-800'
-                            }`}>
-                              {message.status === 'read' ? 'Read' : 'Unread'}
-                            </span>
                           </div>
                         </Card>
                       ))}
