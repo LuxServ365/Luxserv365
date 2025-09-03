@@ -39,7 +39,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          subject: `Owner Bot Message from ${userData.name}`,
+          subject: `Owner Team Message from ${userData.name}`,
           message: messageText,
           priority: 'normal',
           ownerEmail: userData.email,
