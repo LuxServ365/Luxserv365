@@ -8,16 +8,17 @@ export const Pricing = () => {
     {
       name: "Essential Care",
       subtitle: "Budget-Friendly, Core Coverage",
-      price: "$299",
-      dailyValue: "$9.97",
+      price: "$399",
+      dailyValue: "$13.30",
       period: "/month",
       icon: Shield,
       features: [
-        "1 monthly maintenance inspection",
+        "2 monthly maintenance inspections",
         "Turnover coordination (at cost per clean)",
         "Discounted guest services",
         "Vendor recommendations",
-        "Owner and guest support"
+        "Owner and guest support",
+        "Basic property monitoring"
       ],
       bgColor: "bg-white",
       textColor: "text-slate-900",
@@ -29,19 +30,20 @@ export const Pricing = () => {
     {
       name: "Premium Care",
       subtitle: "Most Popular Choice",
-      price: "$449",
-      dailyValue: "$14.97",
+      price: "$599",
+      dailyValue: "$19.97",
       period: "/month",
       icon: Star,
       features: [
         "Everything in Essential, plus:",
         "24/7 emergency response",
-        "Bi-weekly maintenance inspections",
+        "Weekly maintenance inspections",
         "Priority scheduling for turnovers & maintenance",
         "Inventory restock coordination",
         "Storm prep readiness checks",
         "Guest check-in/out assistance",
-        "On-site security options"
+        "On-site security options",
+        "Monthly detailed reporting"
       ],
       bgColor: "bg-blue-600",
       textColor: "text-white",
@@ -53,18 +55,20 @@ export const Pricing = () => {
     {
       name: "Elite Care",
       subtitle: "Luxury Partner for Premium Properties",
-      price: "$599",
-      dailyValue: "$19.97",
+      price: "$799",
+      dailyValue: "$26.63",
       period: "/month",
       icon: Crown,
       features: [
         "Everything in Premium, plus:",
-        "Weekly inspections",
+        "Bi-weekly inspections",
         "Concierge-level guest support included",
         "Pre-arrival walkthroughs for every booking",
         "Smart tech monitoring (locks, WiFi, cameras)",
         "White-glove vendor management",
-        "Storm prep & post-storm documentation with photos/video"
+        "Storm prep & post-storm documentation with photos/video",
+        "Dedicated property manager",
+        "VIP guest experience services"
       ],
       bgColor: "bg-gradient-to-br from-amber-500 to-orange-600",
       textColor: "text-white",
