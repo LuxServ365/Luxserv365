@@ -1217,6 +1217,209 @@ async def get_admin_analytics():
             "message": str(e)
         }
 
+# Property Management Endpoints
+
+@api_router.post("/admin/properties", response_model=dict)
+async def create_property(property_data: PropertyCreate):
+    """Create a new property record for an owner."""
+    try:
+        # Check if property already exists for this owner and address
+        existing_property = await db.properties.find_one({
+            "ownerEmail": property_data.ownerEmail,
+            "propertyAddress": property_data.propertyAddress,
+            "isActive": True
+        })
+        
+        if existing_property:
+            return {
+                "success": False,
+                "error": "Property already exists for this owner and address"
+            }
+        
+        # Create property object
+        property_obj = PropertyModel(**property_data.dict())
+        
+        # Insert into database
+        result = await db.properties.insert_one(property_obj.dict())
+        
+        if result.inserted_id:
+            logger.info(f"Property created for owner: {property_obj.ownerEmail} - {property_obj.propertyAddress}")
+            return {
+                "success": True,
+                "data": property_obj.dict(),
+                "message": "Property created successfully"
+            }
+        else:
+            raise Exception("Failed to create property")
+            
+    except Exception as e:
+        logger.error(f"Error creating property: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to create property",
+            "message": str(e)
+        }
+
+@api_router.get("/admin/properties")
+async def get_all_properties(
+    page: int = 1,
+    limit: int = 50,
+    search: Optional[str] = None,
+    owner_email: Optional[str] = None
+):
+    """Get all properties for admin management."""
+    try:
+        # Build filter query
+        filter_query = {"isActive": True}
+        
+        if search:
+            filter_query["$or"] = [
+                {"ownerName": {"$regex": search, "$options": "i"}},
+                {"ownerEmail": {"$regex": search, "$options": "i"}},
+                {"propertyAddress": {"$regex": search, "$options": "i"}}
+            ]
+        
+        if owner_email:
+            filter_query["ownerEmail"] = owner_email
+        
+        # Get total count
+        total_count = await db.properties.count_documents(filter_query)
+        
+        # Get paginated results
+        skip = (page - 1) * limit
+        properties = await db.properties.find(filter_query).sort("createdAt", -1).skip(skip).limit(limit).to_list(limit)
+        
+        return {
+            "success": True,
+            "data": {
+                "properties": [PropertyModel(**prop).dict() for prop in properties],
+                "pagination": {
+                    "current_page": page,
+                    "total_pages": (total_count + limit - 1) // limit,
+                    "total_count": total_count,
+                    "per_page": limit
+                }
+            }
+        }
+    except Exception as e:
+        logger.error(f"Error getting properties: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve properties",
+            "message": str(e)
+        }
+
+@api_router.get("/properties/owner/{owner_email}")
+async def get_owner_property(owner_email: str, property_address: Optional[str] = None):
+    """Get property data for a specific owner."""
+    try:
+        # Build query
+        query = {"ownerEmail": owner_email, "isActive": True}
+        if property_address:
+            query["propertyAddress"] = {"$regex": property_address, "$options": "i"}
+        
+        # Find property
+        property_data = await db.properties.find_one(query)
+        
+        if property_data:
+            return {
+                "success": True,
+                "data": PropertyModel(**property_data).dict()
+            }
+        else:
+            # Return default fallback for owners without property setup
+            return {
+                "success": True,
+                "data": {
+                    "ownerEmail": owner_email,
+                    "ownerName": "Property Owner",
+                    "propertyAddress": property_address or "Address Not Specified",
+                    "googleDocsUrl": None,
+                    "googlePhotosUrl": None,
+                    "googleFormsUrl": None,
+                    "isSetup": False
+                },
+                "message": "Property not yet configured. Please contact admin."
+            }
+    except Exception as e:
+        logger.error(f"Error getting owner property: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to retrieve property data",
+            "message": str(e)
+        }
+
+@api_router.put("/admin/properties/{property_id}")
+async def update_property(property_id: str, update_data: PropertyUpdate):
+    """Update property information."""
+    try:
+        # Find the property
+        existing_property = await db.properties.find_one({"id": property_id})
+        if not existing_property:
+            return {
+                "success": False,
+                "error": "Property not found"
+            }
+        
+        # Prepare update data
+        update_fields = {field: value for field, value in update_data.dict().items() if value is not None}
+        update_fields["updatedAt"] = datetime.utcnow()
+        
+        # Update the property
+        result = await db.properties.update_one(
+            {"id": property_id},
+            {"$set": update_fields}
+        )
+        
+        if result.modified_count > 0:
+            # Get updated property
+            updated_property = await db.properties.find_one({"id": property_id})
+            return {
+                "success": True,
+                "data": PropertyModel(**updated_property).dict(),
+                "message": "Property updated successfully"
+            }
+        else:
+            return {
+                "success": False,
+                "error": "No changes made"
+            }
+    except Exception as e:
+        logger.error(f"Error updating property: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to update property",
+            "message": str(e)
+        }
+
+@api_router.delete("/admin/properties/{property_id}")
+async def delete_property(property_id: str):
+    """Soft delete a property (set isActive to False)."""
+    try:
+        # Update property to inactive
+        result = await db.properties.update_one(
+            {"id": property_id},
+            {"$set": {"isActive": False, "updatedAt": datetime.utcnow()}}
+        )
+        
+        if result.modified_count > 0:
+            return {
+                "success": True,
+                "message": "Property deleted successfully"
+            }
+        else:
+            return {
+                "success": False,
+                "error": "Property not found or already deleted"
+            }
+    except Exception as e:
+        logger.error(f"Error deleting property: {str(e)}")
+        return {
+            "success": False,
+            "error": "Unable to delete property",
+            "message": str(e)
+        }
+
 # Include the router in the main app
 app.include_router(api_router)
 
