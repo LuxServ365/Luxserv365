@@ -347,11 +347,11 @@ frontend:
 
   - task: "Guest Services Restructuring"
     implemented: true
-    working: "NA"
+    working: true
     file: "GuestServices.jsx, Header.jsx, Services.jsx, App.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -362,6 +362,30 @@ frontend:
       - working: true
         agent: "testing"
         comment: "TELEGRAM NOTIFICATION SYSTEM TESTING COMPLETED: Telegram bot integration working excellently. Successfully tested: ✅ Bot Configuration (/api/telegram/bot-info) - LuxServ365Bot accessible with ID 8306535651 and username @LuxServ365Bot. ✅ Chat ID Endpoint (/api/telegram/get-chat-id) - working correctly, returns appropriate response when no messages found. ✅ Notification Triggering - Telegram alerts properly triggered for all guest request submissions with different priorities, request types, and photo counts. ✅ Message Formatting - MarkdownV2 formatting working with priority emojis (🚨 urgent, ⚠️ high, 📋 normal), proper text escaping, and comprehensive request details. ✅ Error Handling - gracefully handles missing chat ID (expected until user messages bot first) without breaking main functionality. Fixed environment variable loading issue during testing. Telegram notification system fully functional and ready for production use."
+
+  - task: "Property Management Frontend"
+    implemented: true
+    working: "NA"
+    file: "PropertyManagement.jsx, AdminDashboard.jsx, api.js"
+    stuck_count: 0
+    priority: "high"  
+    needs_retesting: true
+    status_history: 
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED: Created PropertyManagement.jsx component with comprehensive admin interface for property CRUD operations. Features include: property creation/editing form with owner details and Google resource URLs, property list view with status indicators for Google services (Forms, Docs, Photos), search functionality, delete confirmation. Updated AdminDashboard.jsx with tab navigation between Guest Requests and Property Management. Extended api.js with adminApi property management functions (createProperty, getAllProperties, updateProperty, deleteProperty) and propertyApi.getOwnerProperty for owner lookups. Need frontend testing to verify all property management functionality."
+
+  - task: "Owner Dashboard Property-Specific Resources"
+    implemented: true
+    working: "NA"
+    file: "OwnerDashboard.jsx, api.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED: Updated OwnerDashboard.jsx to fetch and display property-specific Google resources. Added propertyApi import and loadPropertyData() function to fetch owner's property data via /properties/owner/{email} endpoint. Modified Messages tab to use property-specific Google Forms URL with loading states and fallback for unconfigured properties. Updated Inspection Reports tab to display property-specific Google Docs with loading states and 'No Report Available' fallback. Updated Property Photos tab to show property-specific Google Photos album with loading states and 'No Photos Available' fallback. Added propertyApi.getOwnerProperty() function to api.js. Need frontend testing to verify property-specific resource loading works correctly."
 
 agent_communication:
   - agent: "main"
