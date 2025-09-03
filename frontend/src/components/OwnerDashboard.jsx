@@ -13,7 +13,6 @@ import {
   ExternalLink,
   Bot
 } from 'lucide-react';
-import { propertyApi } from '../services/api';
 
 export const OwnerDashboard = ({ userData, onLogout }) => {
   const [messageText, setMessageText] = useState('');
