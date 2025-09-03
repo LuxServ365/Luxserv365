@@ -107,14 +107,14 @@ export const Pricing = () => {
             const IconComponent = plan.icon;
             return (
               <div key={index} className="flex-1 max-w-sm mx-auto relative">
-                {/* Popular badge with HUGE space */}
-                {plan.popular && (
-                  <div className="text-center mb-8 pt-4">
+                {/* Badge space for ALL cards - reserve space even if no badge */}
+                <div className="text-center mb-8 pt-4 h-16 flex items-center justify-center">
+                  {plan.popular && (
                     <span className="bg-yellow-400 text-slate-900 px-6 py-3 rounded-full text-base font-bold shadow-xl whitespace-nowrap inline-block border-2 border-yellow-600">
                       ⭐ MOST POPULAR ⭐
                     </span>
-                  </div>
-                )}
+                  )}
+                </div>
                 <Card className={`relative p-8 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border-0 shadow-lg ${plan.bgColor} overflow-visible`}>
 
                 {/* Daily Value Sticker */}
