@@ -68,6 +68,62 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
     }
   };
 
+  const handleRequestPhotos = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: `Photo Request from ${userData.name}`,
+          message: `Please send me the latest photos of my property inspection and maintenance updates.`,
+          priority: 'normal',
+          ownerEmail: userData.email,
+          ownerName: userData.name,
+          propertyAddress: userData.propertyAddress
+        })
+      });
+      
+      if (response.ok) {
+        alert('Photo request sent! We\'ll send you the photos soon.');
+      } else {
+        alert('Failed to send request. Please try again.');
+      }
+    } catch (err) {
+      alert('Failed to send request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRequestReports = async () => {
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: `Inspection Report Request from ${userData.name}`,
+          message: `Please send me the latest inspection report for my property.`,
+          priority: 'normal',
+          ownerEmail: userData.email,
+          ownerName: userData.name,
+          propertyAddress: userData.propertyAddress
+        })
+      });
+      
+      if (response.ok) {
+        alert('Report request sent! We\'ll send you the report soon.');
+      } else {
+        alert('Failed to send request. Please try again.');
+      }
+    } catch (err) {
+      alert('Failed to send request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
 
 
   if (submitSuccess) {
