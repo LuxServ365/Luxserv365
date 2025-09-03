@@ -32,6 +32,13 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [error, setError] = useState(null);
+  
+  // Property management state
+  const [propertyData, setPropertyData] = useState({
+    driveFolder: '',
+    photosAlbum: '',
+    propertyName: ''
+  });
 
   useEffect(() => {
     loadMessages();
