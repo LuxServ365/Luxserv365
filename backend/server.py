@@ -363,14 +363,14 @@ New Guest Service Request Received
 • Type: {guest_request.requestType}
 • Guest: {guest_request.guestName}
 • Property: {guest_request.propertyAddress}
-• Room/Unit: {guest_request.roomNumber or 'Not specified'}
+• Room/Unit: {guest_request.unitNumber or 'Not specified'}
 
 📝 Description:
-{guest_request.description}
+{guest_request.message}
 
 📞 Contact Info:
-• Phone: {guest_request.phoneNumber}
-• Email: {guest_request.email}
+• Phone: {guest_request.guestPhone}
+• Email: {guest_request.guestEmail}
 
 ⏰ Submitted: {guest_request.createdAt}
 🆔 Request ID: {guest_request.id}
