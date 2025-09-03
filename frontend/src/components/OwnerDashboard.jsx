@@ -445,38 +445,51 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Photos</h2>
                   <p className="text-gray-600 mb-6">View photos from your property inspection including interior, exterior, and maintenance documentation.</p>
                   
-                  {/* Google Photos Album */}
-                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📸 Inspection Photo Gallery</h3>
-                    <p className="text-sm text-gray-600 mb-4">Your property inspection photos:</p>
-                    
-                    {/* Embedded Google Photos */}
-                    <div className="bg-white rounded-lg border shadow-sm">
-                      <iframe 
-                        src="https://photos.app.goo.gl/Bfbk1V7BxHKVSdFo9"
-                        width="100%" 
-                        height="600" 
-                        frameBorder="0"
-                        className="rounded-lg"
-                        title="Property Inspection Photos"
-                      >
-                        Loading inspection photos...
-                      </iframe>
+                  {propertyData.loading ? (
+                    <div className="flex items-center justify-center py-20">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <span className="ml-3 text-gray-600">Loading photo gallery...</span>
                     </div>
-                    
-                    {/* Direct link for mobile compatibility */}
-                    <div className="mt-4 text-center">
-                      <a 
-                        href="https://photos.app.goo.gl/Bfbk1V7BxHKVSdFo9" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                      >
-                        <Camera className="h-4 w-4 mr-2" />
-                        View Photos in New Tab
-                      </a>
+                  ) : propertyData.googlePhotosUrl ? (
+                    <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">📸 Inspection Photo Gallery</h3>
+                      <p className="text-sm text-gray-600 mb-4">Your property inspection photos:</p>
+                      
+                      {/* Embedded Google Photos */}
+                      <div className="bg-white rounded-lg border shadow-sm">
+                        <iframe 
+                          src={propertyData.googlePhotosUrl}
+                          width="100%" 
+                          height="600" 
+                          frameBorder="0"
+                          className="rounded-lg"
+                          title="Property-Specific Inspection Photos"
+                        >
+                          Loading inspection photos...
+                        </iframe>
+                      </div>
+                      
+                      {/* Direct link for mobile compatibility */}
+                      <div className="mt-4 text-center">
+                        <a 
+                          href={propertyData.googlePhotosUrl} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                        >
+                          <Camera className="h-4 w-4 mr-2" />
+                          View Photos in New Tab
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="text-center py-20 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <Camera className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Photos Available</h3>
+                      <p className="text-gray-600 mb-4">Your property inspection photos will appear here once uploaded.</p>
+                      <p className="text-sm text-gray-500">We'll notify you when new photos are added to your property album.</p>
+                    </div>
+                  )}
 
                   {/* Photo Update Notifications */}
                   <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
