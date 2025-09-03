@@ -306,6 +306,157 @@ class PropertyUpdate(BaseModel):
     notes: Optional[str] = None
     isActive: Optional[bool] = None
 
+# Helper functions for notifications
+def get_priority_emoji(priority: str) -> str:
+    """Get emoji for priority level."""
+    priority_emojis = {
+        'urgent': '🚨',
+        'high': '⚡',
+        'normal': '📋',
+        'low': '📝'
+    }
+    return priority_emojis.get(priority.lower(), '📋')
+
+def escape_markdown(text: str) -> str:
+    """Escape markdown special characters for Telegram."""
+    if not text:
+        return ""
+    # Escape markdown v2 special characters
+    special_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!']
+    for char in special_chars:
+        text = text.replace(char, f'\\{char}')
+    return text
+
+async def send_email(subject: str, body: str):
+    """Send email using email service."""
+    try:
+        # Use the email service to send notification
+        await email_service.send_notification_email(subject, body)
+    except Exception as e:
+        logger.error(f"Failed to send email: {str(e)}")
+        raise
+
+async def send_telegram_message(message: str):
+    """Send Telegram message using telegram service."""
+    try:
+        # Use the telegram service to send message
+        await telegram_service.send_notification_message(message)
+    except Exception as e:
+        logger.error(f"Failed to send Telegram message: {str(e)}")
+        raise
+
+async def send_email_notification(guest_request):
+    """Send email notification for guest request."""
+    try:
+        subject = f"🏖️ New Guest Request - {guest_request.requestType}"
+        
+        # Get priority emoji
+        priority_emoji = get_priority_emoji(guest_request.priority)
+        
+        # Create email body
+        body = f"""
+New Guest Service Request Received
+
+{priority_emoji} Priority: {guest_request.priority.upper()}
+
+📋 Request Details:
+• Type: {guest_request.requestType}
+• Guest: {guest_request.guestName}
+• Property: {guest_request.propertyAddress}
+• Room/Unit: {guest_request.roomNumber or 'Not specified'}
+
+📝 Description:
+{guest_request.description}
+
+📞 Contact Info:
+• Phone: {guest_request.phoneNumber}
+• Email: {guest_request.email}
+
+⏰ Submitted: {guest_request.createdAt}
+🆔 Request ID: {guest_request.id}
+
+Please respond to this request as soon as possible.
+
+---
+LuxServ 365 Management System
+        """
+        
+        await send_email(subject, body)
+        logger.info(f"Email notification sent for guest request: {guest_request.id}")
+        
+    except Exception as e:
+        logger.error(f"Failed to send email notification: {str(e)}")
+        raise
+
+async def send_email_notification_owner(owner_message):
+    """Send email notification for owner message."""
+    try:
+        subject = f"📨 Owner Message - {owner_message.ownerName}"
+        
+        # Get priority emoji
+        priority_emoji = get_priority_emoji(owner_message.priority)
+        
+        # Create email body
+        body = f"""
+New Owner Message Received
+
+{priority_emoji} Priority: {owner_message.priority.upper()}
+
+👤 Owner Details:
+• Name: {owner_message.ownerName}
+• Email: {owner_message.ownerEmail}
+• Property: {owner_message.propertyAddress}
+
+📝 Subject: {owner_message.subject}
+
+💬 Message:
+{owner_message.message}
+
+⏰ Received: {datetime.utcnow()}
+
+Please respond to the owner as soon as possible.
+
+---
+LuxServ 365 Management System
+        """
+        
+        await send_email(subject, body)
+        logger.info(f"Email notification sent for owner message: {owner_message.ownerEmail}")
+        
+    except Exception as e:
+        logger.error(f"Failed to send owner email notification: {str(e)}")
+        raise
+
+async def send_telegram_notification_owner(owner_message):
+    """Send Telegram notification for owner message."""
+    try:
+        # Get priority emoji
+        priority_emoji = get_priority_emoji(owner_message.priority)
+        
+        # Create message text
+        message_text = f"""
+{priority_emoji} *New Owner Message*
+
+*Owner:* {escape_markdown(owner_message.ownerName)}
+*Email:* {escape_markdown(owner_message.ownerEmail)}
+*Property:* {escape_markdown(owner_message.propertyAddress)}
+*Priority:* {escape_markdown(owner_message.priority.upper())}
+
+*Subject:* {escape_markdown(owner_message.subject)}
+
+*Message:*
+{escape_markdown(owner_message.message)}
+
+*Time:* {escape_markdown(str(datetime.utcnow()))}
+        """
+        
+        await send_telegram_message(message_text)
+        logger.info(f"Telegram notification sent for owner message: {owner_message.ownerEmail}")
+        
+    except Exception as e:
+        logger.error(f"Failed to send owner Telegram notification: {str(e)}")
+        raise
+
 # Add your routes to the router instead of directly to app
 @api_router.get("/")
 async def root():
