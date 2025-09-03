@@ -347,6 +347,69 @@ export const adminApi = {
       console.error('Bulk update error:', error);
       throw error;
     }
+  },
+
+  // Property management endpoints
+  createProperty: async (propertyData) => {
+    try {
+      const response = await apiClient.post('/admin/properties', propertyData);
+      return response.data;
+    } catch (error) {
+      console.error('Create property error:', error);
+      throw error;
+    }
+  },
+
+  getAllProperties: async (filters = {}) => {
+    try {
+      const params = new URLSearchParams();
+      if (filters.search) params.append('search', filters.search);
+      if (filters.owner_email) params.append('owner_email', filters.owner_email);
+      if (filters.page) params.append('page', filters.page);
+      if (filters.limit) params.append('limit', filters.limit);
+
+      const response = await apiClient.get(`/admin/properties?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get all properties error:', error);
+      throw error;
+    }
+  },
+
+  updateProperty: async (propertyId, updateData) => {
+    try {
+      const response = await apiClient.put(`/admin/properties/${propertyId}`, updateData);
+      return response.data;
+    } catch (error) {
+      console.error('Update property error:', error);
+      throw error;
+    }
+  },
+
+  deleteProperty: async (propertyId) => {
+    try {
+      const response = await apiClient.delete(`/admin/properties/${propertyId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Delete property error:', error);
+      throw error;
+    }
+  }
+};
+
+export const propertyApi = {
+  // Get property data for owner
+  getOwnerProperty: async (ownerEmail, propertyAddress = null) => {
+    try {
+      const params = new URLSearchParams();
+      if (propertyAddress) params.append('property_address', propertyAddress);
+
+      const response = await apiClient.get(`/properties/owner/${encodeURIComponent(ownerEmail)}?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      console.error('Get owner property error:', error);
+      throw error;
+    }
   }
 };
 
