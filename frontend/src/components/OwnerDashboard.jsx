@@ -183,7 +183,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
               className="w-full bg-green-600 hover:bg-green-700 text-white"
             >
               <Bot className="h-4 w-4 mr-2" />
-              {isSubmitting ? 'Sending...' : 'Send to Bot'}
+              {isSubmitting ? 'Sending...' : 'Send to Team'}
             </Button>
           </Card>
         </div>
