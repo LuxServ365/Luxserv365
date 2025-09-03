@@ -331,7 +331,12 @@ async def send_email(subject: str, body: str):
     """Send email using email service."""
     try:
         # Use the email service to send notification
-        await email_service.send_notification_email(subject, body)
+        to_email = os.environ.get('GMAIL_USERNAME', '850realty@gmail.com')
+        await email_service.send_guest_request_notification(
+            to_email=to_email,
+            subject=subject,
+            body=body
+        )
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
         raise
