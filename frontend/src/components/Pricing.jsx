@@ -115,7 +115,7 @@ export const Pricing = () => {
                     </span>
                   </div>
                 )}
-                <Card className={`relative p-8 h-full transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border-0 shadow-lg ${plan.bgColor} overflow-hidden ${plan.popular ? 'mt-6' : ''}`}>
+                <Card className={`relative p-8 h-full transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl border-0 shadow-lg ${plan.bgColor} overflow-hidden ${plan.popular ? 'mt-12' : ''}`}>
 
                 {/* Daily Value Sticker */}
                 <div className="absolute top-4 right-4 transform rotate-12">
