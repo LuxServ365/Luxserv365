@@ -229,7 +229,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   }`}
                 >
                   <Camera className="h-5 w-5 mr-3" />
-                  Photo Album
+                  Property Photos
                 </button>
                 <button
                   onClick={() => setActiveTab('reviews')}
