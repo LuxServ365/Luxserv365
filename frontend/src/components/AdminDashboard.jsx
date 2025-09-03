@@ -21,6 +21,7 @@ export const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [completedRequests, setCompletedRequests] = useState(new Set());
+  const [activeTab, setActiveTab] = useState('requests');
 
   // Check if user is already logged in
   useEffect(() => {
