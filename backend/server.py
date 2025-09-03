@@ -758,10 +758,13 @@ async def get_telegram_chat_id():
 
 @api_router.post("/admin/login")
 async def admin_login(credentials: AdminAuth):
-    """Simple hardcoded admin login - no database required."""
+    """Admin login using environment variables."""
     try:
-        # Hardcoded credentials for reliability
-        if credentials.username == "luxserv_admin" and credentials.password == "LuxServ2025":
+        # Get credentials from environment variables with fallbacks
+        admin_username = os.environ.get('ADMIN_USERNAME', 'luxserv_admin')
+        admin_password = os.environ.get('ADMIN_PASSWORD', 'LuxServ2025')
+        
+        if credentials.username == admin_username and credentials.password == admin_password:
             return {
                 "success": True,
                 "message": "Login successful",
