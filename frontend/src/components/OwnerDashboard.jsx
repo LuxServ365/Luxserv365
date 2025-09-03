@@ -24,29 +24,7 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
   const googlePhotosUrl = "https://photos.app.goo.gl/Bfbk1V7BxHKVSdFo9";
   const googleDocsUrl = "https://docs.google.com/document/d/1Oem88xZVfV8VrvNpKu07pfrK2j6cQPCU/edit?usp=drive_link&ouid=104070332296079677226&rtpof=true&sd=true";
 
-  // Load property-specific data on component mount
-  useEffect(() => {
-    loadPropertyData();
-  }, []);
 
-  const loadPropertyData = async () => {
-    try {
-      const response = await propertyApi.getOwnerProperty(userData.email, userData.propertyAddress);
-      if (response.success) {
-        setPropertyData({
-          googleDocsUrl: response.data.googleDocsUrl,
-          googlePhotosUrl: response.data.googlePhotosUrl,
-          loading: false,
-          isConfigured: response.data.googleDocsUrl || response.data.googlePhotosUrl
-        });
-      } else {
-        setPropertyData(prev => ({ ...prev, loading: false }));
-      }
-    } catch (err) {
-      console.error('Error loading property data:', err);
-      setPropertyData(prev => ({ ...prev, loading: false }));
-    }
-  };
 
   // Simple message sending
   const handleSendEmail = () => {
