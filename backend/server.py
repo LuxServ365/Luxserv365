@@ -341,11 +341,20 @@ async def send_email(subject: str, body: str):
         logger.error(f"Failed to send email: {str(e)}")
         raise
 
-async def send_telegram_message(message: str):
+async def send_telegram_message(owner_message):
     """Send Telegram message using telegram service."""
     try:
-        # Use the telegram service to send message
-        await telegram_service.send_notification_message(message)
+        # Use the existing telegram service function
+        await telegram_service.send_guest_request_alert(
+            guest_name=owner_message.ownerName,
+            guest_email=owner_message.ownerEmail,
+            property_address=owner_message.propertyAddress,
+            request_type="Owner Message",
+            priority=owner_message.priority,
+            message=f"Subject: {owner_message.subject}\n\n{owner_message.message}",
+            confirmation_number=owner_message.ownerEmail,
+            photo_count=0
+        )
     except Exception as e:
         logger.error(f"Failed to send Telegram message: {str(e)}")
         raise
