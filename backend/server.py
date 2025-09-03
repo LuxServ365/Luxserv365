@@ -32,7 +32,11 @@ GUEST_PHOTOS_DIR.mkdir(exist_ok=True)
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+# Extract database name from MongoDB URL for deployment compatibility
+from urllib.parse import urlparse
+parsed_url = urlparse(mongo_url)
+db_name = parsed_url.path.lstrip('/') if parsed_url.path and parsed_url.path != '/' else os.environ.get('DB_NAME', 'luxserv365')
+db = client[db_name]
 
 # Create the main app without a prefix
 app = FastAPI()
