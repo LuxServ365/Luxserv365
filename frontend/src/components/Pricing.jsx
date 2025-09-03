@@ -13,19 +13,19 @@ export const Pricing = () => {
       period: "/month",
       icon: Shield,
       features: [
-        "2 monthly maintenance inspections",
-        "Turnover coordination (at cost per clean)",
-        "Discounted guest services",
+        "Property monitoring",
+        "1 monthly maintenance inspection",
+        "Turnover coordination",
+        "Non-urgent guest support",
         "Vendor recommendations",
-        "Owner and guest support",
-        "Basic property monitoring"
+        "Damage monitoring & recordkeeping"
       ],
       bgColor: "bg-white",
       textColor: "text-slate-900",
       buttonColor: "bg-slate-600 hover:bg-slate-700",
       iconColor: "text-slate-600",
       popular: false,
-      description: "Perfect for cost-conscious owners"
+      description: "For cost-conscious owners who want reliable basics without overspending"
     },
     {
       name: "Premium Care",
@@ -37,45 +37,49 @@ export const Pricing = () => {
       features: [
         "Everything in Essential, plus:",
         "24/7 emergency response",
-        "Weekly maintenance inspections",
-        "Priority scheduling for turnovers & maintenance",
-        "Inventory restock coordination",
-        "Storm prep readiness checks",
+        "Bi-weekly maintenance inspections",
+        "Priority scheduling for turnovers & maintenance assistance",
         "Guest check-in/out assistance",
-        "On-site security options",
-        "Monthly detailed reporting"
+        "Storm prep & post-storm checks",
+        "Enhanced owner & guest support",
+        "Inventory restock coordination",
+        "On-site security assistance",
+        "Custom property updates",
+        "Revenue-boosting tips & seasonal readiness"
       ],
       bgColor: "bg-blue-600",
       textColor: "text-white",
       buttonColor: "bg-white text-blue-600 hover:bg-slate-100",
       iconColor: "text-yellow-400",
       popular: true,
-      description: "Balanced for quality & peace of mind"
+      description: "The smart choice — proactive care, happier guests, and better reviews"
     },
     {
       name: "Elite Care",
-      subtitle: "Luxury Partner for Premium Properties",
+      subtitle: "Luxury Partner Plan",
       price: "$799",
       dailyValue: "$26.63",
       period: "/month",
       icon: Crown,
       features: [
         "Everything in Premium, plus:",
-        "Bi-weekly inspections",
+        "Dedicated hands on property manager",
+        "Weekly inspections",
         "Concierge-level guest support included",
-        "Pre-arrival walkthroughs for every booking",
-        "Smart tech monitoring (locks, WiFi, cameras)",
+        "Pre-arrival walkthroughs",
+        "VIP guest experience services available",
+        "Storm prep & post-storm documentation",
+        "Smart tech monitoring assistance",
         "White-glove vendor management",
-        "Storm prep & post-storm documentation with photos/video",
-        "Dedicated property manager",
-        "VIP guest experience services"
+        "Damage claim support with photographs/video",
+        "Competitive hosting advantages and resources"
       ],
       bgColor: "bg-gradient-to-br from-amber-500 to-orange-600",
       textColor: "text-white",
       buttonColor: "bg-white text-amber-600 hover:bg-slate-100",
       iconColor: "text-yellow-300",
       popular: false,
-      description: "White-glove service for premium property owners who want total peace of mind"
+      description: "Exclusive partnership for owners who want total peace of mind and VIP guest experiences"
     }
   ];
 
