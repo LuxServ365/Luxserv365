@@ -102,7 +102,7 @@ export const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 mt-12">
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             return (
