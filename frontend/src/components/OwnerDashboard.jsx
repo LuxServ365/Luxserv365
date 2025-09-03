@@ -389,25 +389,38 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Report</h2>
                   <p className="text-gray-600 mb-6">View your property inspection report including photos and maintenance notes.</p>
                   
-                  {/* Google Doc Embed */}
-                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
-                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Current Inspection Report</h3>
-                    <p className="text-sm text-gray-600 mb-4">Your property's latest inspection report:</p>
-                    
-                    {/* Embedded Google Doc */}
-                    <div className="bg-white rounded-lg border shadow-sm">
-                      <iframe 
-                        src="https://docs.google.com/document/d/1Oem88xZVfV8VrvNpKu07pfrK2j6cQPCU/preview"
-                        width="100%" 
-                        height="600" 
-                        frameBorder="0"
-                        className="rounded-lg"
-                        title="Property Inspection Report"
-                      >
-                        Loading inspection report...
-                      </iframe>
+                  {propertyData.loading ? (
+                    <div className="flex items-center justify-center py-20">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                      <span className="ml-3 text-gray-600">Loading inspection report...</span>
                     </div>
-                  </div>
+                  ) : propertyData.googleDocsUrl ? (
+                    <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Current Inspection Report</h3>
+                      <p className="text-sm text-gray-600 mb-4">Your property's latest inspection report:</p>
+                      
+                      {/* Embedded Google Doc */}
+                      <div className="bg-white rounded-lg border shadow-sm">
+                        <iframe 
+                          src={propertyData.googleDocsUrl}
+                          width="100%" 
+                          height="600" 
+                          frameBorder="0"
+                          className="rounded-lg"
+                          title="Property-Specific Inspection Report"
+                        >
+                          Loading inspection report...
+                        </iframe>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-20 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-medium text-gray-900 mb-2">No Inspection Report Available</h3>
+                      <p className="text-gray-600 mb-4">Your property inspection report will appear here once completed.</p>
+                      <p className="text-sm text-gray-500">We'll notify you when your inspection report is ready to view.</p>
+                    </div>
+                  )}
 
                   {/* Upload Notifications */}
                   <div className="bg-green-50 border-l-4 border-green-400 p-4">
