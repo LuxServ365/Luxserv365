@@ -182,7 +182,8 @@ export const Pricing = () => {
                   </Button>
                 </div>
                 </div>
-              </Card>
+                </Card>
+              </div>
             );
           })}
         </div>
