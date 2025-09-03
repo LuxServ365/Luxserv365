@@ -1571,6 +1571,516 @@ class AdminDashboardTester:
         
         return passed == total
 
+class PropertyManagementTester:
+    def __init__(self):
+        self.api_base = API_BASE_URL
+        self.test_results = []
+        self.created_property_ids = []  # Track created properties for cleanup
+        
+    def log_test(self, test_name, success, message, details=None):
+        """Log test results"""
+        result = {
+            'test': test_name,
+            'success': success,
+            'message': message,
+            'timestamp': datetime.now().isoformat(),
+            'details': details
+        }
+        self.test_results.append(result)
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status}: {test_name} - {message}")
+        if details and not success:
+            print(f"   Details: {details}")
+    
+    def test_create_property_all_fields(self):
+        """Test creating property with all fields"""
+        property_data = {
+            "ownerEmail": "john.beachowner@gmail.com",
+            "ownerName": "John Beach Owner",
+            "propertyAddress": "123 Gulf Shore Drive, Panama City Beach, FL 32413",
+            "googleDocsUrl": "https://docs.google.com/document/d/1234567890/edit",
+            "googlePhotosUrl": "https://photos.google.com/share/album123",
+            "googleFormsUrl": "https://forms.gle/abcd1234",
+            "propertyType": "Beachfront Condo",
+            "notes": "Premium oceanfront property with 3BR/2BA, fully furnished"
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/admin/properties", json=property_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    property_obj = data['data']
+                    required_fields = ['id', 'ownerEmail', 'ownerName', 'propertyAddress', 'createdAt', 'isActive']
+                    missing_fields = [field for field in required_fields if field not in property_obj]
+                    
+                    if not missing_fields:
+                        property_id = property_obj.get('id')
+                        self.created_property_ids.append(property_id)
+                        self.log_test("Create Property - All Fields", True, 
+                                    f"Successfully created property with ID: {property_id}")
+                        return property_id
+                    else:
+                        self.log_test("Create Property - All Fields", False, 
+                                    f"Response missing required fields: {missing_fields}", data)
+                else:
+                    self.log_test("Create Property - All Fields", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Create Property - All Fields", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Create Property - All Fields", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def test_create_property_minimal_fields(self):
+        """Test creating property with only required fields"""
+        property_data = {
+            "ownerEmail": "sarah.minimal@beachowner.com",
+            "ownerName": "Sarah Minimal Owner",
+            "propertyAddress": "456 Beach Boulevard, Panama City Beach, FL 32413"
+        }
+        
+        try:
+            response = requests.post(f"{self.api_base}/admin/properties", json=property_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    property_obj = data['data']
+                    property_id = property_obj.get('id')
+                    self.created_property_ids.append(property_id)
+                    
+                    # Verify optional fields are null
+                    optional_fields = ['googleDocsUrl', 'googlePhotosUrl', 'googleFormsUrl', 'propertyType', 'notes']
+                    for field in optional_fields:
+                        if property_obj.get(field) is not None:
+                            self.log_test("Create Property - Minimal Fields", False, 
+                                        f"Optional field {field} should be null when not provided")
+                            return None
+                    
+                    self.log_test("Create Property - Minimal Fields", True, 
+                                f"Successfully created property with minimal fields. ID: {property_id}")
+                    return property_id
+                else:
+                    self.log_test("Create Property - Minimal Fields", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Create Property - Minimal Fields", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Create Property - Minimal Fields", False, f"Request failed: {str(e)}")
+        
+        return None
+    
+    def test_create_property_validation(self):
+        """Test property creation validation"""
+        
+        # Test missing required fields
+        invalid_data_sets = [
+            ({}, "Missing all required fields"),
+            ({"ownerEmail": "test@example.com"}, "Missing ownerName and propertyAddress"),
+            ({"ownerName": "Test Owner"}, "Missing ownerEmail and propertyAddress"),
+            ({"propertyAddress": "Test Address"}, "Missing ownerEmail and ownerName"),
+            ({"ownerEmail": "invalid-email", "ownerName": "Test", "propertyAddress": "Test"}, "Invalid email format"),
+            ({"ownerEmail": "", "ownerName": "Test", "propertyAddress": "Test"}, "Empty email"),
+            ({"ownerEmail": "test@example.com", "ownerName": "", "propertyAddress": "Test"}, "Empty name"),
+            ({"ownerEmail": "test@example.com", "ownerName": "Test", "propertyAddress": ""}, "Empty address")
+        ]
+        
+        for invalid_data, description in invalid_data_sets:
+            try:
+                response = requests.post(f"{self.api_base}/admin/properties", json=invalid_data, timeout=10)
+                
+                if response.status_code == 422:  # Validation error expected
+                    self.log_test(f"Property Validation - {description}", True, 
+                                "Correctly rejected invalid data")
+                else:
+                    self.log_test(f"Property Validation - {description}", False, 
+                                f"Expected 422, got {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_test(f"Property Validation - {description}", False, f"Request failed: {str(e)}")
+    
+    def test_duplicate_property_prevention(self):
+        """Test duplicate property prevention (same owner + address)"""
+        property_data = {
+            "ownerEmail": "duplicate.test@beachowner.com",
+            "ownerName": "Duplicate Test Owner",
+            "propertyAddress": "789 Duplicate Test Drive, Panama City Beach, FL 32413"
+        }
+        
+        # Create first property
+        try:
+            response1 = requests.post(f"{self.api_base}/admin/properties", json=property_data, timeout=10)
+            
+            if response1.status_code == 200:
+                data1 = response1.json()
+                if data1.get('success'):
+                    property_id = data1['data'].get('id')
+                    self.created_property_ids.append(property_id)
+                    
+                    # Try to create duplicate
+                    response2 = requests.post(f"{self.api_base}/admin/properties", json=property_data, timeout=10)
+                    
+                    if response2.status_code == 200:
+                        data2 = response2.json()
+                        if not data2.get('success') and 'error' in data2:
+                            self.log_test("Duplicate Property Prevention", True, 
+                                        "Correctly prevented duplicate property creation")
+                        else:
+                            self.log_test("Duplicate Property Prevention", False, 
+                                        "Duplicate property was allowed", data2)
+                    else:
+                        self.log_test("Duplicate Property Prevention", False, 
+                                    f"Unexpected HTTP status for duplicate: {response2.status_code}")
+                else:
+                    self.log_test("Duplicate Property Prevention", False, 
+                                "Failed to create first property for duplicate test", data1)
+            else:
+                self.log_test("Duplicate Property Prevention", False, 
+                            f"Failed to create first property: HTTP {response1.status_code}")
+                
+        except Exception as e:
+            self.log_test("Duplicate Property Prevention", False, f"Request failed: {str(e)}")
+    
+    def test_get_all_properties(self):
+        """Test GET /api/admin/properties endpoint"""
+        try:
+            response = requests.get(f"{self.api_base}/admin/properties", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    admin_data = data['data']
+                    if 'properties' in admin_data and 'pagination' in admin_data:
+                        properties_list = admin_data['properties']
+                        pagination = admin_data['pagination']
+                        
+                        # Verify pagination structure
+                        required_pagination_fields = ['current_page', 'total_pages', 'total_count', 'per_page']
+                        missing_fields = [field for field in required_pagination_fields if field not in pagination]
+                        
+                        if not missing_fields:
+                            self.log_test("Get All Properties", True, 
+                                        f"Successfully retrieved {len(properties_list)} properties with pagination (Total: {pagination['total_count']})")
+                            return properties_list
+                        else:
+                            self.log_test("Get All Properties", False, 
+                                        f"Pagination missing fields: {missing_fields}", pagination)
+                    else:
+                        self.log_test("Get All Properties", False, 
+                                    "Response missing properties or pagination", admin_data)
+                else:
+                    self.log_test("Get All Properties", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Get All Properties", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Get All Properties", False, f"Request failed: {str(e)}")
+        
+        return []
+    
+    def test_property_search_filtering(self):
+        """Test property search and filtering"""
+        filter_tests = [
+            {"search": "john", "description": "Search by owner name"},
+            {"search": "beachowner", "description": "Search by email"},
+            {"search": "gulf shore", "description": "Search by address"},
+            {"owner_email": "john.beachowner@gmail.com", "description": "Filter by owner email"},
+            {"page": "1", "limit": "10", "description": "Pagination parameters"}
+        ]
+        
+        for filter_test in filter_tests:
+            description = filter_test.pop("description")
+            
+            try:
+                response = requests.get(f"{self.api_base}/admin/properties", params=filter_test, timeout=10)
+                
+                if response.status_code == 200:
+                    data = response.json()
+                    if data.get('success') and 'data' in data:
+                        admin_data = data['data']
+                        properties_count = len(admin_data.get('properties', []))
+                        total_count = admin_data.get('pagination', {}).get('total_count', 0)
+                        
+                        self.log_test(f"Property Search - {description}", True, 
+                                    f"Filter applied successfully: {properties_count} results (Total: {total_count})")
+                    else:
+                        self.log_test(f"Property Search - {description}", False, 
+                                    "Response format invalid", data)
+                else:
+                    self.log_test(f"Property Search - {description}", False, 
+                                f"HTTP {response.status_code}", response.text)
+                    
+            except Exception as e:
+                self.log_test(f"Property Search - {description}", False, f"Request failed: {str(e)}")
+    
+    def test_update_property(self, property_id=None):
+        """Test updating property information"""
+        if not property_id and self.created_property_ids:
+            property_id = self.created_property_ids[0]
+        
+        if not property_id:
+            self.log_test("Update Property - No Property ID", False, 
+                        "No property ID available for testing update functionality")
+            return
+        
+        update_data = {
+            "googleDocsUrl": "https://docs.google.com/document/d/updated123/edit",
+            "googlePhotosUrl": "https://photos.google.com/share/updated456",
+            "googleFormsUrl": "https://forms.gle/updated789",
+            "notes": "Updated notes: Property has been renovated with new appliances"
+        }
+        
+        try:
+            response = requests.put(f"{self.api_base}/admin/properties/{property_id}", json=update_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    updated_property = data['data']
+                    
+                    # Verify updates were applied
+                    updates_applied = all(
+                        updated_property.get(field) == value 
+                        for field, value in update_data.items()
+                    )
+                    
+                    if updates_applied and updated_property.get('updatedAt'):
+                        self.log_test("Update Property", True, 
+                                    f"Successfully updated property Google resource URLs and notes")
+                    else:
+                        self.log_test("Update Property", False, 
+                                    "Updates not applied correctly", updated_property)
+                else:
+                    self.log_test("Update Property", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Update Property", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Update Property", False, f"Request failed: {str(e)}")
+    
+    def test_update_nonexistent_property(self):
+        """Test updating non-existent property"""
+        fake_property_id = "nonexistent-property-id-12345"
+        update_data = {
+            "notes": "This should fail"
+        }
+        
+        try:
+            response = requests.put(f"{self.api_base}/admin/properties/{fake_property_id}", json=update_data, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if not data.get('success') and 'error' in data:
+                    self.log_test("Update Nonexistent Property", True, 
+                                "Correctly handled non-existent property ID")
+                else:
+                    self.log_test("Update Nonexistent Property", False, 
+                                "Non-existent property update should have failed", data)
+            else:
+                self.log_test("Update Nonexistent Property", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Update Nonexistent Property", False, f"Request failed: {str(e)}")
+    
+    def test_get_owner_property_existing(self):
+        """Test GET /api/properties/owner/{email} for existing owner"""
+        owner_email = "john.beachowner@gmail.com"
+        
+        try:
+            response = requests.get(f"{self.api_base}/properties/owner/{owner_email}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    property_data = data['data']
+                    
+                    # Check if it's a real property or fallback
+                    if property_data.get('ownerEmail') == owner_email:
+                        if property_data.get('isSetup') is False:
+                            self.log_test("Get Owner Property - Existing (Fallback)", True, 
+                                        "Successfully returned fallback data for unconfigured owner")
+                        else:
+                            self.log_test("Get Owner Property - Existing", True, 
+                                        f"Successfully retrieved property data for {owner_email}")
+                    else:
+                        self.log_test("Get Owner Property - Existing", False, 
+                                    "Owner email mismatch in response", property_data)
+                else:
+                    self.log_test("Get Owner Property - Existing", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Get Owner Property - Existing", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Get Owner Property - Existing", False, f"Request failed: {str(e)}")
+    
+    def test_get_owner_property_nonexistent(self):
+        """Test GET /api/properties/owner/{email} for non-existent owner"""
+        nonexistent_email = "nonexistent.owner@example.com"
+        
+        try:
+            response = requests.get(f"{self.api_base}/properties/owner/{nonexistent_email}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success') and 'data' in data:
+                    property_data = data['data']
+                    
+                    # Should return fallback data
+                    if (property_data.get('ownerEmail') == nonexistent_email and 
+                        property_data.get('isSetup') is False):
+                        self.log_test("Get Owner Property - Nonexistent", True, 
+                                    "Successfully returned fallback data for non-existent owner")
+                    else:
+                        self.log_test("Get Owner Property - Nonexistent", False, 
+                                    "Should return fallback data for non-existent owner", property_data)
+                else:
+                    self.log_test("Get Owner Property - Nonexistent", False, 
+                                "Response format invalid", data)
+            else:
+                self.log_test("Get Owner Property - Nonexistent", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Get Owner Property - Nonexistent", False, f"Request failed: {str(e)}")
+    
+    def test_soft_delete_property(self, property_id=None):
+        """Test soft delete property (set isActive=false)"""
+        if not property_id and self.created_property_ids:
+            property_id = self.created_property_ids[-1]  # Use last created property
+        
+        if not property_id:
+            self.log_test("Soft Delete Property - No Property ID", False, 
+                        "No property ID available for testing delete functionality")
+            return
+        
+        try:
+            response = requests.delete(f"{self.api_base}/admin/properties/{property_id}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('success'):
+                    # Verify property is no longer in active list
+                    list_response = requests.get(f"{self.api_base}/admin/properties", timeout=10)
+                    if list_response.status_code == 200:
+                        list_data = list_response.json()
+                        active_properties = list_data.get('data', {}).get('properties', [])
+                        
+                        # Check if deleted property is not in active list
+                        deleted_property_found = any(prop['id'] == property_id for prop in active_properties)
+                        
+                        if not deleted_property_found:
+                            self.log_test("Soft Delete Property", True, 
+                                        f"Successfully soft deleted property (isActive=false)")
+                            # Remove from our tracking list since it's deleted
+                            if property_id in self.created_property_ids:
+                                self.created_property_ids.remove(property_id)
+                        else:
+                            self.log_test("Soft Delete Property", False, 
+                                        "Property still appears in active list after deletion")
+                    else:
+                        self.log_test("Soft Delete Property", True, 
+                                    "Delete operation succeeded (could not verify active list)")
+                else:
+                    self.log_test("Soft Delete Property", False, 
+                                "Delete operation failed", data)
+            else:
+                self.log_test("Soft Delete Property", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Soft Delete Property", False, f"Request failed: {str(e)}")
+    
+    def test_delete_nonexistent_property(self):
+        """Test deleting non-existent property"""
+        fake_property_id = "nonexistent-property-delete-12345"
+        
+        try:
+            response = requests.delete(f"{self.api_base}/admin/properties/{fake_property_id}", timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if not data.get('success') and 'error' in data:
+                    self.log_test("Delete Nonexistent Property", True, 
+                                "Correctly handled non-existent property ID for deletion")
+                else:
+                    self.log_test("Delete Nonexistent Property", False, 
+                                "Non-existent property deletion should have failed", data)
+            else:
+                self.log_test("Delete Nonexistent Property", False, 
+                            f"HTTP {response.status_code}", response.text)
+                
+        except Exception as e:
+            self.log_test("Delete Nonexistent Property", False, f"Request failed: {str(e)}")
+    
+    def run_all_tests(self):
+        """Run all property management tests"""
+        print("=" * 60)
+        print("PROPERTY MANAGEMENT BACKEND TESTING")
+        print("=" * 60)
+        
+        # Test property creation
+        property_id_1 = self.test_create_property_all_fields()
+        property_id_2 = self.test_create_property_minimal_fields()
+        
+        # Test validation
+        self.test_create_property_validation()
+        self.test_duplicate_property_prevention()
+        
+        # Test property retrieval and search
+        properties_list = self.test_get_all_properties()
+        self.test_property_search_filtering()
+        
+        # Test property updates
+        self.test_update_property(property_id_1)
+        self.test_update_nonexistent_property()
+        
+        # Test owner property lookup
+        self.test_get_owner_property_existing()
+        self.test_get_owner_property_nonexistent()
+        
+        # Test property deletion
+        self.test_soft_delete_property(property_id_2)
+        self.test_delete_nonexistent_property()
+        
+        # Summary
+        print("\n" + "=" * 60)
+        print("PROPERTY MANAGEMENT TEST SUMMARY")
+        print("=" * 60)
+        
+        passed = sum(1 for result in self.test_results if result['success'])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        if total - passed > 0:
+            print("\nFAILED TESTS:")
+            for result in self.test_results:
+                if not result['success']:
+                    print(f"  - {result['test']}: {result['message']}")
+        
+        # Cleanup note
+        if self.created_property_ids:
+            print(f"\nNote: {len(self.created_property_ids)} test properties remain in database")
+        
+        return passed == total
+
 if __name__ == "__main__":
     print("LUXSERV 365 COMPREHENSIVE BACKEND TESTING")
     print("=" * 80)
