@@ -19,6 +19,12 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
   const [messageText, setMessageText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [propertyData, setPropertyData] = useState({
+    googleDocsUrl: null,
+    googlePhotosUrl: null,
+    loading: true,
+    isConfigured: false
+  });
 
   // Simple message sending
   const handleSendEmail = () => {
