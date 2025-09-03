@@ -192,39 +192,39 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
           </Card>
         </div>
 
-        {/* Quick Access Cards */}
+        {/* Request Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Google Photos Card */}
+          {/* Request Photos Card */}
           <Card className="p-6 shadow-lg border-0 bg-white">
             <div className="flex items-center mb-4">
               <Camera className="h-6 w-6 text-purple-600 mr-3" />
               <h3 className="text-lg font-semibold text-gray-900">Property Photos</h3>
             </div>
-            <p className="text-gray-600 mb-4">View your property inspection photos and albums.</p>
+            <p className="text-gray-600 mb-4">Request photos of your property inspection and maintenance.</p>
             <Button
-              onClick={() => window.open(googlePhotosUrl, '_blank')}
+              onClick={() => handleRequestPhotos()}
+              disabled={isSubmitting}
               className="w-full bg-purple-600 hover:bg-purple-700 text-white"
             >
               <Camera className="h-4 w-4 mr-2" />
-              View Photos
-              <ExternalLink className="h-4 w-4 ml-2" />
+              Request Photos
             </Button>
           </Card>
 
-          {/* Google Docs Card */}
+          {/* Request Reports Card */}
           <Card className="p-6 shadow-lg border-0 bg-white">
             <div className="flex items-center mb-4">
               <FileText className="h-6 w-6 text-orange-600 mr-3" />
               <h3 className="text-lg font-semibold text-gray-900">Inspection Reports</h3>
             </div>
-            <p className="text-gray-600 mb-4">Access your property inspection reports and documents.</p>
+            <p className="text-gray-600 mb-4">Request your latest property inspection report.</p>
             <Button
-              onClick={() => window.open(googleDocsUrl, '_blank')}
+              onClick={() => handleRequestReports()}
+              disabled={isSubmitting}
               className="w-full bg-orange-600 hover:bg-orange-700 text-white"
             >
               <FileText className="h-4 w-4 mr-2" />
-              View Reports
-              <ExternalLink className="h-4 w-4 ml-2" />
+              Request Reports
             </Button>
           </Card>
         </div>
