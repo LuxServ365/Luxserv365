@@ -345,16 +345,23 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Report</h2>
                   <p className="text-gray-600 mb-6">View your property inspection report including photos and maintenance notes.</p>
                   
-                  {/* Google Drive Folder Embed */}
+                  {/* Google Doc Embed */}
                   <div className="bg-gray-50 rounded-lg p-6 mb-6">
                     <h3 className="text-lg font-semibold text-gray-800 mb-3">📋 Current Inspection Report</h3>
-                    <p className="text-sm text-gray-600 mb-4">Access your property's latest inspection report:</p>
+                    <p className="text-sm text-gray-600 mb-4">Your property's latest inspection report:</p>
                     
-                    {/* This will be dynamically populated based on property */}
-                    <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600 mb-3">Your inspection report will appear here</p>
-                      <p className="text-sm text-gray-500">Report includes property condition, photos, and maintenance recommendations</p>
+                    {/* Embedded Google Doc */}
+                    <div className="bg-white rounded-lg border shadow-sm">
+                      <iframe 
+                        src="https://docs.google.com/document/d/1Oem88xZVfV8VrvNpKu07pfrK2j6cQPCU/preview"
+                        width="100%" 
+                        height="600" 
+                        frameBorder="0"
+                        className="rounded-lg"
+                        title="Property Inspection Report"
+                      >
+                        Loading inspection report...
+                      </iframe>
                     </div>
                   </div>
 
@@ -384,13 +391,33 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
                   {/* Google Photos Album */}
                   <div className="bg-gray-50 rounded-lg p-6 mb-6">
                     <h3 className="text-lg font-semibold text-gray-800 mb-3">📸 Inspection Photo Gallery</h3>
-                    <p className="text-sm text-gray-600 mb-4">Access your property inspection photos:</p>
+                    <p className="text-sm text-gray-600 mb-4">Your property inspection photos:</p>
                     
-                    {/* This will be dynamically populated based on property */}
-                    <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
-                      <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
-                      <p className="text-gray-600 mb-3">Your property inspection photos will appear here</p>
-                      <p className="text-sm text-gray-500">Photos include exterior, interior, and maintenance documentation</p>
+                    {/* Embedded Google Photos */}
+                    <div className="bg-white rounded-lg border shadow-sm">
+                      <iframe 
+                        src="https://photos.app.goo.gl/Bfbk1V7BxHKVSdFo9"
+                        width="100%" 
+                        height="600" 
+                        frameBorder="0"
+                        className="rounded-lg"
+                        title="Property Inspection Photos"
+                      >
+                        Loading inspection photos...
+                      </iframe>
+                    </div>
+                    
+                    {/* Direct link for mobile compatibility */}
+                    <div className="mt-4 text-center">
+                      <a 
+                        href="https://photos.app.goo.gl/Bfbk1V7BxHKVSdFo9" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                      >
+                        <Camera className="h-4 w-4 mr-2" />
+                        View Photos in New Tab
+                      </a>
                     </div>
                   </div>
 
