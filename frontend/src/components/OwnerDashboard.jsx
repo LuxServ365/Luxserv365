@@ -26,6 +26,30 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
     isConfigured: false
   });
 
+  // Load property-specific data on component mount
+  useEffect(() => {
+    loadPropertyData();
+  }, []);
+
+  const loadPropertyData = async () => {
+    try {
+      const response = await propertyApi.getOwnerProperty(userData.email, userData.propertyAddress);
+      if (response.success) {
+        setPropertyData({
+          googleDocsUrl: response.data.googleDocsUrl,
+          googlePhotosUrl: response.data.googlePhotosUrl,
+          loading: false,
+          isConfigured: response.data.googleDocsUrl || response.data.googlePhotosUrl
+        });
+      } else {
+        setPropertyData(prev => ({ ...prev, loading: false }));
+      }
+    } catch (err) {
+      console.error('Error loading property data:', err);
+      setPropertyData(prev => ({ ...prev, loading: false }));
+    }
+  };
+
   // Simple message sending
   const handleSendEmail = () => {
     const subject = `Message from ${userData.name} - ${userData.propertyAddress}`;
