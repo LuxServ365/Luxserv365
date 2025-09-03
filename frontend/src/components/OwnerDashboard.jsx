@@ -226,14 +226,28 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
               <h3 className="text-lg font-semibold text-gray-900">Property Photos</h3>
             </div>
             <p className="text-gray-600 mb-4">View your property inspection photos and albums.</p>
-            <Button
-              onClick={() => window.open(googlePhotosUrl, '_blank')}
-              className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-            >
-              <Camera className="h-4 w-4 mr-2" />
-              View Photos
-              <ExternalLink className="h-4 w-4 ml-2" />
-            </Button>
+            
+            {propertyData.loading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600"></div>
+                <span className="ml-2 text-gray-600">Loading photos...</span>
+              </div>
+            ) : propertyData.googlePhotosUrl ? (
+              <Button
+                onClick={() => window.open(propertyData.googlePhotosUrl, '_blank')}
+                className="w-full bg-purple-600 hover:bg-purple-700 text-white"
+              >
+                <Camera className="h-4 w-4 mr-2" />
+                View Photos
+                <ExternalLink className="h-4 w-4 ml-2" />
+              </Button>
+            ) : (
+              <div className="text-center py-4 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
+                <Camera className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                <p className="text-gray-600 text-sm mb-2">Photos not yet available</p>
+                <p className="text-gray-500 text-xs">Your property photos will appear here once uploaded</p>
+              </div>
+            )}
           </Card>
 
           {/* Google Docs Card */}
