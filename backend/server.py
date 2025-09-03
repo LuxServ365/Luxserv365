@@ -379,6 +379,19 @@ async def submit_owner_message(message: OwnerMessageCreate):
         
         if result.inserted_id:
             logger.info(f"Owner message submitted: {message_obj.ownerEmail} - {message_obj.subject}")
+            
+            # Send Telegram notification
+            try:
+                await send_telegram_notification_owner(message_obj)
+            except Exception as telegram_error:
+                logger.error(f"Failed to send Telegram notification: {telegram_error}")
+            
+            # Send email notification  
+            try:
+                await send_email_notification_owner(message_obj)
+            except Exception as email_error:
+                logger.error(f"Failed to send email notification: {email_error}")
+            
             return {
                 "success": True,
                 "data": message_obj.dict(),
