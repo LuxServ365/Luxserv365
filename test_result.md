@@ -296,6 +296,18 @@ backend:
         agent: "main"
         comment: "IMPLEMENTED: Created Telegram Bot service using LuxServ365Bot token, integrated with guest request endpoint to send instant alerts for ALL requests (not just urgent). Includes MarkdownV2 formatting, priority-based emojis, request details, and bot info/chat ID endpoints for setup. Need testing to verify Telegram delivery."
 
+  - task: "Property Management Backend"
+    implemented: true
+    working: "NA"
+    file: "server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "IMPLEMENTED: Added PropertyCreate, PropertyModel, PropertyUpdate models with fields for ownerEmail, ownerName, propertyAddress, googleDocsUrl, googlePhotosUrl, googleFormsUrl, propertyType, notes. Created CRUD endpoints: POST /admin/properties (create), GET /admin/properties (admin list with search/pagination), GET /properties/owner/{email} (owner-specific lookup), PUT /admin/properties/{id} (update), DELETE /admin/properties/{id} (soft delete). All endpoints include proper error handling and validation. Need backend testing to verify all endpoints work correctly."
+
   - task: "Admin Dashboard Backend"
     implemented: true
     working: true
