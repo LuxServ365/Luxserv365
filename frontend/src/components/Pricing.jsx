@@ -109,7 +109,7 @@ export const Pricing = () => {
               <div key={index} className="relative">
                 {/* Popular badge - OUTSIDE the card */}
                 {plan.popular && (
-                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 z-30 mb-4">
+                  <div className="absolute top-0 left-1/2 transform -translate-x-1/2 z-30">
                     <span className="bg-yellow-400 text-slate-900 px-4 py-2 rounded-full text-sm font-bold shadow-lg whitespace-nowrap">
                       MOST POPULAR
                     </span>
