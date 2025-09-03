@@ -91,9 +91,9 @@ export const Pricing = () => {
   };
 
   return (
-    <section id="pricing" className="pt-20 pb-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+    <section id="pricing" className="pt-32 pb-20 bg-white overflow-visible">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 overflow-visible">
+        <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">
             Pricing Plans for Owners
           </h2>
@@ -102,7 +102,7 @@ export const Pricing = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12 mt-16">
+        <div className="flex flex-col md:flex-row gap-8 mb-12 items-start justify-center">
           {plans.map((plan, index) => {
             const IconComponent = plan.icon;
             return (
