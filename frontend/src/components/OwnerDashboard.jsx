@@ -15,131 +15,65 @@ import {
 } from 'lucide-react';
 
 export const OwnerDashboard = ({ userData, onLogout }) => {
-  const [activeTab, setActiveTab] = useState('messages');
-  const [messages, setMessages] = useState([]);
-  const [newMessage, setNewMessage] = useState({
-    subject: '',
-    message: '',
-    priority: 'normal'
-  });
+  const [messageText, setMessageText] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [error, setError] = useState(null);
-  
-  // Property management state
-  const [propertyData, setPropertyData] = useState({
-    googleDocsUrl: null,
-    googlePhotosUrl: null,
-    googleFormsUrl: null,
-    isSetup: false,
-    loading: true
-  });
 
-  useEffect(() => {
-    loadMessages();
-    loadPropertyData();
-  }, []);
+  // Simple message sending
+  const handleSendEmail = () => {
+    const subject = `Message from ${userData.name} - ${userData.propertyAddress}`;
+    const body = `From: ${userData.name}%0AEmail: ${userData.email}%0AProperty: ${userData.propertyAddress}%0A%0AMessage:%0A${encodeURIComponent(messageText)}`;
+    window.location.href = `mailto:850realty@gmail.com?subject=${encodeURIComponent(subject)}&body=${body}`;
+  };
 
-  const loadPropertyData = async () => {
-    try {
-      const response = await propertyApi.getOwnerProperty(userData.email, userData.propertyAddress);
-      if (response.success) {
-        setPropertyData({
-          googleDocsUrl: response.data.googleDocsUrl,
-          googlePhotosUrl: response.data.googlePhotosUrl,
-          googleFormsUrl: response.data.googleFormsUrl,
-          isSetup: response.data.isSetup !== false,
-          loading: false
-        });
-      }
-    } catch (err) {
-      console.error('Error loading property data:', err);
-      setPropertyData(prev => ({ ...prev, loading: false }));
+  const handleSendBotMessage = async () => {
+    if (!messageText.trim()) {
+      alert('Please enter a message first');
+      return;
     }
-  };
-
-  const loadMessages = async () => {
-    try {
-      const response = await messageApi.getOwnerMessages(userData.email);
-      if (response.success) {
-        setMessages(response.data);
-      }
-    } catch (err) {
-      console.error('Error loading messages:', err);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewMessage(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    
     setIsSubmitting(true);
-    setError(null);
-
     try {
-      const messageData = {
-        ...newMessage,
-        ownerEmail: userData.email,
-        ownerName: userData.name,
-        propertyAddress: userData.propertyAddress
-      };
-
-      const response = await messageApi.submitMessage(messageData);
+      // Send to backend which will forward to Telegram bot
+      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subject: `Owner Bot Message from ${userData.name}`,
+          message: messageText,
+          priority: 'normal',
+          ownerEmail: userData.email,
+          ownerName: userData.name,
+          propertyAddress: userData.propertyAddress
+        })
+      });
       
-      if (response.success) {
+      if (response.ok) {
         setSubmitSuccess(true);
-        setNewMessage({
-          subject: '',
-          message: '',
-          priority: 'normal'
-        });
-        loadMessages(); // Reload messages
+        setMessageText('');
         setTimeout(() => setSubmitSuccess(false), 3000);
       } else {
-        setError(response.error || 'Failed to send message');
+        alert('Failed to send message. Please try email instead.');
       }
     } catch (err) {
-      setError(err.message || 'Failed to send message. Please try again.');
+      alert('Failed to send message. Please try email instead.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const getPriorityColor = (priority) => {
-    switch (priority) {
-      case 'urgent': return 'text-red-600 bg-red-100';
-      case 'high': return 'text-orange-600 bg-orange-100';
-      case 'normal': return 'text-blue-600 bg-blue-100';
-      case 'low': return 'text-gray-600 bg-gray-100';
-      default: return 'text-blue-600 bg-blue-100';
-    }
-  };
-
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'read': return <CheckCircle className="h-4 w-4 text-green-500" />;
-      case 'pending': return <Clock className="h-4 w-4 text-yellow-500" />;
-      default: return <AlertCircle className="h-4 w-4 text-blue-500" />;
-    }
-  };
+  // Google service URLs (you can update these for each property)
+  const googlePhotosUrl = "https://photos.app.goo.gl/Bfbk1V7BxHKVSdFo9";
+  const googleDocsUrl = "https://docs.google.com/document/d/1Oem88xZVfV8VrvNpKu07pfrK2j6cQPCU/edit?usp=drive_link&ouid=104070332296079677226&rtpof=true&sd=true";
 
   if (submitSuccess) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 flex items-center justify-center py-12 px-4">
         <Card className="w-full max-w-2xl p-12 shadow-2xl border-0 bg-white text-center">
-          <CheckCircle className="h-20 w-20 text-green-500 mx-auto mb-6" />
+          <Bot className="h-20 w-20 text-green-500 mx-auto mb-6" />
           <h2 className="text-3xl font-bold text-slate-900 mb-4">Message Sent!</h2>
           <p className="text-xl text-slate-600 mb-6">
-            Your message has been sent to LuxServ 365. We'll respond within 2 hours during business hours.
-          </p>
-          <p className="text-slate-500 mb-6">
-            For urgent matters, call our emergency line: (504) 939-1371
+            Your message has been sent to our team via bot. We'll respond soon!
           </p>
           <Button
             onClick={() => setSubmitSuccess(false)}
