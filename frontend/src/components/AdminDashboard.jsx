@@ -8,8 +8,11 @@ import {
   Mail,
   Phone,
   LogOut,
-  RefreshCw
+  RefreshCw,
+  Home,
+  Building2
 } from 'lucide-react';
+import { PropertyManagement } from './PropertyManagement';
 
 export const AdminDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
