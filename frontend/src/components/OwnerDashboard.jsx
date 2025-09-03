@@ -344,12 +344,113 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
               </div>
             )}
 
+            {/* Inspection Reports Tab */}
             {activeTab === 'inspections' && (
-              <InspectionReports userData={userData} />
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Inspection Reports</h2>
+                  <p className="text-gray-600 mb-6">View and download inspection reports for your property. Reports are automatically uploaded after each inspection.</p>
+                  
+                  {/* Google Drive Folder Embed */}
+                  <div className="bg-gray-50 rounded-lg p-6 mb-6">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">📁 Inspection Reports Folder</h3>
+                    <p className="text-sm text-gray-600 mb-4">Click the link below to access your property's inspection reports:</p>
+                    
+                    {/* This will be dynamically populated based on property */}
+                    <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <p className="text-gray-600 mb-3">Your inspection reports will appear here</p>
+                      <p className="text-sm text-gray-500">Reports are organized by date and include photos, maintenance notes, and recommendations</p>
+                    </div>
+                    
+                    {/* Example of what it will look like when populated */}
+                    <div className="mt-4 p-4 bg-blue-50 rounded-lg">
+                      <h4 className="font-semibold text-blue-800 mb-2">📋 Sample Report Structure:</h4>
+                      <ul className="text-sm text-blue-700 space-y-1">
+                        <li>• Monthly Inspection - [Date]</li>
+                        <li>• Maintenance Report - [Date]</li> 
+                        <li>• Move-in/Move-out Inspection</li>
+                        <li>• Emergency Repair Documentation</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Upload Notifications */}
+                  <div className="bg-green-50 border-l-4 border-green-400 p-4">
+                    <div className="flex">
+                      <CheckCircle className="h-5 w-5 text-green-400 mt-0.5 mr-3" />
+                      <div>
+                        <h3 className="text-sm font-medium text-green-800">Automatic Notifications</h3>
+                        <p className="mt-1 text-sm text-green-700">
+                          You'll receive email notifications whenever new inspection reports are uploaded for your property.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
 
+            {/* Property Photos Tab */}
             {activeTab === 'photos' && (
-              <PhotoAlbum userData={userData} />
+              <div className="space-y-6">
+                <div className="bg-white rounded-lg shadow-lg p-6">
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Property Photos</h2>
+                  <p className="text-gray-600 mb-6">View professional photos of your property, including before/after maintenance photos and room galleries.</p>
+                  
+                  {/* Google Photos Albums */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">📸 Property Exterior</h3>
+                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                        <p className="text-gray-600 mb-2">Exterior Photos</p>
+                        <p className="text-sm text-gray-500">Front, back, landscaping, parking</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">🏠 Interior Rooms</h3>
+                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                        <p className="text-gray-600 mb-2">Interior Photos</p>
+                        <p className="text-sm text-gray-500">Living areas, bedrooms, kitchen, bathrooms</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">🔧 Maintenance Photos</h3>
+                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                        <p className="text-gray-600 mb-2">Before/After</p>
+                        <p className="text-sm text-gray-500">Maintenance and repair documentation</p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-gray-50 rounded-lg p-6">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-3">⭐ Marketing Photos</h3>
+                      <div className="bg-white border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                        <Camera className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                        <p className="text-gray-600 mb-2">Listing Photos</p>
+                        <p className="text-sm text-gray-500">Professional photos for listings</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Photo Update Notifications */}
+                  <div className="bg-blue-50 border-l-4 border-blue-400 p-4">
+                    <div className="flex">
+                      <Camera className="h-5 w-5 text-blue-400 mt-0.5 mr-3" />
+                      <div>
+                        <h3 className="text-sm font-medium text-blue-800">Photo Updates</h3>
+                        <p className="mt-1 text-sm text-blue-700">
+                          New photos are added regularly after maintenance, cleaning, and property improvements. You'll be notified of all updates.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             )}
 
             {activeTab === 'reviews' && (
