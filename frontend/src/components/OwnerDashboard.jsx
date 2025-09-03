@@ -35,14 +35,35 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
   
   // Property management state
   const [propertyData, setPropertyData] = useState({
-    driveFolder: '',
-    photosAlbum: '',
-    propertyName: ''
+    googleDocsUrl: null,
+    googlePhotosUrl: null,
+    googleFormsUrl: null,
+    isSetup: false,
+    loading: true
   });
 
   useEffect(() => {
     loadMessages();
+    loadPropertyData();
   }, []);
+
+  const loadPropertyData = async () => {
+    try {
+      const response = await propertyApi.getOwnerProperty(userData.email, userData.propertyAddress);
+      if (response.success) {
+        setPropertyData({
+          googleDocsUrl: response.data.googleDocsUrl,
+          googlePhotosUrl: response.data.googlePhotosUrl,
+          googleFormsUrl: response.data.googleFormsUrl,
+          isSetup: response.data.isSetup !== false,
+          loading: false
+        });
+      }
+    } catch (err) {
+      console.error('Error loading property data:', err);
+      setPropertyData(prev => ({ ...prev, loading: false }));
+    }
+  };
 
   const loadMessages = async () => {
     try {
