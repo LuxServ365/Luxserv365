@@ -219,9 +219,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Dashboard Backend"
-    - "Admin Dashboard Frontend"
-    - "Guest Services Restructuring"
+    - "Property Management Backend"
+    - "Property Management Frontend"
+    - "Owner Dashboard Property-Specific Resources"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
