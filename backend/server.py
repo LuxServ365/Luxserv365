@@ -441,7 +441,7 @@ Please respond to the owner as soon as possible.
 LuxServ 365 Management System
         """
         
-        await send_email(subject, body)
+        await send_email_owner_message(owner_message)
         logger.info(f"Email notification sent for owner message: {owner_message.ownerEmail}")
         
     except Exception as e:
