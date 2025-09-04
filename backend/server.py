@@ -327,15 +327,22 @@ def escape_markdown(text: str) -> str:
         text = text.replace(char, f'\\{char}')
     return text
 
-async def send_email(subject: str, body: str):
-    """Send email using email service."""
+async def send_email_owner_message(owner_message):
+    """Send email using email service for owner messages."""
     try:
         # Use the email service to send notification
-        to_email = os.environ.get('GMAIL_USERNAME', '850realty@gmail.com')
+        to_emails = [os.environ.get('GMAIL_USERNAME', '850realty@gmail.com')]
         await email_service.send_guest_request_notification(
-            to_email=to_email,
-            subject=subject,
-            body=body
+            guest_name=owner_message.ownerName,
+            guest_email=owner_message.ownerEmail,
+            guest_phone="",
+            property_address=owner_message.propertyAddress,
+            request_type="Owner Message",
+            priority=owner_message.priority,
+            message=f"Subject: {owner_message.subject}\n\n{owner_message.message}",
+            confirmation_number=owner_message.ownerEmail,
+            photo_count=0,
+            to_emails=to_emails
         )
     except Exception as e:
         logger.error(f"Failed to send email: {str(e)}")
