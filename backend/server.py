@@ -560,7 +560,7 @@ async def submit_owner_message(message: OwnerMessageCreate):
             
             # Send email notification  
             try:
-                await send_email_notification_owner(message_obj)
+                await send_email_owner_message(message_obj)
             except Exception as email_error:
                 logger.error(f"Failed to send email notification: {email_error}")
             
