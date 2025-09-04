@@ -53,9 +53,14 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
       });
       
       if (response.ok) {
-        setSubmitSuccess(true);
-        setMessageText('');
-        setTimeout(() => setSubmitSuccess(false), 3000);
+        const result = await response.json();
+        if (result.success) {
+          setSubmitSuccess(true);
+          setMessageText('');
+          setTimeout(() => setSubmitSuccess(false), 3000);
+        } else {
+          alert('Failed to send message. Please try email instead.');
+        }
       } else {
         alert('Failed to send message. Please try email instead.');
       }
