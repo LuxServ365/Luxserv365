@@ -121,7 +121,12 @@ export const OwnerDashboard = ({ userData, onLogout }) => {
       });
       
       if (response.ok) {
-        alert('Report request sent! We\'ll send you the report soon.');
+        const result = await response.json();
+        if (result.success) {
+          alert('Report request sent! We\'ll send you the report soon.');
+        } else {
+          alert('Failed to send request. Please try again.');
+        }
       } else {
         alert('Failed to send request. Please try again.');
       }
